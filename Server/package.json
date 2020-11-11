@@ -5,16 +5,23 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "nodemon --exec babel-node src/index.js"
   },
   "author": "Lio",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/node": "^7.12.6",
+    "@babel/preset-env": "^7.12.1",
+    "apollo-server-express": "^2.19.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "graphql-tools": "^7.0.1",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.11",
+    "nodemon": "^2.0.6",
     "request": "^2.88.2"
   }
 }
