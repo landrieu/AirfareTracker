@@ -6,8 +6,8 @@ export const tracker = gql`
 
     type Tracker {
         id: ID!
-        from: String
-        to: String
+        from: Airport
+        to: Airport
         startDates: [Date]
         endDates: [Date]
         isActive: Boolean,
@@ -15,6 +15,7 @@ export const tracker = gql`
         isAlertEnabled: Boolean,
         triggerPrice: Int,
         alertEmail: String
+        createdAt: Date!
     }
 
     type TrackerPayLoad {
@@ -22,14 +23,20 @@ export const tracker = gql`
         error: String
     }
 
+    type Number {
+        number: Int
+    }
+
     extend type Query {
         trackers: [Tracker]
         trackersByUser(userId: String): [Tracker]
+        trackersNumber(userId: String): Number
+        trackersActiveNumber(userId: String): Number
     }
 
     extend type Mutation {
         createTracker(from: String!, to: String!, userId: String): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
-        updateTrackerStatus(trackerId: String!, newStatus: Boolean!): Tracker
+        updateTrackerStatus(trackerId: String!, newStatus: Boolean!): TrackerPayLoad
     }
 `;
