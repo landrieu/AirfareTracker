@@ -3,6 +3,9 @@ const router = express.Router();
 const ipModel = require('../models/ip');
 const request = require('request');
 
+import {renameObjectKey} from '../services/helpers';
+import {getClosestAirport} from '../services/geo';
+
 const localIPs = ["::ffff:127.0.0.1", "::1"];
 
 // Define the
@@ -12,19 +15,28 @@ router.post('/find', async function(req, res) {
     let clientIPAddress = getClientIPAddress(req);
     //Simulate external IP
     clientIPAddress = '120.18.129.33';
+    //Aalborg, DK: '77.68.202.109';
+    //Brescia, IT: '79.48.159.82';
+    //Washington State, US: '52.137.106.143';
+    //Taipei: '210.208.255.205';
+    //Sydney: '120.18.129.33';
     
     //Check if the IP address is local, and fetch IP details
     let ipDetails = await findIPLocation(clientIPAddress);
     
     if(!ipDetails.success || !ipDetails.data) return res.json({success: false});
 
+    renameObjectKey(ipDetails.data, 'longitude', 'lon');
+    renameObjectKey(ipDetails.data, 'latitude', 'lat');
     let ipRecord = new ipModel(Object.assign({}, ipDetails.data, {address: clientIPAddress}));
 
-    ipModel.insertIP(ipRecord, (err, dbRes) => {
-        if(err) res.json({success: false})
-        res.json({success: true});
-    });
-});
+    let IPInserted = await ipModel.insertIP(ipRecord);
+
+    if(!IPInserted) return res.json({success: false});
+
+    let closestAirport = await getClosestAirport(ipRecord);
+    res.json({success: true, closestAirport});
+}); 
 
 /**
  * Find IP address location, first check is internal. If no, a call to API is made to retrieve information

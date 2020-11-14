@@ -8,5 +8,9 @@ module.exports = {
     },
     Mutation: {
         
+    },
+
+    GetAirports: (filter, fields) => {
+        return Airport.find(filter, fields || {});
     }
 }

@@ -11,8 +11,8 @@ const ipSchema = mongoose.Schema({
     regionName: String,
     city: String,
     zip: String,
-    lat: String,
-    lon: String,
+    latitude: String,
+    longitude: String,
     as: String
 },{
     timestamps: true
@@ -22,6 +22,6 @@ const model = mongoose.model("ips", ipSchema);
 
 module.exports = model;
 
-module.exports.insertIP = function(IP, callback){
-    IP.save(callback);
+module.exports.insertIP = function(IP){
+    return IP.save();
 }
