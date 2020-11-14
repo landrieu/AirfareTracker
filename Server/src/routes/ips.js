@@ -35,6 +35,7 @@ router.post('/find', async function(req, res) {
     if(!IPInserted) return res.json({success: false});
 
     let closestAirport = await getClosestAirport(ipRecord);
+    console.log(closestAirport);
     res.json({success: true, closestAirport});
 }); 
 

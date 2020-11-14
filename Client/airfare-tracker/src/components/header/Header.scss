@@ -1,0 +1,16 @@
+
+@import '../../variables.scss';
+
+#header{
+    height: 60px;
+    background-color: $primary;
+    width: 100%;
+    color: $base-white;
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    padding-left: 10px;
+    box-sizing: border-box;
+
+
+}
