@@ -11,7 +11,7 @@ export const mongo = {
         return mongoose.connect(config.uri, { useUnifiedTopology: true, useNewUrlParser: true });
     },
     disconnect: () => {
-        mongoose.disconnect();
+        return mongoose.disconnect();
     }
 }
 

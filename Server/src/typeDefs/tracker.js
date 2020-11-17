@@ -1,21 +1,33 @@
 import { gql } from 'apollo-server-express';
 
+import {
+    graphql,
+    GraphQLObjectType,
+    GraphQLSchema,
+  } from 'graphql';
+import {
+    GraphQLDate,
+    GraphQLTime,
+    GraphQLDateTime
+  } from 'graphql-iso-date';
+
 export const tracker = gql`
 
     scalar Date
+    scalar GraphQLDate
 
     type Tracker {
         id: ID!
         from: Airport
         to: Airport
-        startDates: [Date]
-        endDates: [Date]
+        startDates: [GraphQLDate]
+        endDates: [GraphQLDate]
         isActive: Boolean,
         userId: String,
         isAlertEnabled: Boolean,
         triggerPrice: Int,
         alertEmail: String
-        createdAt: Date!
+        createdAt: GraphQLDate!
     }
 
     type TrackerPayLoad {
@@ -24,7 +36,7 @@ export const tracker = gql`
     }
 
     type Number {
-        number: Int
+        n: Int
     }
 
     extend type Query {
@@ -35,7 +47,7 @@ export const tracker = gql`
     }
 
     extend type Mutation {
-        createTracker(from: String!, to: String!, userId: String): Tracker
+        createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate], type: String!): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): TrackerPayLoad
     }

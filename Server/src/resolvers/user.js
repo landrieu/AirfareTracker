@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
+import { ObjectID } from 'mongodb';
 
-import { User } from '../models/User';
-import { Tracker } from '../models/Tracker';
+import { User } from '../database/models/User';
+import { Tracker } from '../database/models/Tracker';
 import {GenerateToken} from '../services/authentication';
 
 import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
@@ -29,16 +30,24 @@ module.exports = {
             if (existingUser) throw new ValidationError('This email is not valid!');
 
             password = await bcrypt.hash(password, 10); // hashing the password
+
+            //Check if trackers already exist for this user and add them to the user profile
+            let userTrackers = await Tracker.find({userEmail: email}, {_id: 1}).map((tr) => ObjectID(tr._id));
+
             const newUser = new User({
                 email, 
                 password,
                 role: roles.user,
-                trackers: [],
+                trackers: userTrackers || [],
                 registrationDate: new Date().toISOString(),
                 lastConnectionAt: null
             });
 
             const res = await newUser.save();
+
+            //Set userID in the tracker records
+            await Tracker.updateMany({userEmail: email}, {$set: {userId: res._id}});
+
             const token = GenerateToken(res);
       
             return {

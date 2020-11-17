@@ -4,7 +4,7 @@
   "description": "AirTracker server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require @babel/register",
     "start": "nodemon --exec babel-node src/index.js"
   },
   "author": "Lio",
@@ -14,16 +14,24 @@
     "@babel/core": "^7.12.3",
     "@babel/node": "^7.12.6",
     "@babel/preset-env": "^7.12.1",
+    "@babel/runtime": "^7.12.5",
     "apollo-server": "^2.19.0",
     "apollo-server-express": "^2.19.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
     "express": "^4.17.1",
+    "graphql-iso-date": "^3.6.1",
     "graphql-tools": "^7.0.1",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^8.2.1",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.11",
     "nodemon": "^2.0.6",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/register": "^7.12.1"
   }
 }

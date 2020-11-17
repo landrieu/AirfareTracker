@@ -1,6 +1,6 @@
 import { ObjectID } from 'mongodb';
-import { Tracker } from '../models/Tracker';
-import { Airport } from '../models/Airport';
+import { Tracker } from '../database/models/Tracker';
+import { Airport } from '../database/models/Airport';
 
 module.exports = {
     Query: {

@@ -2,7 +2,7 @@ import { ApolloServer, gql } from 'apollo-server-express';
 import express from 'express';
 import { resolvers } from './resolvers';
 import { typeDefs } from './typeDefs';
-import { mongo } from './mongo/index';
+import { mongo } from './database/index';
 
 const bodyParser = require('body-parser')
 const app = express();

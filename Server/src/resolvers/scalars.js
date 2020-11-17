@@ -12,6 +12,7 @@ module.exports = {
             return value.getTime(); // value sent to the client
         },
         parseLiteral(ast) {
+            console.log(ast.kind, Kind.INT);
             if (ast.kind === Kind.INT) {
                 return parseInt(ast.value, 10); // ast value is always in string format
             }

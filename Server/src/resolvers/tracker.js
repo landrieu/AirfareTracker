@@ -1,9 +1,13 @@
 import {VerifyAuthentication} from '../services/authentication';
 
 import { ObjectID } from 'mongodb';
-import { Tracker } from '../models/Tracker';
-import { Airport } from '../models/Airport';
-import { User } from '../models/User';
+import { Tracker } from '../database/models/Tracker';
+import { Airport } from '../database/models/Airport';
+import { User } from '../database/models/User';
+
+import {validateNewTracker} from '../services/validation/tracker';
+import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
+
 
 module.exports = {
     Query: {
@@ -14,11 +18,11 @@ module.exports = {
             const query = {userId};
             return Tracker.find(query);
         },
-        trackersNumber: (_, {userId}) => {
+        trackersNumber: async (_, {userId}) => {
             if(userId){
-                return Tracker.count({userId});
+                return await Tracker.count({userId});
             }else{
-                return Tracker.countDocuments();
+                return await Tracker.countDocuments();
             }
         },
         trackersActiveNumber: (_, {userId}) => {
@@ -31,23 +35,35 @@ module.exports = {
         }
     },
     Mutation: {
-        createTracker: async (_, {from, to, userId}, {auth}) => {
-            const user = await VerifyAuthentication(auth);
+        /**
+         * 2 Options:
+         *  - Logged
+         *  - Not logged
+         */
+        createTracker: async (_, tracker, {auth}) => {
+            //const user = await VerifyAuthentication(auth);
+            //console.log(tracker);
+            const { errors, valid } = validateNewTracker(tracker);
+            if (!valid) throw new UserInputError('Error', { errors });
 
-            let startDates = [new Date()];
-            let endDates = [new Date()];
-            const newTracker = new Tracker({from, to, startDates, endDates, userId, isActive: true});
+            if(!tracker.userId){
+                tracker.userId = await User.findOne({email: tracker.userEmail}, {userId: '1'}).userId;
+            }
+
+            const newTracker = new Tracker(Object.assign({}, tracker, {isActive: true}));
 
             try{
                 //Save tracker
                 const savedTracker = await newTracker.save();
                 //If a user ID exists add it to the user profile
-                const query = {_id: userId};
-                await User.findOneAndUpdate(query, {$addToSet: {trackers: savedTracker._id}}, {useFindAndModify: false});
-
+                if(tracker.userId){
+                    const query = {_id: tracker.userId};
+                    await User.findOneAndUpdate(query, {$addToSet: {trackers: savedTracker._id}}, {useFindAndModify: false});
+                }
+                
                 return savedTracker;
             }catch(error){
-                
+                console.log(error);
             }
         },
         deleteTracker: async (_, {trackerId}, {auth}) => {
@@ -99,3 +115,4 @@ module.exports = {
         }
     }
 }
+
