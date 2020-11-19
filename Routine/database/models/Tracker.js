@@ -16,11 +16,11 @@ const trackerSchema = mongoose.Schema({
     },
     startDates: {
         type: Array,
-        required: () => this.type === 'N'
+        required: function(){return (this.type === 'N')}
     },
     endDates:  {
         type: Array,
-        required: () => this.type === 'N'
+        required: function(){return (this.type === 'N')}
     },
 
     /**
@@ -31,15 +31,18 @@ const trackerSchema = mongoose.Schema({
     //If type is F, must define patterns
     patterns: {
         type: Array,
-        required: () => this.type === 'F'
+        required: function(){ return (this.type === 'F')}
     },
     isAlertActive: Boolean,
     //If the user is not registered, alert is send to the user email
     userEmail: {
         type: String,
-        required: () => !this.userId
+        required: function(){return !this.userId}
     },
-    userId: String,
+    userId: {
+        type: String,
+        required: function(){return !this.userEmail} 
+    },
     triggerPrice: Number,
 },{
     timestamps: true

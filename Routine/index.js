@@ -1,5 +1,6 @@
 import { mongo } from './database';
 import { Tracker } from './database/models/Tracker';
+import { Airfare } from './database/models/Airfare';
 
 import sources from './sources';
 
@@ -16,29 +17,59 @@ const connectDb = async () => {
 };
 
 const disconnectDb = async () => {
-
+    await mongo.disconnect();
+    console.log("Database disconnected");
 };
 
 const fetchAllActiveTrackers = () => {
     return Tracker.find({isActive: true});
 };
 
-const scanTracker = (tracker) => {
-    let resultsBySource = [];
-    let res;
+const listPossibleDates = (startDates, endDates) => {
+    return startDates.map(startDate => endDates.map(endDate => {startDate, endDate}))
+    .reduce((acc, val) => [...acc, ...val], []);
+}
 
-    //Check is the tracker is valid dates etc, if not disable the tracker or not
+const scanTrackerWithSources = (tracker) => {
+    let srcPromises = [], res;
 
-    console.log(tracker);
     for(let i = 0; i < sources.length; i++){
         res = sources[i].scan(tracker);
-        resultsBySource.push(res);
+        srcPromises.push(res);
     }
+
+    return Promise.all(srcPromises).then((results) => results.map(res => Object.assign({}, res, {trackerId: tracker._id})));
+};
+
+const scanTracker = async (tracker) => {
+    let resultsBySource = [];
+    let airfares, trackerDates;
+    let dates = listPossibleDates(tracker.startDates, tracker.endDates);
+
+    for(let i = 0; i < dates.length; i++){
+        trackerDates = {startDate: dates[i].startDate, endDate: dates[i].endDate};
+        airfares = await scanTrackerWithSources(Object.assign({}, tracker._doc, trackerDates));
+
+        resultsBySource.push(...airfares);
+    }
+
+    //Check is the tracker is valid dates etc, if not disable the tracker or not
 
     //Select the results to save or all of them
 
     return resultsBySource;
 };
+
+const saveAirfares = (airfares) => {
+    let airfaresToSave = [];
+
+    for(let airfare of airfares){
+        console.log(`Save: ${airfare.from} - ${airfare.to}  ${airfare.startDate} - ${airfare.endDate} -> ${airfare.minPrice}`);
+        airfaresToSave.push(new Airfare(airfare));
+    }
+
+    return Airfare.insertMany(airfaresToSave);
+}
 
 /**
  * {
@@ -63,31 +94,14 @@ const scanTracker = (tracker) => {
  * }
  * @param {*} trackers 
  */
-const scanAllTrackers = (trackers) => {
+const scanAllTrackers = async (trackers) => {
     let scanResults = [];
-    let scanResult = null;
 
-    trackers.forEach((tracker) => {
-        scanResult = scanTracker(tracker);
-    });
+    for(let tracker of trackers){
+        scanResults.push(... await scanTracker(tracker));
+    }
 
     return scanResults;
-};
-
-const saveAirfare = async (airfare) => {
-
-};
-
-const saveResults = async (results) => {
-    let resTracker = null;
-
-    for(let i = 0; i < results.length; i++){
-        resTracker = results[i];
-
-        for(let j = 0; j < resTracker.length; j++){
-            saveAirfare();
-        }
-    }
 };
 
 const startRoutine = async() => {
@@ -95,14 +109,14 @@ const startRoutine = async() => {
     if(!success) return false;
 
     let activeTrackers = await fetchAllActiveTrackers();
-    console.log('a', activeTrackers.length);
-    let scanResults = await scanAllTrackers([activeTrackers[0]]);
+    console.log(`Number of active trackers ${activeTrackers.length}`);
+    if(activeTrackers.length === 0) return false;
 
-    //let savedResults = await saveResults(scanResults);
-    //console.log('a', activeTrackers.length);
-    //console.log('a', activeTrackers);
+    let scanResults = await scanAllTrackers(activeTrackers.slice(0,2));
+
+    let saveResults = await saveAirfares(scanResults);
+
+    disconnectDb();
 };
-
-
 
 startRoutine();

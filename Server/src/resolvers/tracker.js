@@ -18,11 +18,11 @@ module.exports = {
             const query = {userId};
             return Tracker.find(query);
         },
-        trackersNumber: async (_, {userId}) => {
+        trackersNumber: (_, {userId}) => {
             if(userId){
-                return await Tracker.count({userId});
+                return Tracker.count({userId});
             }else{
-                return await Tracker.countDocuments();
+                return Tracker.countDocuments();
             }
         },
         trackersActiveNumber: (_, {userId}) => {
