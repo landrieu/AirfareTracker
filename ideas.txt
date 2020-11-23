@@ -1,0 +1,2 @@
+//Integrate webcams
+https://api.windy.com/webcams/docs

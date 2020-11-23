@@ -28,20 +28,17 @@ const trackerSchema = mongoose.Schema({
      * F - Frequent routes - Can only be created by an ADMIN
      */
     type: String,
-    //If type is F, must define patterns
-    patterns: {
-        type: Array,
-        required: function(){ return (this.type === 'F')}
-    },
+    //If type is F
+    occurrences: Array,
     isAlertActive: Boolean,
     //If the user is not registered, alert is send to the user email
     userEmail: {
         type: String,
-        required: function(){return !this.userId}
+        required: function(){return this.type === 'N' && !this.userId}
     },
     userId: {
         type: String,
-        required: function(){return !this.userEmail} 
+        required: function(){return this.type === 'N' && !this.userEmail} 
     },
     triggerPrice: Number,
 },{

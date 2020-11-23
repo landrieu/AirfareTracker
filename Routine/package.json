@@ -4,17 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node index.js"
+    "test": "mocha --require @babel/register",
+    "start": "babel-node index.js A"
   },
   "author": "Lio",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/node": "^7.12.6",
-    "@babel/preset-env": "^7.12.1"
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
   },
   "dependencies": {
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "request": "^2.88.2"
   }
 }

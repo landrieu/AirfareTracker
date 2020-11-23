@@ -7,6 +7,7 @@ import { User } from '../database/models/User';
 
 import {validateNewTracker} from '../services/validation/tracker';
 import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
+import {FrequentTrackerOccurrences} from '../services/constants'
 
 
 module.exports = {
@@ -43,6 +44,7 @@ module.exports = {
         createTracker: async (_, tracker, {auth}) => {
             //const user = await VerifyAuthentication(auth);
             //console.log(tracker);
+            tracker = Object.assign({isActive: true,  type: 'N'}, tracker);
             const { errors, valid } = validateNewTracker(tracker);
             if (!valid) throw new UserInputError('Error', { errors });
 
@@ -50,7 +52,7 @@ module.exports = {
                 tracker.userId = await User.findOne({email: tracker.userEmail}, {userId: '1'}).userId;
             }
 
-            const newTracker = new Tracker(Object.assign({}, tracker, {isActive: true}));
+            const newTracker = new Tracker(tracker);
 
             try{
                 //Save tracker
@@ -62,6 +64,22 @@ module.exports = {
                 }
                 
                 return savedTracker;
+            }catch(error){
+                console.log(error);
+            }
+        },
+        async createFrequentTracker(_, tracker){
+            //Check if the user is an admin
+            tracker.occurrences = tracker.occurrences || FrequentTrackerOccurrences;
+            tracker = Object.assign({isActive: true, type: 'F'}, tracker);
+            const { errors, valid } = await validateNewTracker(tracker);
+            if (!valid) throw new UserInputError('Error', { errors });
+
+            const newTracker = new Tracker(tracker);
+
+            try{
+                //Save tracker
+                return newTracker.save();                
             }catch(error){
                 console.log(error);
             }

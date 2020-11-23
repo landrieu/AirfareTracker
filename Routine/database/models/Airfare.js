@@ -16,7 +16,8 @@ const AirfareSchema = mongoose.Schema({
     range: Number, //max-min
     nbResults: Number,
     source: String,
-    trackerId: ObjectID
+    trackerId: ObjectID,
+    occurrence: Object
 },{
     timestamps: true
 });

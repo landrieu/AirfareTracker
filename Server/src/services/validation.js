@@ -24,17 +24,19 @@ export class FormValidator {
         this.errors = [];
     }
 
-    execute(){
+    async execute(){
         this.requiredFields();
 
         this.valueFields();
 
         if(this.additionalValidations){
             for(let v of this.additionalValidations){
-                if(typeof v === 'function') v(this.form, this.errors);
+                if(typeof v === 'function'){
+                    if(isAsync(v)) await v(this.form, this.errors);
+                    else v(this.form, this.errors);
+                } 
             }
         }
-
         return this.valid();
     }
 
@@ -82,3 +84,18 @@ export class FormValidator {
         }
     }
 };
+
+
+function isAsync (func) {
+    const string = func.toString().trim();
+
+    return !!(
+        // native
+        string.match(/^async /) ||
+        // babel (this may change, but hey...)
+        string.match(/return _ref[^\.]*\.apply/)
+        // insert your other dirty transpiler check
+
+        // there are other more complex situations that maybe require you to check the return line for a *promise*
+    );
+}

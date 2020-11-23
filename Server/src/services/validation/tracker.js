@@ -1,24 +1,61 @@
+import { tracker } from '../../typeDefs/tracker';
+import { Airport } from '../../database/models/Airport';
+
 import { FormValidator } from '../validation';
 
-export const validateNewTracker = (tracker) => {
+const NTrackerValidators = () => {
     const rFields = {
         from:       {type: 'string'},
         to:         {type: 'string'},
         startDates: {type: 'object', condition: (tr) => tr.type === 'N'},
         endDates:   {type: 'object', condition: (tr) => tr.type === 'N'},
         type:       {type: 'string'},
-        pattern:    {type: 'object', condition: (tr) => tr.type === 'F'},
     };
 
     const vFields = {
         startDates: {min: new Date()},
         endDates:   {min: new Date()},
-        type:       {possibleValues: ['N', 'F']},
+        type:       {possibleValues: ['N']},
     }
 
-    let trackerValidator = new FormValidator(tracker, rFields, vFields, validateDates, endDatesAreAfterStartDates);
-    let { valid, errors } = trackerValidator.execute();
-    
+    const additionnalValidators = [validateDates, endDatesAreAfterStartDates, airportsExist];
+
+    return [rFields, vFields, additionnalValidators];
+};
+
+const FTrackerValidators = () => {
+    const rFields = {
+        from:         {type: 'string'},
+        to:           {type: 'string'},
+        type:         {type: 'string'},
+        occurrences:  {type: 'object', condition: (tr) => tr.type === 'F'},
+    };
+
+    const vFields = {
+        startDates: {min: new Date()},
+        endDates:   {min: new Date()},
+        type:       {possibleValues: ['F']},
+    }
+
+    const additionnalValidators = [airportsExist];
+
+    return [rFields, vFields, additionnalValidators];
+};
+
+export const validateNewTracker = async (tracker) => {
+    let rFields, vFields, additionnalValidators;
+
+    if(tracker.type === 'N'){
+        [rFields, vFields, additionnalValidators] = NTrackerValidators();
+    }else if (tracker.type ==="F"){
+        [rFields, vFields, additionnalValidators] = FTrackerValidators();
+    }else{
+        return {valid: false, errors: ["Tracker type unknow"]};
+    }
+
+    let trackerValidator = new FormValidator(tracker, rFields, vFields, ...additionnalValidators);
+    let { valid, errors } = await trackerValidator.execute();
+
     return { valid, errors};
 
     //Check if the dates are in the future, and end dates > start dates    
@@ -26,6 +63,14 @@ export const validateNewTracker = (tracker) => {
 
     //Tracker.findOne({iataCode: tracker.from})
     //Check if from and to (iataCodes) are valid
+};
+
+const airportsExist = async (tracker, errors) => {
+    let fromAirport = await Airport.findOne({iataCode: tracker.from});
+    if(!fromAirport) errors.push(`The airport: ${tracker.from} does not exist.`);
+
+    let toAirport = await Airport.findOne({iataCode: tracker.to});
+    if(!toAirport) errors.push(`The airport: ${tracker.to} does not exist.`);
 };
 
 const validateDates = (tracker, errors) => {
