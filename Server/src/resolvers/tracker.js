@@ -85,7 +85,7 @@ module.exports = {
             }
         },
         deleteTracker: async (_, {trackerId}, {auth}) => {
-            const user = await VerifyAuthentication(auth);
+            //const user = await VerifyAuthentication(auth);
 
             try{
                 //Remove the tracker

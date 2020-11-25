@@ -66,6 +66,23 @@ export const rangeDate = (startDate, endDate) => {
     return [date, time]
 }
 
+export const listPossibleDates = (startDates, endDates) => {
+    return startDates.map(startDate => endDates.map(endDate => {startDate, endDate}))
+    .reduce((acc, val) => [...acc, ...val], []);
+}
+
+export const formatDate = (date, format = 'YYYYMMDD', separator = '-') => {
+    let dateF = breakDownDate(new Date(date));
+
+    if(format === 'YYYYMMDD'){
+        return `${dateF.year}${separator}${dateF.month}${separator}${dateF.day}`;
+    }else if(format === 'DDMMYYYY'){
+        return `${dateF.day}${separator}${dateF.month}${separator}${dateF.year}`;
+    }else{
+        return date;
+    }
+}
+
 /**
  * Convert an array to an object, by default the id is the object key
  * @param {Array[Object]} arr 

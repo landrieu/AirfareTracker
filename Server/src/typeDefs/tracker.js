@@ -23,9 +23,11 @@ export const tracker = gql`
         startDates: [GraphQLDate]
         endDates: [GraphQLDate]
         isActive: Boolean,
+        type: String,
         userId: String,
         isAlertEnabled: Boolean,
         triggerPrice: Int,
+        sources: [String]
         alertEmail: String
         createdAt: GraphQLDate!
         occurrences:  [FrequentT]
@@ -59,7 +61,7 @@ export const tracker = gql`
 
     extend type Mutation {
         createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate], type: String!): Tracker
-        createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence]): Tracker
+        createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence], sources: [String]): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): TrackerPayLoad
     }

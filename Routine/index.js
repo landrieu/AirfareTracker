@@ -1,10 +1,10 @@
 import { mongo } from './database';
 import { Tracker } from './database/models/Tracker';
 import { Airfare } from './database/models/Airfare';
-import DateHelper from './helpers/date';
+import { formatDate } from './helpers/date';
 
 
-import sources from './sources';
+import sourcesAvailable from './sources';
 
 const connectDb = async () => {
     let success = true;
@@ -27,14 +27,27 @@ const fetchActiveTrackers = (type) => {
     return Tracker.find({isActive: true, ...type});
 };
 
-const listPossibleDates = (startDates, endDates) => {
-    return startDates.map(startDate => endDates.map(endDate => {startDate, endDate}))
-    .reduce((acc, val) => [...acc, ...val], []);
+const selectSources = (tracker) => {
+    let sources = [];
+
+    if(!tracker.sources || tracker.sources.length === 0) return sourcesAvailable;
+
+    tracker.sources.forEach(source => {
+        for(let i = 0; i < sourcesAvailable.length; i++){
+            if(sourcesAvailable[i].id === source || sourcesAvailable[i].name === source){
+                sources.push(sourcesAvailable[i]);
+                break;
+            }
+        }
+    });
+
+    return sources;
 }
 
 const scanTrackerWithSources = (tracker) => {
     let srcPromises = [], res;
 
+    let sources = selectSources(tracker);
     for(let i = 0; i < sources.length; i++){
         res = sources[i].scan(tracker);
         srcPromises.push(res);
@@ -54,7 +67,7 @@ const scanTracker = async (tracker) => {
     if(tracker.type === 'F'){
         dates = defineDatesFrequentTracker(tracker.occurrences);
     }else{
-        dates = listPossibleDates(tracker.startDates, tracker.endDates);
+        dates = DateHelper.listPossibleDates(tracker.startDates, tracker.endDates);
     }
 
     for(let i = 0; i < dates.length; i++){
@@ -66,6 +79,7 @@ const scanTracker = async (tracker) => {
     //Check is the tracker is valid dates etc, if not disable the tracker or not
 
     //Select the results to save or all of them
+    console.log(resultsBySource);
 
     return resultsBySource;
 };
@@ -116,8 +130,8 @@ export const defineDatesFrequentTracker = (occurences) => {
         startDelay = occurrence.interval;
         lengthTrip = occurrence.length;
 
-        let startDate = defineDate(today, startDelay);
-        let endDate = defineDate(startDate, lengthTrip);
+        let startDate = formatDate(defineDate(today, startDelay), 'YYYYMMDD');
+        let endDate = formatDate(defineDate(startDate, lengthTrip), 'YYYYMMDD');
 
         if(!startDate || !endDate) continue;
         dates.push({startDate, endDate, occurrence});
@@ -170,15 +184,21 @@ const scanAllTrackers = async (trackers) => {
     return scanResults;
 };
 
-const startRoutine = async(type) => {
+const startRoutine = async(dbFilter) => {
+    console.log(`Start routine, type: ${dbFilter.type}`);
+    console.time('Routine execution');
+
     let success = await connectDb();
     if(!success) return false;
 
-    let activeTrackers = await fetchActiveTrackers(type);
+    let activeTrackers = await fetchActiveTrackers(dbFilter);
     console.log(`Number of active trackers ${activeTrackers.length}`);
+
     if(activeTrackers.length === 0){
         console.log('No active trackers, exit!');
-        return disconnectDb();
+        await disconnectDb();
+        console.timeEnd('Routine execution');
+        return;
     } 
 
     let scanResults = await scanAllTrackers(activeTrackers.slice(0,2));
@@ -186,20 +206,22 @@ const startRoutine = async(type) => {
     let saveResults = await saveAirfares(scanResults);
     console.log(`Number of airfares saved ${saveResults.length}.`);
 
-    disconnectDb();
+    await disconnectDb();
+    console.timeEnd('Routine execution');
 };
 
 function start(){
     const args = process.argv.slice(2);
-    console.log(`Arguments ${args}`);
+    //console.log(`Arguments ${args}`);
 
     /*Three possible types 
-      - A - Scan all the trackers
+      - A - Scan all the trackers - Default value
       - N - Scan the trackers saved by users
       - F - Scan the frequent routes
     */
     const possibleTypes = ['A', 'N', 'F'];
     let type = (args[0] && (possibleTypes.indexOf(args[0]) !== -1)) ? args[0] : 'F';
+
     startRoutine(['N', 'F'].indexOf(type) !== - 1 ? {type}: {});
 }
 

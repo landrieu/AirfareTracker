@@ -30,6 +30,8 @@ const trackerSchema = mongoose.Schema({
     type: String,
     //If type is F
     occurrences: Array,
+    //Array of sources' ids
+    sources: Array,
     isAlertActive: Boolean,
     //If the user is not registered, alert is send to the user email
     userEmail: {
