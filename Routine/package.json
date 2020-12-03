@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require @babel/register",
-    "start": "babel-node index.js A"
+    "start": "babel-node index.js"
   },
   "author": "Lio",
   "license": "ISC",

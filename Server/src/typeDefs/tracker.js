@@ -53,14 +53,14 @@ export const tracker = gql`
     }
 
     extend type Query {
-        trackers: [Tracker]
+        trackers(type: String): [Tracker]
         trackersByUser(userId: String): [Tracker]
         trackersNumber(userId: String): Number
         trackersActiveNumber(userId: String): Number
     }
 
     extend type Mutation {
-        createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate], type: String!): Tracker
+        createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate]): Tracker
         createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence], sources: [String]): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): TrackerPayLoad

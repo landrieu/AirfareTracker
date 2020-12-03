@@ -32,11 +32,12 @@ export class FormValidator {
         if(this.additionalValidations){
             for(let v of this.additionalValidations){
                 if(typeof v === 'function'){
-                    if(isAsync(v)) await v(this.form, this.errors);
+                    if(isAsync(v)) await v(this.form, this.errors)
                     else v(this.form, this.errors);
                 } 
             }
         }
+
         return this.valid();
     }
 

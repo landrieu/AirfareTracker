@@ -1,4 +1,4 @@
-import { tracker } from '../../typeDefs/tracker';
+//import { tracker } from '../../typeDefs/tracker';
 import { Airport } from '../../database/models/Airport';
 
 import { FormValidator } from '../validation';
@@ -52,7 +52,7 @@ export const validateNewTracker = async (tracker) => {
     }else{
         return {valid: false, errors: ["Tracker type unknow"]};
     }
-
+    
     let trackerValidator = new FormValidator(tracker, rFields, vFields, ...additionnalValidators);
     let { valid, errors } = await trackerValidator.execute();
 

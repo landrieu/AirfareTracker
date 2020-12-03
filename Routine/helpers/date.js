@@ -11,14 +11,15 @@ export const breakDownDate = (date) => {
 
     let hour = date.getHours()
     let min = date.getMinutes()
-
+    let sec = date.getSeconds()
 
     if(month < 10) month = '0' + month
     if(day < 10) day = '0' + day
     if(hour < 10) hour = '0' + hour
     if(min < 10) min = '0' + min
+    if(sec < 10) sec = '0' + sec
 
-    return {year, month, day, hour, min}
+    return {year, month, day, hour, min, sec}
 }
 
 /**
@@ -67,7 +68,7 @@ export const rangeDate = (startDate, endDate) => {
 }
 
 export const listPossibleDates = (startDates, endDates) => {
-    return startDates.map(startDate => endDates.map(endDate => {startDate, endDate}))
+    return startDates.map(startDate => endDates.map(endDate => ({startDate, endDate})))
     .reduce((acc, val) => [...acc, ...val], []);
 }
 
@@ -78,6 +79,8 @@ export const formatDate = (date, format = 'YYYYMMDD', separator = '-') => {
         return `${dateF.year}${separator}${dateF.month}${separator}${dateF.day}`;
     }else if(format === 'DDMMYYYY'){
         return `${dateF.day}${separator}${dateF.month}${separator}${dateF.year}`;
+    }else if(format === 'DDMMYYYYHHMMSS'){
+        return `${dateF.day}${separator}${dateF.month}${separator}${dateF.year} ${dateF.hour}:${dateF.min}:${dateF.sec}`;
     }else{
         return date;
     }

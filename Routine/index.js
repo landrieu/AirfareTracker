@@ -1,8 +1,7 @@
 import { mongo } from './database';
 import { Tracker } from './database/models/Tracker';
 import { Airfare } from './database/models/Airfare';
-import { formatDate } from './helpers/date';
-
+import { formatDate, listPossibleDates } from './helpers/date';
 
 import sourcesAvailable from './sources';
 
@@ -60,6 +59,34 @@ const scanTrackerWithSources = (tracker) => {
     })
 };
 
+const scanAllSources = (tracker) => {
+    let promises = [];
+    let sources = selectSources(tracker);
+
+    for(let i = 0; i < sources.length; i++){
+        promises.push(sources[i].scan(tracker));
+    }
+
+    return promises;
+};
+
+const isTrackerDatesInFuture = (dates) => {
+    for(let i = 0; i < dates.length; i++){
+        if(new Date() > new Date(dates[i])){
+            return false;
+        }
+    }
+    return true;
+};
+
+const disableTracker = (tracker) => {
+    return Tracker.findOneAndUpdate(
+        {_id: tracker._id}, 
+        {$set: {isActive: false}}, 
+        {useFindAndModify: false}
+    );
+};
+
 const scanTracker = async (tracker) => {
     let resultsBySource = [];
     let airfares, dates;
@@ -67,19 +94,36 @@ const scanTracker = async (tracker) => {
     if(tracker.type === 'F'){
         dates = defineDatesFrequentTracker(tracker.occurrences);
     }else{
-        dates = DateHelper.listPossibleDates(tracker.startDates, tracker.endDates);
+        if(!isTrackerDatesInFuture(tracker.startDates)){
+            //Disable tracker
+            await disableTracker();
+            return [];
+        }
+        dates = listPossibleDates(tracker.startDates, tracker.endDates);
     }
 
-    for(let i = 0; i < dates.length; i++){
+    /*for(let i = 0; i < dates.length; i++){
         //trackerDates = {startDate: dates[i].startDate, endDate: dates[i].endDate};
         airfares = await scanTrackerWithSources(Object.assign({}, tracker._doc, dates[i]));
         resultsBySource.push(...airfares);
+    }*/
+
+    /**
+     * Second option
+     * Must return a promise all
+     */
+    let allPromises = [];
+    for(let i = 0; i < dates.length; i++){
+        //trackerDates = {startDate: dates[i].startDate, endDate: dates[i].endDate};
+        allPromises.push(...scanAllSources(Object.assign({}, tracker._doc, dates[i])));
     }
+
+    return Promise.all(allPromises).then(airfares => airfares.filter(airfare => airfare));
 
     //Check is the tracker is valid dates etc, if not disable the tracker or not
 
     //Select the results to save or all of them
-    console.log(resultsBySource);
+    //console.log(resultsBySource);
 
     return resultsBySource;
 };
@@ -185,6 +229,7 @@ const scanAllTrackers = async (trackers) => {
 };
 
 const startRoutine = async(dbFilter) => {
+    console.log(`Date: ${formatDate(new Date(), 'DDMMYYYYHHMMSS')}`);
     console.log(`Start routine, type: ${dbFilter.type}`);
     console.time('Routine execution');
 
@@ -201,7 +246,7 @@ const startRoutine = async(dbFilter) => {
         return;
     } 
 
-    let scanResults = await scanAllTrackers(activeTrackers.slice(0,2));
+    let scanResults = await scanAllTrackers(activeTrackers);
 
     let saveResults = await saveAirfares(scanResults);
     console.log(`Number of airfares saved ${saveResults.length}.`);
@@ -210,8 +255,21 @@ const startRoutine = async(dbFilter) => {
     console.timeEnd('Routine execution');
 };
 
+function eFlags(args){
+    let flags = {};
+    for(let i = 0; i < args.length; i++){
+        if(/^-/.test(args[i]) && args[i + 1]){
+            flags[args[i].replace('-', '')] = args[i + 1];
+            i++;
+        }
+    }
+    return flags;
+}
+
 function start(){
     const args = process.argv.slice(2);
+    const flags = eFlags(args);
+    const tFlag = flags.t || '';
     //console.log(`Arguments ${args}`);
 
     /*Three possible types 
@@ -220,7 +278,7 @@ function start(){
       - F - Scan the frequent routes
     */
     const possibleTypes = ['A', 'N', 'F'];
-    let type = (args[0] && (possibleTypes.indexOf(args[0]) !== -1)) ? args[0] : 'F';
+    let type = (tFlag && (possibleTypes.indexOf(tFlag) !== -1)) ? tFlag : 'F';
 
     startRoutine(['N', 'F'].indexOf(type) !== - 1 ? {type}: {});
 }

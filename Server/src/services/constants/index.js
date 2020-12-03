@@ -12,27 +12,27 @@ export const FrequentTrackerOccurrences = [
 ];
 
 /** AUSTRALIA - Local
- * Melbourne - Sydney
- * Brisbane - Sydney
- * Brisbane - Melbourne
- * Adelaide - Melbourne
- * Melbourne - Perth
- * Perth - Sydney
- * Adelaide - Sydney
- * Hobart - Melbourne
+ * Melbourne - Sydney   X
+ * Brisbane - Sydney    X
+ * Brisbane - Melbourne X
+ * Adelaide - Melbourne X
+ * Melbourne - Perth    X
+ * Perth - Sydney       X
+ * Adelaide - Sydney    X
+ * Hobart - Melbourne   X
  */
 
  /** AUSTRALIA - International
-  * Sydney - Los Angeles
-  * Sydney - London
-  * Sydney - Paris
-  * Sydney - Tokyo
-  * Sydney - Beijing
-  * Sydney - Hong Kong
-  * Sydney - Bali
-  * Sydney - Auckland
-  * Syndey - Singapore
-  * Sydney - Rio de Janeiro
+  * Sydney - Los Angeles    X
+  * Sydney - London         X
+  * Sydney - Paris          X
+  * Sydney - Tokyo          X
+  * Sydney - Beijing        X
+  * Sydney - Hong Kong      X
+  * Sydney - Bali           X
+  * Sydney - Auckland       X
+  * Syndey - Singapore      X
+  * Sydney - Rio de Janeiro X
   */
 
  /** AMERICA
