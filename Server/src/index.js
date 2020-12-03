@@ -26,10 +26,10 @@ const server = new ApolloServer({
     // To find out the correct arguments for a specific integration,
     // see the `context` option in the API reference for `apollo-server`:
     // https://www.apollographql.com/docs/apollo-server/api/apollo-server/
-
+    const clientIPAddress = req.connection.remoteAddress;
     // Get the user token from the headers.
     const auth = req.headers.authorization || '';
-    return {auth};
+    return {auth, clientIPAddress};
     /*console.log(req.headers);
     // try to retrieve a user with the token
     //const user = getUser(token);
@@ -62,7 +62,7 @@ const defineRoutes = () => {
         });
       });
     
-    app.use('/ips', ips);
+    //app.use('/ips', ips);
 
     app.listen({ port: 4000 }, () =>
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)

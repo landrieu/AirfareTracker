@@ -34,6 +34,32 @@ export const DataService = {
         .then(result => result.data)
         .then(data => data.userByEmail)
   },
+
+  getFrequentTrackers: () => {
+    return graphClient.query({
+      query: gql`
+      query ($type: String){
+        trackers(type: $type) {
+          id
+          sources
+          to{
+            iataCode
+            city
+          }
+          from{
+            iataCode
+            city
+          }  
+        }
+      }
+      `,
+      variables: {
+        type: 'F'
+      }
+    })
+      .then(result => result.data)
+      .then(data => data.trackers)
+  },
   /*getJobsWithSearchTerm: (searchTerm) => {
     return graphClient.query({
       query: gql`

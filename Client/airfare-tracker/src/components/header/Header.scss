@@ -2,7 +2,7 @@
 @import '../../variables.scss';
 
 #header{
-    height: 60px;
+    height: 70px;
     background-color: $primary;
     width: 100%;
     color: $base-white;
@@ -11,6 +11,17 @@
     font-size: 1.4rem;
     padding-left: 10px;
     box-sizing: border-box;
+    border-bottom: 1px solid white;
+    display: inline-flex;
+    justify-content: space-between;
 
+    #header-title{
+        font-size: 28px;
+        margin-left: 20px;
+    }
 
+    #header-list{
+        display: inline-flex;
+        font-size: 15px;
+    }
 }

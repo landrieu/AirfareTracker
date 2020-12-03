@@ -21,9 +21,9 @@ module.exports = {
         },
         trackersNumber: (_, {userId}) => {
             if(userId){
-                return Tracker.count({userId});
+                return Tracker.count({userId}).then(res => ({n: res}));
             }else{
-                return Tracker.countDocuments();
+                return Tracker.countDocuments().then(res => ({n: res}));
             }
         },
         trackersActiveNumber: (_, {userId}) => {

@@ -18,3 +18,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a{
+  color: white;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #ccc;
+}
+
+a:active {
+  text-decoration: underline;
+}

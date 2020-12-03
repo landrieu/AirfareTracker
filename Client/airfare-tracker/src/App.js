@@ -1,11 +1,15 @@
 import logo from './logo.svg';
 import React, {useState, useEffect, useCallback} from 'react';
+import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams } from "react-router-dom";
 import {DataService} from './services/dataService';
-import {Header} from './components/header/Header'
+import {Header} from './components/header/Header';
+import {Login} from './components/login/Login';
+import {Register} from './components/login/Login';
+import {Home} from './components/home/Home';
 
 import './App.css';
 
-function App() {
+export default function App() {
   useEffect(() => {
     // Fetch
     console.log('HELLO');
@@ -13,10 +17,40 @@ function App() {
     DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
       console.log(res);
     });
+
+    DataService.getFrequentTrackers().then((res) => {
+      console.log(res);
+    });
+
+    DataService.getUserInfo().then(res => {
+      console.log(res);
+    })
   }, [])
 
   return (
-    <div className="App">
+    <Router>
+    <div>
+      <Header />
+
+      <Switch>
+        <Route path="/register">
+          <Login />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </div>
+  </Router>
+    
+  );
+}
+
+/**
+ * <div className="App">
       <Header />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -33,7 +67,4 @@ function App() {
         </a>
       </header>
     </div>
-  );
-}
-
-export default App;
+ */
