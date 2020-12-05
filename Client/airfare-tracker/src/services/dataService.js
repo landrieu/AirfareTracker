@@ -60,69 +60,28 @@ export const DataService = {
       .then(result => result.data)
       .then(data => data.trackers)
   },
-  /*getJobsWithSearchTerm: (searchTerm) => {
-    return graphClient.query({
-      query: gql`
-      query ($searchTerm: String){
-        jobs(name: $searchTerm) {
-          id,
-          name,
-          start,
-          end,
-          contact {
-            id
+  getUserInfo: () => {
+    return graphClient.mutate({
+      mutation: gql`
+      mutation {
+        createIP{
+          success
+          closestAirport{
             name
+            city
+            iataCode
+            distance
           }
-        }
-      }
-      `,
-      variables: {
-        searchTerm: searchTerm
-      }
-    })
-      .then(result => result.data)
-      .then(data => data.jobs)
-  },
-
-  getAllActivitiesAllocations: () => {
-    return graphClient.query({
-      query: gql`
-      query {
-        activityAllocations{
-          resource {
-            id
+          mostITrackers{
+            from{
+              city
+            iataCode
             name
-          },
-          activity{
-            name,
-            start,
-            end
-          }
-        }
-      }
-      `
-    })
-      .then(result => result.data)
-      .then(data => data.activityAllocations.map(x => Object.assign({}, x, { type: 'activity' })))
-  },
-
-  getAllJobsAllocations: () => {
-    return graphClient.query({
-      query: gql`
-      query {
-        jobAllocations {
-          resource {
-            id
-            name
-          },
-          job{
-            id,
-            name,
-            start,
-            end,
-            contact {
-              id
-              name
+            }
+            to{
+              name 
+              city
+              iataCode
             }
           }
         }
@@ -130,8 +89,8 @@ export const DataService = {
       `
     })
       .then(result => result.data)
-      .then(data => data.jobAllocations.map(x => Object.assign({}, x, { type: 'job' })))
-  },*/
+      .then(data => data ? data.createIP : null)
+  },
 
   //
   //  Call to the REST API

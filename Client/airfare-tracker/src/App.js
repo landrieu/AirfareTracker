@@ -14,7 +14,7 @@ export default function App() {
     // Fetch
     console.log('HELLO');
     //DataService.postIP();
-    DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
+    /*DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
       console.log(res);
     });
 
@@ -24,7 +24,7 @@ export default function App() {
 
     DataService.getUserInfo().then(res => {
       console.log(res);
-    })
+    })*/
   }, [])
 
   return (

@@ -1,6 +1,10 @@
-const airportResolver =  require('../resolvers/airport');
+const airportResolver = require('../resolvers/airport');
+const trackerResolver = require('../resolvers/tracker');
+
+import { getTrackers } from '../services/data/tracker';
 
 const EARTH_RADIUS = 6371; // Radius of the earth in km
+const NB_TRACKERS = 6;
 
 export const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 	let R = EARTH_RADIUS; 
@@ -49,4 +53,41 @@ export const getClosestAirport = async (userIPInfo) => {
 	return closestAirport;
 };
 
+/**
+ * Get the most interesting trackers (closest airports from the user)
+ * @param {Object} userIPInfo 
+ */
+export const getMostITrackers = async (userIPInfo) => { 
+	const {latitude, longitude} = /*{latitude: 1.290270, longitude: 103.851959};//*/userIPInfo;
+	let distanceA, distanceB, trackers = [];
 
+	try{
+		//Retrive airports from the database, only medium and large ones 
+		let fields = {};
+		let query = {};
+
+		const filter = { $and: [{ type : "F" }, { isActive: true }] };
+        trackers = await getTrackers(filter, query)
+
+		let distanceFromA, distanceFromB, distanceToA, distanceToB;
+
+		trackers.sort((aTracker, bTracker) => {
+			distanceFromA = getDistanceFromLatLonInKm(latitude, longitude, aTracker.airportInfoFrom[0].latitude, aTracker.airportInfoFrom[0].longitude);
+			distanceToA = getDistanceFromLatLonInKm(latitude, longitude, aTracker.airportInfoTo[0].latitude, aTracker.airportInfoTo[0].longitude);
+			
+			
+			distanceFromB = getDistanceFromLatLonInKm(latitude, longitude, bTracker.airportInfoFrom[0].latitude, bTracker.airportInfoFrom[0].longitude);
+			distanceToB = getDistanceFromLatLonInKm(latitude, longitude, bTracker.airportInfoTo[0].latitude, bTracker.airportInfoTo[0].longitude);
+			
+			distanceA = distanceFromA < distanceToA ? distanceFromA : distanceToA;
+			distanceB = distanceFromB < distanceToB ? distanceFromB : distanceToB;
+
+			return distanceA - distanceB;
+		})
+		
+	}catch(error){
+		console.log("Error:", error);
+	}
+
+	return trackers.slice(0, NB_TRACKERS);
+};

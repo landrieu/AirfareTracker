@@ -4,7 +4,7 @@
   "description": "AirTracker server",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require @babel/register",
+    "test": "mocha --timeout 20000 --require @babel/register",
     "start": "nodemon --exec babel-node src/index.js"
   },
   "author": "Lio",
