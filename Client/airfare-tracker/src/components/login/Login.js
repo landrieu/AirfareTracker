@@ -5,7 +5,7 @@ export const Login = (props) => {
     return(
         <div id="login">
             <div id="register-form">
-                <div id="register-title">Register</div>
+                <div id="register-title">Login</div>
                 <div id="register-fields">
                     <div id="register-email">
                         <input type="text" placeholder="email"/>

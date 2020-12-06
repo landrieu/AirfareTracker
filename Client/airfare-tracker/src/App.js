@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams 
 import {DataService} from './services/dataService';
 import {Header} from './components/header/Header';
 import {Login} from './components/login/Login';
-import {Register} from './components/login/Login';
+import {Register} from './components/register/Register';
 import {Home} from './components/home/Home';
 
 import './App.css';
@@ -34,7 +34,7 @@ export default function App() {
 
       <Switch>
         <Route path="/register">
-          <Login />
+          <Register />
         </Route>
         <Route path="/login">
           <Login />

@@ -90,11 +90,11 @@
     background-size: cover;
     /* min-height: 500px; */
     height: 300px;
-    width: 600px;
+    width: 33%;
     /* background-attachment: fixed; */
     background-position: center;
-    /* background-repeat: no-repeat; */
-    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: contain;
     position: absolute;
     bottom: 0;z-index: 1;
     }

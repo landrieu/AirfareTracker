@@ -4,9 +4,53 @@
 #home{
     color: white;
     background-color: $primary;
-    background-image: url(../../assets/images/world.svg);
-    background-position: center;
-    background-size: cover;
-    min-height: calc(100vh - 70px);
-    width: 100%;
+
+    #home-frequent-routes{
+        background-image: url(../../assets/images/world.svg);
+        background-position: center;
+        background-size: cover;
+        min-height: calc(100vh - 70px);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-direction: column;
+    }
+
+    #home-info{
+        padding: 50px 0;
+        height: 330px;
+        display: flex;
+        align-items: center;
+
+        #home-info-container{
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            .home-info-card{
+                width: 350px;
+                height: 200px;
+                padding: 10px;
+                background-color: white;
+                display: flex;
+                justify-content: space-evenly;
+                flex-direction: column;
+            
+
+                .top img{
+                    max-height: 60px;
+                }
+                .bottom{
+                    color: $primary;
+                    padding: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
 }
+

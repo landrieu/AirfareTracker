@@ -1,0 +1,101 @@
+@import '../../variables.scss';
+
+#register{
+    color: white;
+    background-color: $primary;
+    background-position: center;
+    background-size: cover;
+    min-height: calc(100vh - 70px);
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+
+    #register-form{
+        width: 450px;
+        margin: auto;
+        z-index: 2;
+    
+        #register-title{
+            border-bottom: 1px solid white;
+            font-size: 19px;
+            margin-bottom: 20px;
+        }
+        #register-fields{
+            width: 300px;
+            margin: auto;
+    
+            div{
+                margin-top: 10px;
+            }
+    
+            input{
+                font-family: 'Bellota';
+                width: 100%;
+                background-color: unset;
+                font-size: 16px;
+                height: 40px;
+                border: 0;
+                border-bottom: 1px solid white;
+                color: white;
+                padding: 0;
+                transition: border-bottom 1s;
+    
+                &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                    color: white;
+                    opacity: 1; /* Firefox */
+                }
+                  
+                &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+                    color: white;
+                }
+                  
+                &::-ms-input-placeholder { /* Microsoft Edge */
+                    color: white;
+                }
+    
+                &:active, &:focus{
+                    border-bottom: 1px solid #777;
+                }
+            }
+        }
+    
+        #register-button{
+            margin-top: 50px;
+    
+            button{
+                width: 120px;
+                height: 45px;
+                background-color: #060325;
+                color: white;
+                border: 1px solid white;
+                border-radius: 1px;
+                opacity: 0.6;
+                font-family: 'Bellota';
+                font-size: 18px;
+                margin: auto;
+                display: block;
+                cursor: pointer;
+                transition: opacity 1s;
+    
+                &:hover{
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    #register-plane{
+        background-image: url(../../assets/images/plane_1.svg);
+        background-size: cover;
+        /* min-height: 500px; */
+        height: 300px;
+        width: 33%;
+        /* background-attachment: fixed; */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        position: absolute;
+        bottom: 0;z-index: 1;
+    }
+}

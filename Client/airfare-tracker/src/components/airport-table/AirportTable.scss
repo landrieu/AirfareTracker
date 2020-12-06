@@ -1,10 +1,13 @@
 @import '../../variables.scss';
 
 #airport-table{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
     #nearest-airport{
         display: flex;
         margin: 15px auto;
-        width: 90%;
         align-items: center;
         #letters-slide{
             height: 33px;

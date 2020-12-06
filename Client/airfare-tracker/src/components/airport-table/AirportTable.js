@@ -3,7 +3,6 @@ import './AirportTable.scss';
 import {AirportTableCase} from './airport-table-case/AirportTableCase';
 
 export const AirportTable = (props) => {
-    
 
     return(
         <div id="airport-table">
