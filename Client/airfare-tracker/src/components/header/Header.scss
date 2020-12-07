@@ -21,7 +21,21 @@
     }
 
     #header-list{
-        display: inline-flex;
+        /*display: inline-flex;*/
         font-size: 15px;
+        margin: 0 40px;
+        width: 310px;
+
+        li{
+            margin: 0 5px;
+        }
+
+        .left{
+            float: left;
+        }
+
+        .right{
+            float: right;
+        }
     }
 }

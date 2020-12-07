@@ -118,7 +118,9 @@ const scanTracker = async (tracker) => {
         allPromises.push(...scanAllSources(Object.assign({}, tracker._doc, dates[i])));
     }
 
-    return Promise.all(allPromises).then(airfares => airfares.filter(airfare => airfare));
+    return Promise.all(allPromises)
+        .then(airfares => airfares.filter(airfare => airfare))
+        .then(airfares => airfares.map(res => Object.assign({trackerId: tracker._id}, res)));
 
     //Check is the tracker is valid dates etc, if not disable the tracker or not
 

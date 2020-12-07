@@ -8,11 +8,16 @@ const AirfareSchema = mongoose.Schema({
     to: {type: String, required: true},
     startDate: Date,
     endDate: Date,
-    minPrice: Number,
     //Based on the 20 best prices
+    minPrice: Number,
+    maxPrice: Number,
     medianPrice: Number,
     averagePrice: Number,
-    trackerId: ObjectID
+    range: Number, //max-min
+    nbResults: Number,
+    source: String,
+    trackerId: ObjectID,
+    occurrence: Object
 },{
     timestamps: true
 });

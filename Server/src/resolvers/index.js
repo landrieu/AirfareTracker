@@ -21,10 +21,12 @@ const { mergeResolvers } = require('@graphql-tools/merge');
 import userResolver from './user';
 import trackerResolver from './tracker';
 import ipResolver from './ip';
+import airfareResolver from './airfare';
 import scalars from './scalars';
 
 const resolversArray = [
   userResolver,
+  airfareResolver,
   trackerResolver,
   ipResolver,
   scalars

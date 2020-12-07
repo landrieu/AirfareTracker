@@ -1,0 +1,4 @@
+const appData = {
+    frequentRoutes: [],
+    trackerCreationForm: {}
+}

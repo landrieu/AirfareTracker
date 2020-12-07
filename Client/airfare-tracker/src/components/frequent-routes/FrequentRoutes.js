@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {LineChart} from '../charts/line-chart/LineChart';
 
 import './FrequentRoutes.scss'
 
 export const FrequentRoutes = (props) => {
+    const [sliderXPosition, setSliderXPosition] = useState(0);
+    //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
     const data = [{
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: 
@@ -43,13 +45,25 @@ export const FrequentRoutes = (props) => {
             borderWidth: 2
         }]
     }];
+
+    function clickArrow(e, direction){
+        e.preventDefault();
+        console.log(`DIR${direction}`);
+        let stepSize = (100 / 6) * 2;
+        if(direction === 'right') stepSize = -stepSize;
+        setSliderXPosition(sliderXPosition + stepSize);
+        //sliderStyle.transform = sliderXPosition + stepSize;
+    }
+
     return(
         <div id="home-frequent">
-            <div id="left-arrow">
+            <div id="left-arrow" onClick={(e) => clickArrow(e, 'left')}>
                 <img src="./icons/arrow_left.svg"></img>
             </div>
             <div id="section-1">
-                <div id="section-2">
+                <div id="section-1-left-gradient"></div>
+                <div id="section-1-right-gradient"></div>
+                <div id="section-2" style={{transform: `translateX(${sliderXPosition}%)`}}>
                     <div className="card">
                         <div className="card-container">
                             <div className="top">From Barcelona to Paris</div>
@@ -79,7 +93,7 @@ export const FrequentRoutes = (props) => {
                     <div className="card"> F</div>
                 </div>
             </div>
-            <div id="right-arrow">
+            <div id="right-arrow" onClick={(e) => clickArrow(e, 'right')}>
                 <img src="./icons/arrow_left.svg"></img>
             </div>
         </div>

@@ -25,6 +25,14 @@ export default function App() {
     DataService.getUserInfo().then(res => {
       console.log(res);
     })*/
+
+    DataService.getAirfaresByTracker("5fc764073dc2322234c4f5a1").then(res => {
+      console.log(res);
+    });
+
+    /*DataService.getAirfareNumber().then(res => {
+      console.log(res.n);
+    });*/
   }, [])
 
   return (

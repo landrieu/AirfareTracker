@@ -1,16 +1,5 @@
 import { gql } from 'apollo-server-express';
 
-import {
-    graphql,
-    GraphQLObjectType,
-    GraphQLSchema,
-  } from 'graphql';
-import {
-    GraphQLDate,
-    GraphQLTime,
-    GraphQLDateTime
-  } from 'graphql-iso-date';
-
 export const tracker = gql`
 
     scalar Date
@@ -31,6 +20,7 @@ export const tracker = gql`
         alertEmail: String
         createdAt: GraphQLDate!
         occurrences:  [FrequentT]
+        airfares: [Airfare]
     }
 
     type TrackerPayLoad {
@@ -57,6 +47,7 @@ export const tracker = gql`
         trackersByUser(userId: String): [Tracker]
         trackersNumber(userId: String): Number
         trackersActiveNumber(userId: String): Number
+        trackersRandom: [Tracker]
     }
 
     extend type Mutation {

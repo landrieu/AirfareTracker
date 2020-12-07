@@ -3,6 +3,7 @@ import {VerifyAuthentication} from '../services/authentication';
 import { ObjectID } from 'mongodb';
 import { Tracker } from '../database/models/Tracker';
 import { Airport } from '../database/models/Airport';
+import { Airfare } from '../database/models/Airfare';
 import { User } from '../database/models/User';
 
 import {validateNewTracker} from '../services/validation/tracker';
@@ -33,6 +34,17 @@ module.exports = {
             }
 
             return Tracker.count(query);
+        },
+        trackersRandom: (_, {type}) => {
+            
+            return Tracker.aggregate([
+                { $sample: { size: 2 } } 
+            ]);
+            //for(let i )
+            /*return Tracker.aggregate([
+                { $match: { _id: { $nin: randomDocs.map(doc => doc._id) } } },
+                { $sample: { size: 10 } } 
+            ]);*/
         }
     },
     Mutation: {
@@ -130,6 +142,9 @@ module.exports = {
         },
         to(tracker) {
             return Airport.findOne({"iataCode": tracker.to});
+        },
+        airfares(tracker){
+            return Airfare.find({"trackerId": tracker._id});
         }
     }
 }

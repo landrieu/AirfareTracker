@@ -6,14 +6,14 @@
     align-items: center;
 
     #left-arrow{
-        left: 33px;
+        left: 35px;
         img{
             transform: rotate(180deg);
         }
     }
 
     #right-arrow{
-        right: 33px;
+        right: 35px;
     }
 
     #left-arrow, #right-arrow{
@@ -37,9 +37,26 @@
     }
 
     #section-1{
+        #section-1-left-gradient, #section-1-right-gradient{
+            position: absolute;
+            width: 100px;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #section-1-left-gradient{
+            left: 0;
+            background-image: linear-gradient(to right, $primary 0%, #060325e6 40%, transparent 100%);
+        }
+
+        #section-1-right-gradient{
+            right: 0;
+            background-image: linear-gradient(to left, $primary 0%,  #060325e6  40%, transparent 100%);
+        }
+
         position: relative;
         
-        width: 90%;
+        width: 88%;
         margin: auto;
         height: 380px;
         /*background-color: red;*/
@@ -49,6 +66,7 @@
         #section-2{
             position: absolute;
             width: 300%;
+            transition: transform 1s;
             .card{
                 width: calc(100% / 6);
                 display: inline-block;

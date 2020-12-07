@@ -2,6 +2,8 @@ import ApolloClient from 'apollo-boost';
 import gql from 'graphql-tag';
 import Axios from 'axios';
 
+import {AirfareDataService} from './data/airfare'
+
 const graphClient = new ApolloClient({
   uri: 'http://localhost:4000/graphql'
 });
@@ -107,5 +109,5 @@ export const DataService = {
       });
   },
 
-  
+  ...AirfareDataService({graphClient})
 }
