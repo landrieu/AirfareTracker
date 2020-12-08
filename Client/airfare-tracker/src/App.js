@@ -1,13 +1,15 @@
 import logo from './logo.svg';
 import React, {useState, useEffect, useCallback} from 'react';
 import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams } from "react-router-dom";
-import {DataService} from './services/dataService';
-import {Header} from './components/header/Header';
-import {Login} from './components/login/Login';
-import {Register} from './components/register/Register';
-import {Home} from './components/home/Home';
+import { DataService } from './services/dataService';
+import { Header } from './components/header/Header';
+import { Login } from './components/login/Login';
+import { Register } from './components/register/Register';
+import { SetTracker } from './components/set-tracker/SetTracker';
+import { Home } from './components/home/Home';
 
 import './App.css';
+import { from } from 'apollo-boost';
 
 export default function App() {
   useEffect(() => {
@@ -26,9 +28,13 @@ export default function App() {
       console.log(res);
     })*/
 
-    DataService.getAirfaresByTracker("5fc764073dc2322234c4f5a1").then(res => {
+    /*DataService.getUserWithEmail("lio23@hotmail.fr").then(res => {
       console.log(res);
-    });
+    });*/
+
+    /*DataService.getAirfaresByTracker("5fc764073dc2322234c4f5a1").then(res => {
+      console.log(res);
+    });*/
 
     /*DataService.getAirfareNumber().then(res => {
       console.log(res.n);
@@ -46,6 +52,9 @@ export default function App() {
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/set-tracker">
+          <SetTracker />
         </Route>
         <Route path="/">
           <Home />

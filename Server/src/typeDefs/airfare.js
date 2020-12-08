@@ -16,7 +16,8 @@ export const airfare = gql`
         nbResults: Int,
         source: String,
         trackerId: ID,
-        occurrence: [FrequentT]
+        occurrence: FrequentT,
+        createdAt: GraphQLDate
     }
 
     extend type Query {

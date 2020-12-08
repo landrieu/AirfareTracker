@@ -9,6 +9,7 @@ import { User } from '../database/models/User';
 import {validateNewTracker} from '../services/validation/tracker';
 import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
 import {FrequentTrackerOccurrences} from '../services/constants'
+import { airfare } from '../typeDefs/airfare';
 
 
 module.exports = {
@@ -36,7 +37,6 @@ module.exports = {
             return Tracker.count(query);
         },
         trackersRandom: (_, {type}) => {
-            
             return Tracker.aggregate([
                 { $sample: { size: 2 } } 
             ]);
@@ -143,8 +143,19 @@ module.exports = {
         to(tracker) {
             return Airport.findOne({"iataCode": tracker.to});
         },
-        airfares(tracker){
-            return Airfare.find({"trackerId": tracker._id});
+        async airfares(tracker){
+            let airfares = await Airfare.find({"trackerId": tracker._id});
+
+            let airfaresPerOccurence = airfares.reduce((acc, cur) => {
+                let id = `${cur.occurrence.interval}${cur.occurrence.length}`;
+                if(acc[id]) acc[id].push(cur)
+                else acc[id] = [cur]
+                return acc;
+            }, {});
+
+            
+            console.log(airfaresPerOccurence)
+            return airfares;
         }
     }
 }

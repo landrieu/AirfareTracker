@@ -8,14 +8,20 @@
     #nearest-airport{
         display: flex;
         margin: 15px auto;
-        align-items: center;
-        #letters-slide{
-            height: 33px;
-            width: 500px;
-            display: flex;
-            justify-content: center;
+        /*align-items: center;*/
 
-            
+
+        #nearest-airport-info{
+            #letters-slide{
+                height: 33px;
+                width: 500px;
+                display: flex;
+                justify-content: center;
+            }
+        }
+        
+        #nearest-airport-desc{
+            transition: display 1s;
         }
     }
 }

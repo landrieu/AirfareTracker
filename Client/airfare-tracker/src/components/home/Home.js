@@ -47,7 +47,7 @@ export const Home = (props) => {
         })*/
 
         setTimeout(() => {
-            setNearestAirport({city: 'LOS ANGELES'});
+            setNearestAirport({city: 'Los Angeles', name: 'Airport of Los Angeles', iataCode: 'LAX'});
         },1000);
         // returned function will be called on component unmount 
         return () => {
