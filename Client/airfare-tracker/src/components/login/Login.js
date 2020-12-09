@@ -1,20 +1,52 @@
-import React from 'react';
-import './Login.scss'
+import React, { useState } from 'react';
+import { DataService } from '../../services/dataService';
+import './Login.scss';
 
 export const Login = (props) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [emailError, setEmailError] = useState('');
+
+    function validateLogin(){
+        //Email validation
+        if(email !== '4564'){
+            setEmailError('RRRO')
+        }
+        //Password validation
+        //if(data.pass)
+    }
+
+    async function onSubmit(e){
+        console.log('SUBMIT');
+        //Validate  
+        validateLogin({})
+
+        try{
+            //Send request
+            console.log(email, password)
+            let auth = await DataService.loginUser({email, password});
+            console.log(auth);
+        }catch (error) {
+            //Unexpected error
+            console.log(error);
+        }
+    }
+
     return(
         <div id="login">
             <div id="register-form">
                 <div id="register-title">Login</div>
                 <div id="register-fields">
                     <div id="register-email">
-                        <input type="text" placeholder="email"/>
+                        <input type="text" placeholder="email" onChange={(e) => setEmail(e.currentTarget.value)} value={email}/>
+                        {emailError && <span className="error-message">{emailError}</span>}
                     </div>
                     <div id="register-password">
-                        <input type="password" placeholder="password"/>
+                        <input type="password" placeholder="password" onChange={(e) => setPassword(e.currentTarget.value)} value={password}/>
                     </div>
                 </div>
-                <div id="register-button">
+                <div id="register-button" onClick={(e) => onSubmit(e)}>
                     <button><div>Submit</div></button>
                 </div>
             </div>

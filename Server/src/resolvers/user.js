@@ -5,7 +5,45 @@ import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
 import {GenerateToken} from '../services/authentication';
 
-import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
+import {UserInputError, /*AuthenticationError, */ValidationError} from 'apollo-server';
+
+class Error{
+    constructor(type, message){
+        this.type = type;
+        this.message = message;
+        this.success = false;
+    }
+}
+
+class AuthenticationError extends Error{
+    constructor(message, errors){
+        super("AUTHENTICATION_ERROR", message)
+        this.errors = errors;
+    }
+}
+
+class AuthenticationSuccess{
+    constructor(id, user, token){
+        this.success = true;
+        this.id = id;
+        this.user = user;
+        this.token = token;
+    }
+}
+
+class OperationError extends Error{
+    constructor(message, operationType){
+        super("OPERATION_ERROR", message);
+        this.operationType = operationType;
+    }
+}
+
+class OperationSuccess{
+    constructor(resource){
+        this.success = true;
+    }
+}
+
 
 const roles = {
     admin: "ADMIN",
@@ -64,12 +102,13 @@ module.exports = {
 
             // check if that user already exists.
             const user = await User.findOne({email});
-            if (!user) throw new AuthenticationError('User not found!');
+            if (!user) return new AuthenticationError('User not found!');
 
             const match = await bcrypt.compare(password, user.password);
-            if (!match) throw new AuthenticationError('Wrong password!');
-
+            if(!match) return new AuthenticationError('', [{target: "password", message: "Wrong password"}]);
+            
             const token = GenerateToken(user); // generate a token if no erros.
+            return new AuthenticationSuccess(user._id, user._doc, `Bearer ${token}`);
             return {
                 id: user._id, // set an id
                 user: user._doc, // spread the user info (email, created at, etc)
@@ -110,6 +149,16 @@ module.exports = {
          */
         trackers(user) {
             return Tracker.find({"_id": {"$in": user.trackers}});
-        }
+        },
+    },
+
+    LoginResult: {
+        __resolveType(obj, context, info){
+            if(obj.token){
+                return 'Authentication';
+            }
+    
+            return 'AuthenticationError';
+        },
     }
 }

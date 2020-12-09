@@ -16,6 +16,7 @@ export const user = gql`
     }
 
     type Authentication {
+        success: Boolean
         id: ID!
         token: String!
         user: User!
@@ -31,9 +32,28 @@ export const user = gql`
         userByEmail(email: String): User
     }
 
+    type AuthenticationError{
+        success: Boolean
+        message: String
+        errors: [Error]
+    }
+
+    type UserInputError{
+        success: Boolean
+        message: String
+        errors: [Error]
+    }
+
+    type Error{
+        target: String
+        message: String
+    }
+
+    union LoginResult = Authentication | AuthenticationError | UserInputError
+
     extend type Mutation {
         createUser(email: String!, password: String!): User!
-        loginUser(email: String!, password: String!): Authentication!
+        loginUser(email: String!, password: String!): LoginResult!
         updateLastConnection(userId: String!): OperationResult!
         deleteUser(userId: String!): OperationResult!
     }
