@@ -8,7 +8,7 @@ export const Autocomplete = (props) => {
     
     const [activeSuggestion, setActiveSuggestion] = useState(0);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [userInput, setUserInput] = useState('');
+    //const [userInput, setUserInput] = useState('');
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
     function handlerClickOutside(){
@@ -27,7 +27,7 @@ export const Autocomplete = (props) => {
         setFilteredSuggestions(filteredSuggestions);
         setActiveSuggestion(0);
         setShowSuggestions(true);
-        setUserInput(userInput);
+        props.setUserInput(userInput);
     }
 
     function onKeyDown(e){
@@ -35,7 +35,7 @@ export const Autocomplete = (props) => {
         if(e.keyCode === 13){
             setActiveSuggestion(0);
             setShowSuggestions(false);
-            setUserInput(filteredSuggestions[activeSuggestion].city);
+            props.setUserInput(filteredSuggestions[activeSuggestion].city);
         //Up arrow
         }else if(e.keyCode === 38){
             if(activeSuggestion === 0) return;
@@ -51,7 +51,7 @@ export const Autocomplete = (props) => {
         setActiveSuggestion(0);
         setFilteredSuggestions([]);
         setShowSuggestions(false);
-        setUserInput(e.currentTarget.innerText);
+        props.setUserInput(e.currentTarget.innerText);
     }
 
     function getAutocompleteID(){
@@ -60,8 +60,8 @@ export const Autocomplete = (props) => {
 
     return(
         <div id={"autocomplete-" + getAutocompleteID()} className="autocomplete" ref={ref}>
-            <input type="text" placeholder={props.placeholder} onChange={(e) => onChange(e)} onKeyDown={(e) => onKeyDown(e)} value={userInput}/>
-            {showSuggestions && userInput && 
+            <input type="text" placeholder={props.placeholder} onChange={(e) => onChange(e)} onKeyDown={(e) => onKeyDown(e)} value={props.userInput}/>
+            {showSuggestions && props.userInput && 
             <SuggestionList suggestions={filteredSuggestions} activeSuggestion={activeSuggestion} onClick={onClick}/>}
         </div>       
     )

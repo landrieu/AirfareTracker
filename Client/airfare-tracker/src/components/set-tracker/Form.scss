@@ -1,0 +1,118 @@
+@import '../../variables.scss';
+
+input{
+    font-family: 'Bellota';
+    width: 100%;
+    background-color: unset;
+    font-size: 16px;
+    height: 32px;
+    border: 0;
+    border-bottom: 1px solid white;
+    color: white;
+    padding: 0;
+    transition: border-bottom 1s;
+
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: white;
+        opacity: 1; /* Firefox */
+    }
+      
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: white;
+    }
+      
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: white;
+    }
+
+    &:active, &:focus{
+        border-bottom: 1px solid #777;
+    }
+}
+
+button{
+    width: 120px;
+    height: 45px;
+    background-color: #060325;
+    color: white;
+    border: 1px solid white;
+    border-radius: 1px;
+    opacity: 0.6;
+    font-family: 'Bellota';
+    font-size: 18px;
+    margin: auto;
+    display: block;
+    cursor: pointer;
+    transition: opacity 1s;
+
+    &:hover{
+        opacity: 1;
+    }
+}
+
+#form{
+    min-width: 400px;
+    max-width: 600px;
+    width: 70%;
+    margin: 10px auto;
+
+    #form-progression{
+        margin: 15px auto;
+        width: 100%;
+        height: 6px;
+        background-color: $base-light-blue;
+        overflow: hidden;
+
+        #form-progression-bar{
+            height: 6px;
+            background-color: white;
+            transition: width 1s;
+        }
+    }
+
+    #form-steps{
+        margin: 10px auto;
+        min-height: calc(100vh - 120px);
+        position: relative;
+
+        #form-steps-container{
+            position: absolute;
+            width: 100%;
+            height: 200%;
+
+            .step{
+                position: relative;
+                width: 100%;
+                transform: translateY(800px);
+                transition: transform 1s, background-color 0.5s;
+
+                &.visible{
+
+                }
+
+                &.visible:not(.active){
+                    padding: 10px 4px;
+                }
+                &.visible:not(.active):hover{
+                    background-color: $base-light-blue;
+                    
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .button{
+        margin-top: 25px;
+    }
+
+    .inline-fields{
+        display: inline-flex;
+        width: 100%;
+        justify-content: space-between;
+    
+        div{
+            width: 45%;
+        }
+    }
+}

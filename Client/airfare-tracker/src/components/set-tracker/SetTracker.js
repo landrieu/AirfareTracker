@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Autocomplete } from '../others/Autocomplete';
+import { Form } from './Form';
 
 import './SetTracker.scss';
 
@@ -26,7 +27,14 @@ export const SetTracker = (props) => {
 
     return(
         <div id="set-tracker">
-            <div id="set-tracker-form" className={canCreateTracker ? '' : 'disabled'}>
+            <Form />
+        </div>
+    )
+}
+
+
+/**
+ * <div id="set-tracker-form" className={canCreateTracker ? '' : 'disabled'}>
                 <div id="set-tracker-title">Create a tracker</div>
                 <div id="set-tracker-fields">
                     <div className="inline-fields">
@@ -55,6 +63,4 @@ export const SetTracker = (props) => {
                     <button><div>Submit</div></button>
                 </div>
             </div>
-        </div>
-    )
-}
+ */

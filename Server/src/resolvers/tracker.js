@@ -145,16 +145,24 @@ module.exports = {
         },
         async airfares(tracker){
             let airfares = await Airfare.find({"trackerId": tracker._id});
-
+            let map = {};
+            // id, data, position
             let airfaresPerOccurence = airfares.reduce((acc, cur) => {
                 let id = `${cur.occurrence.interval}${cur.occurrence.length}`;
-                if(acc[id]) acc[id].push(cur)
-                else acc[id] = [cur]
+                if(map[id] === undefined){
+                    acc.push([cur]);
+                    map[id] = acc.length - 1;
+                }else{
+                    acc[map[id]].push(cur);
+                }
+                //if(acc[id]) acc[id].push(cur)
+                //else acc[id] = [cur]
                 return acc;
-            }, {});
+            }, []).map(airfares => airfares.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
 
             
-            console.log(airfaresPerOccurence)
+            console.log(airfaresPerOccurence);
+            console.log(map)
             return airfares;
         }
     }

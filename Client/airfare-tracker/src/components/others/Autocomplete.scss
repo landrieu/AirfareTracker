@@ -2,6 +2,7 @@
 
 .autocomplete{
     position: relative;
+    z-index: 5;
 
     .suggestions-list{
         position: absolute;
@@ -12,8 +13,7 @@
         font-size: 0.9rem;
 
         li{
-            padding-left: 2px;
-            padding-top: 3px;
+            padding: 3px;
 
             &.active, &:hover{
                 background-color: $base-light-gray;
