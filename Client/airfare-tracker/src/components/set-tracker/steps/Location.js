@@ -31,7 +31,7 @@ export const Location = (props) => {
                 <Autocomplete ID='to' placeholder='To' suggestions={props.airports}  userInput={to} setUserInput={setTo}/>
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
-                <button>Submit</button>
+                <button>{props.buttonLabel}</button>
             </div>
         </div>
     );

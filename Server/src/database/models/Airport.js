@@ -17,7 +17,8 @@ const AirportSchema = mongoose.Schema({
     localCode: String,
     gpsCode: String,
     elevation: Number,
-    isSingleAirport: Boolean
+    isSingleAirport: Boolean,
+    coordinates: Array
 },{
     timestamps: true
 });

@@ -23,7 +23,7 @@ export const Dates = (props) => {
                 </div>
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
-                <button>Submit</button>
+                <button>{props.buttonLabel}</button>
             </div>
         </div>
     );

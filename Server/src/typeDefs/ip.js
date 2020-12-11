@@ -22,7 +22,7 @@ export const ip = gql`
     type IPResult{
         success: Boolean
         closestAirport: Airport
-        mostITrackers: [Tracker]
+        closestTrackers: [Tracker]
     }
 
     extend type Mutation {

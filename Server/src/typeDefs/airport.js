@@ -18,5 +18,6 @@ export const airport = gql`
         gpsCode: String
         elevation: Int
         isSingleAirport: Boolean
+        coordinates: [String]
     }
 `;

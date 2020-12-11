@@ -1,6 +1,7 @@
 //import IP from '../database/models/IP';
 import { renameObjectKey } from '../services/helpers';
-import { getClosestAirport, getMostITrackers } from '../services/geo';
+import { findClosestTrackers, findClosestAirport } from '../services/geo';
+import { randomTrackers } from '../services/data/tracker';
 import { Date } from './scalars';
 const ipModel = require('../database/models/ip');
 
@@ -8,10 +9,22 @@ const request = require('request');
 
 
 const localIPs = ["::ffff:127.0.0.1", "::1"];
+const worldIPs = {
+    /*Aalborg, DK*/         Aalborg: '77.68.202.109',
+    /*Brescia, IT*/         Brescia: '79.48.159.82',
+    /*Washington State, US*/Washington: '52.137.106.143',
+    /*Taipei*/              Taipei: '210.208.255.205',
+    /*Sydney*/              Sydney: '120.18.129.33',
+    /*Dallas*/              Dallas: '107.131.103.142',
+    /*Alexandria*/          Alexandria: '102.40.54.108',
+    /*Jinan*/               Jinan: '111.35.38.197',
+    /*Torino*/              Torino: '46.233.156.79',
+    /*Reserved IP*/         Reserved: '250.133.201.118',
+}
 
 module.exports = {
     Query: {
-        
+            
     },
     Mutation: {
         createIP: async (_, {},{clientIPAddress}) => {
@@ -19,35 +32,33 @@ module.exports = {
             console.log('Check client IP address');
 
             //Simulate external IP
-            clientIPAddress = '120.18.129.33';
-            //Aalborg, DK: '77.68.202.109';
-            //Brescia, IT: '79.48.159.82';
-            //Washington State, US: '52.137.106.143';
-            //Taipei: '210.208.255.205';
-            //Sydney: '120.18.129.33';
-            //Dallas: 107.131.103.142
-            //Alexandria: 102.40.54.108
-            //Jinan: 111.35.38.197
-            //Torino: 46.233.156.79
-            //Reserved IP: 250.133.201.118
+            clientIPAddress = worldIPs.Brescia;
     
             //Check if the IP address is local, and fetch IP details
             let ipDetails = await findIPLocation(clientIPAddress);
-            if(!ipDetails.success || !ipDetails.data || ipDetails.data.status === 'fail') return {success: false};
+            if(!ipDetails.success || !ipDetails.data || ipDetails.data.status === 'fail'){
+                return {
+                    success: false, 
+                    closestAirport: null, 
+                    closestTrackers: randomTrackers(6)
+                };
+            } 
 
             renameObjectKey(ipDetails.data, 'longitude', 'lon');
             renameObjectKey(ipDetails.data, 'latitude', 'lat');
             let ipRecord = new ipModel(Object.assign({}, ipDetails.data, {address: clientIPAddress}));
 
-            let IPInserted = await ipModel.insertIP(ipRecord);
-
-            if(!IPInserted) return {success: false};
-
-            let closestAirport = await getClosestAirport(ipRecord);
-
-            let mostITrackers = []; //await getMostITrackers(ipRecord);
-            console.log(closestAirport);
-            return {success: true, closestAirport, mostITrackers};
+            console.time("Start scanning");
+            let [closestAirport, closestTrackers] = await Promise.all(
+                [findClosestAirport(ipRecord), findClosestTrackers(ipRecord, 6)]
+            );
+            console.timeEnd("Start scanning");
+            //Save IP - Don't wait for the response
+            ipModel.insertIP(ipRecord);
+            //let IPInserted = await ipModel.insertIP(ipRecord);
+            //if(!IPInserted) return {success: false};
+            
+            return {success: true, closestAirport, closestTrackers};
         }
     },
 }

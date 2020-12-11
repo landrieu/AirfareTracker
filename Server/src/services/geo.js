@@ -1,7 +1,10 @@
 const airportResolver = require('../resolvers/airport');
 const trackerResolver = require('../resolvers/tracker');
 
-import { getTrackers } from '../services/data/tracker';
+import { Airport } from '../database/models/Airport';
+import { Tracker } from '../database/models/Tracker';
+import { listFrequentTrackersAirports, findTrackers } from './data/tracker';
+import { closestAirports } from './data/airport';
 
 const EARTH_RADIUS = 6371; // Radius of the earth in km
 const NB_TRACKERS = 6;
@@ -23,6 +26,57 @@ function deg2rad(deg) {
 	return deg * (Math.PI/180)
 }
 
+export const findClosestTrackersAndSort = async(airports, numberAirports) =>{
+	let cTrackers = [];
+	let query;
+	const fields = {_id: 1, from: 1, to: 1};
+	for(let i = 0; i < airports.length; i++){
+		query = {$or: [{"from": airports[i]}, {"to": airports[i]}]}
+		cTrackers.push(...await findTrackers(query, fields))
+		if(cTrackers.length >= numberAirports) break;
+	}
+
+	//Sort out, based on airports
+	cTrackers.sort((a, b) => {
+		let aScoreFrom = airports.indexOf(a.from) !== -1 ? airports.indexOf(a.from) : 100;
+		let aScoreTo   = airports.indexOf(a.to) !== -1 ? airports.indexOf(a.to) : 100;
+		let aScore = aScoreFrom + aScoreTo;
+
+		let bScoreFrom = airports.indexOf(b.from) !== -1 ? airports.indexOf(b.from) : 100;
+		let bScoreTo   = airports.indexOf(b.to) !== -1 ? airports.indexOf(b.to) : 100;
+		let bScore = bScoreFrom + bScoreTo;
+		return aScore - bScore;
+	});
+
+	return cTrackers;
+};
+
+//Get the most interesting trackers (closest airports from the user)
+export const findClosestTrackers = async({longitude, latitude}, numberAirports = NB_TRACKERS) => {
+	return new Promise(async (resolve) => {
+		//List all airports used for trackers
+		let tAirports = await listFrequentTrackersAirports();
+		//Then find the closest airports
+		let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, {iataCode: {$in: tAirports}});
+		let cAirportsIata = cAirports.map(a => a.iataCode);
+		//Then return trackers with the closest airports
+		let cTrackers = await findClosestTrackersAndSort(cAirportsIata, numberAirports);
+
+		resolve(cTrackers.slice(0, numberAirports));
+	})
+};
+
+export const findClosestAirport = (userInfo) => {
+	return new Promise(async (resolve) => {
+		let cAirports = await closestAirports(userInfo, 1, {iataCode: {$ne: ''}});
+		resolve(cAirports[0]);
+	});
+}
+
+/**
+ * Deprecated, use findClosestAirport instead
+ * @param {*} userIPInfo 
+ */
 export const getClosestAirport = async (userIPInfo) => {
 	const {latitude, longitude} = userIPInfo;
 	let closestAirport = null;
@@ -53,41 +107,4 @@ export const getClosestAirport = async (userIPInfo) => {
 	return closestAirport;
 };
 
-/**
- * Get the most interesting trackers (closest airports from the user)
- * @param {Object} userIPInfo 
- */
-export const getMostITrackers = async (userIPInfo) => { 
-	const {latitude, longitude} = /*{latitude: 1.290270, longitude: 103.851959};//*/userIPInfo;
-	let distanceA, distanceB, trackers = [];
 
-	try{
-		//Retrive airports from the database, only medium and large ones 
-		let fields = {};
-		let query = {};
-
-		const filter = { $and: [{ type : "F" }, { isActive: true }] };
-        trackers = await getTrackers(filter, query)
-
-		let distanceFromA, distanceFromB, distanceToA, distanceToB;
-
-		trackers.sort((aTracker, bTracker) => {
-			distanceFromA = getDistanceFromLatLonInKm(latitude, longitude, aTracker.airportInfoFrom[0].latitude, aTracker.airportInfoFrom[0].longitude);
-			distanceToA = getDistanceFromLatLonInKm(latitude, longitude, aTracker.airportInfoTo[0].latitude, aTracker.airportInfoTo[0].longitude);
-			
-			
-			distanceFromB = getDistanceFromLatLonInKm(latitude, longitude, bTracker.airportInfoFrom[0].latitude, bTracker.airportInfoFrom[0].longitude);
-			distanceToB = getDistanceFromLatLonInKm(latitude, longitude, bTracker.airportInfoTo[0].latitude, bTracker.airportInfoTo[0].longitude);
-			
-			distanceA = distanceFromA < distanceToA ? distanceFromA : distanceToA;
-			distanceB = distanceFromB < distanceToB ? distanceFromB : distanceToB;
-
-			return distanceA - distanceB;
-		})
-		
-	}catch(error){
-		console.log("Error:", error);
-	}
-
-	return trackers.slice(0, NB_TRACKERS);
-};

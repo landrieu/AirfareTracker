@@ -30,7 +30,7 @@ export const Email = (props) => {
                 <span>{emailError}</span>
             </div>
             <div id="email-button" className="button" onClick={onSubmit}>
-                <button>Submit</button>
+                <button>{props.buttonLabel}</button>
             </div>
         </div>
     );

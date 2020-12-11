@@ -4,7 +4,7 @@ const ipModel = require('../database/models/ip');
 const request = require('request');
 
 import {renameObjectKey} from '../services/helpers';
-import {getClosestAirport} from '../services/geo';
+import {findClosestAirport} from '../services/geo';
 
 const localIPs = ["::ffff:127.0.0.1", "::1"];
 
@@ -34,7 +34,7 @@ router.post('/find', async function(req, res) {
 
     if(!IPInserted) return res.json({success: false});
 
-    let closestAirport = await getClosestAirport(ipRecord);
+    let closestAirport = await findClosestAirport(ipRecord);
     console.log(closestAirport);
     res.json({success: true, closestAirport});
 }); 

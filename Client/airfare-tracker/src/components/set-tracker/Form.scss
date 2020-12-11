@@ -74,6 +74,8 @@ button{
         margin: 10px auto;
         min-height: calc(100vh - 120px);
         position: relative;
+        background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
+        overflow: hidden;
 
         #form-steps-container{
             position: absolute;

@@ -18,7 +18,7 @@ export const Alert = (props) => {
                 <input type="number" placeholder="Price limit"></input>
             </div>
             <div id="alert-button" className="button" onClick={onSubmit}>
-                <button>Submit</button>
+                <button>{props.buttonLabel}</button>
             </div>
         </div>
     );

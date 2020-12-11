@@ -31,9 +31,9 @@ export const Home = (props) => {
         changeCardSize();
         window.addEventListener('resize', changeCardSize.bind(this));
 
-        DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
+        /*DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
             console.log(res);
-          });
+          });*/
         //DataService.postIP();
         /*DataService.getUserWithEmail('lio23@hotmail.fr').then((res) => {
           console.log(res);

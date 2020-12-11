@@ -13,6 +13,7 @@ export const Form = (props) => {
     const [loading, setLoading] = useState(true);
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
+    const [readOnlyForm, setReadOnlyForm] = useState(false);
 
     const airports = [{city: 'Toulouse'}, {city: 'Paris'}, {city: 'Tours'}, {city: 'Toulon'}];
 
@@ -28,7 +29,7 @@ export const Form = (props) => {
         //If registered up to 5
         //Else 2
         setTimeout(() => {
-            setStepSequence(authSequence);
+            setStepSequence(unknSequence);
             setLoading(false);
             setCanCreateTracker(true);
             setActiveStep(0);
@@ -39,6 +40,14 @@ export const Form = (props) => {
             //}, 1000)
         
     }, []);
+
+    function checkTrackerCreation(){
+        //Check if auth or not
+            //Yes, nb trackers created < 5
+                //Set auth Sequence
+            //No, nb tracker < 2
+                //Set unkw sequence
+    }
 
     function isStepActive(stepName){
         return stepName === stepSequence[activeStep];
@@ -61,6 +70,7 @@ export const Form = (props) => {
 
     function submitForm(){
         console.log("DDA");
+        resetForm();
     }
 
     function nextStep(step){
@@ -94,6 +104,15 @@ export const Form = (props) => {
         return style;
     }
 
+    function resetForm(){
+        setEmail('');
+
+        //setStepSequence(authSequence);
+        setLoading(false);
+        //setCanCreateTracker(true);
+        setActiveStep(0);
+    }
+
     function formSteps(){
         return (
             
@@ -110,6 +129,7 @@ export const Form = (props) => {
                         isVisible={isVisible('Email')}
                         email={email}
                         setEmail={setEmail}
+                        buttonLabel={stepSequence.indexOf('Email') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />}
                     <Location 
                         airports={airports} 
@@ -117,6 +137,7 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Location')} 
                         isVisible={isVisible('Location')}
+                        buttonLabel={stepSequence.indexOf('Location') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />
                     <Dates 
                         isActive={isStepActive('Dates')} 
@@ -125,8 +146,16 @@ export const Form = (props) => {
                         isVisible={isVisible('Dates')}
                         departureDates={departureDates}
                         setDepartureDates={setDepartureDates}
+                        buttonLabel={stepSequence.indexOf('Dates') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />
-                    <Alert isActive={isStepActive('Alert')} nextStep={nextStep} stepStyle={stepStyle('Alert')} isVisible={isVisible('Alert')}/>
+                    <Alert 
+                        isActive={isStepActive('Alert')} 
+                        nextStep={nextStep} 
+                        stepStyle={stepStyle('Alert')} 
+                        isVisible={isVisible('Alert')}
+                        buttonLabel={stepSequence.indexOf('Alert') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
+
+                    />
                 </div>
             </div>)
     }
