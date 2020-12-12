@@ -15,7 +15,6 @@ export const Form = (props) => {
     const [activeStep, setActiveStep] = useState(-1);
     const [readOnlyForm, setReadOnlyForm] = useState(false);
 
-    const airports = [{city: 'Toulouse'}, {city: 'Paris'}, {city: 'Tours'}, {city: 'Toulon'}];
 
     const authSequence = ['Location', 'Dates', 'Alert'];
     const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
@@ -35,10 +34,6 @@ export const Form = (props) => {
             setActiveStep(0);
         }, 500);
 
-        //setTimeout(() => {
-        //let airports = 
-            //}, 1000)
-        
     }, []);
 
     function checkTrackerCreation(){
@@ -132,7 +127,6 @@ export const Form = (props) => {
                         buttonLabel={stepSequence.indexOf('Email') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />}
                     <Location 
-                        airports={airports} 
                         isActive={isStepActive('Location')} 
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Location')} 

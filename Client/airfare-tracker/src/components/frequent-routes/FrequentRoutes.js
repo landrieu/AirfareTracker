@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {LineChart} from '../charts/line-chart/LineChart';
+import React, { useEffect, useState } from 'react';
+import { Card } from './elements/Card';
 
 import './FrequentRoutes.scss'
 
@@ -53,7 +53,11 @@ export const FrequentRoutes = (props) => {
         if(direction === 'right') stepSize = -stepSize;
         setSliderXPosition(sliderXPosition + stepSize);
         //sliderStyle.transform = sliderXPosition + stepSize;
-    }
+	}
+	
+	/*useEffect(() =>{
+		console.log('dz', props.trackers)
+	}, [props.trackers]);*/
 
     return(
         <div id="home-frequent">
@@ -64,7 +68,23 @@ export const FrequentRoutes = (props) => {
                 <div id="section-1-left-gradient"></div>
                 <div id="section-1-right-gradient"></div>
                 <div id="section-2" style={{transform: `translateX(${sliderXPosition}%)`}}>
-                    <div className="card">
+				
+                    {props.trackers.map((tracker, index) => {
+						return <Card key={index} index={index} tracker={tracker} data={data[0]}/>
+                    })}
+                    
+                </div>
+            </div>
+            <div id="right-arrow" onClick={(e) => clickArrow(e, 'right')}>
+                <img src="./icons/arrow_left.svg"></img>
+            </div>
+        </div>
+        
+    )
+}
+
+/**
+ * <div className="card">
                         <div className="card-container">
                             <div className="top">From Barcelona to Paris</div>
                             <div className="bottom">
@@ -91,12 +111,4 @@ export const FrequentRoutes = (props) => {
                     <div className="card"> D</div>
                     <div className="card"> E</div>
                     <div className="card"> F</div>
-                </div>
-            </div>
-            <div id="right-arrow" onClick={(e) => clickArrow(e, 'right')}>
-                <img src="./icons/arrow_left.svg"></img>
-            </div>
-        </div>
-        
-    )
-}
+ */

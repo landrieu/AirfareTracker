@@ -5,10 +5,10 @@ const mongoose = require('mongoose');
 //Tracker schema
 const AirportSchema = mongoose.Schema({
     identification: String,
-    name: String,
-    iataCode: String,
+    name: { type: String, text: true },
+    iataCode: { type: String, text: true },
     type: String,
-    city: String,
+    city: { type: String, text: true },
     region: String,
     country: String,
     continent: String,

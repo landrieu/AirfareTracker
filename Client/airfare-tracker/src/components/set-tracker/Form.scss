@@ -54,7 +54,7 @@ button{
     min-width: 400px;
     max-width: 600px;
     width: 70%;
-    margin: 10px auto;
+    margin: 10px auto 0 auto;
 
     #form-progression{
         margin: 15px auto;
@@ -71,8 +71,7 @@ button{
     }
 
     #form-steps{
-        margin: 10px auto;
-        min-height: calc(100vh - 120px);
+        min-height: calc(100vh - 80px);
         position: relative;
         background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
         overflow: hidden;
@@ -113,7 +112,7 @@ button{
         width: 100%;
         justify-content: space-between;
     
-        div{
+        div:nth-child(1){
             width: 45%;
         }
     }

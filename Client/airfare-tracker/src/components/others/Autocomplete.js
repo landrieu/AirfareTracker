@@ -1,3 +1,4 @@
+import { validate } from 'graphql';
 import React, { useEffect, useRef, useState } from 'react';
 import './Autocomplete.scss';
 
@@ -8,26 +9,23 @@ export const Autocomplete = (props) => {
     
     const [activeSuggestion, setActiveSuggestion] = useState(0);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    //const [userInput, setUserInput] = useState('');
-    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
     function handlerClickOutside(){
         setShowSuggestions(false);
-        console.log(filteredSuggestions, props);
-        //setUserInput(filteredSuggestions.length > 0 ? filteredSuggestions[activeSuggestion].city : '');
     }
 
     function onChange(e){
         const userInput = e.currentTarget.value;
 
-        const filteredSuggestions = props.suggestions.filter(suggestion =>
-            suggestion.city.toLowerCase().indexOf(userInput.toLowerCase()) > -1
-        );
-
-        setFilteredSuggestions(filteredSuggestions);
         setActiveSuggestion(0);
         setShowSuggestions(true);
         props.setUserInput(userInput);
+    }
+    
+
+    function onKeyUp(){
+        console.log('KEY UP')
+        props.onChangeSearchTerm(props.userInput);
     }
 
     function onKeyDown(e){
@@ -35,23 +33,22 @@ export const Autocomplete = (props) => {
         if(e.keyCode === 13){
             setActiveSuggestion(0);
             setShowSuggestions(false);
-            props.setUserInput(filteredSuggestions[activeSuggestion].city);
+            props.setUserInput(props.suggestions[activeSuggestion]);
         //Up arrow
         }else if(e.keyCode === 38){
             if(activeSuggestion === 0) return;
             setActiveSuggestion(activeSuggestion - 1);
         //Down arrow
         }else if(e.keyCode === 40){
-            if(activeSuggestion === filteredSuggestions.length - 1) return;
+            if(activeSuggestion === props.suggestions.length - 1) return;
             setActiveSuggestion(activeSuggestion + 1);
         }
     }
 
-    function onClick(e){
+    function onClick(e, value){
         setActiveSuggestion(0);
-        setFilteredSuggestions([]);
         setShowSuggestions(false);
-        props.setUserInput(e.currentTarget.innerText);
+        props.setUserInput(value);
     }
 
     function getAutocompleteID(){
@@ -60,9 +57,21 @@ export const Autocomplete = (props) => {
 
     return(
         <div id={"autocomplete-" + getAutocompleteID()} className="autocomplete" ref={ref}>
-            <input type="text" placeholder={props.placeholder} onChange={(e) => onChange(e)} onKeyDown={(e) => onKeyDown(e)} value={props.userInput}/>
+            <input 
+                type="text" 
+                placeholder={props.placeholder} 
+                onChange={(e) => onChange(e)} 
+                onKeyDown={(e) => onKeyDown(e)} 
+                onKeyUp={(e) => onKeyUp(e)}
+                value={typeof props.userInput === 'string' ? props.userInput : props.userInput.text}
+            />
+            {props.errorMessage && <div>{props.errorMessage}</div>}
             {showSuggestions && props.userInput && 
-            <SuggestionList suggestions={filteredSuggestions} activeSuggestion={activeSuggestion} onClick={onClick}/>}
+            <SuggestionList 
+                suggestions={props.suggestions} 
+                activeSuggestion={activeSuggestion} 
+                onClick={onClick}
+            />}
         </div>       
     )
 }
@@ -74,10 +83,10 @@ export const SuggestionList = (props) => {
             return (
             <li 
                 className={className} 
-                key={suggestion.city}
-                onClick={(e) => props.onClick(e)}
-                >
-                    {suggestion.city}
+                key={suggestion.id}
+                onClick={(e) => props.onClick(e, suggestion)}
+            >
+                    {suggestion.text}
             </li>)
         });
     }

@@ -20,4 +20,15 @@ export const airport = gql`
         isSingleAirport: Boolean
         coordinates: [String]
     }
+
+    type AirportResult {
+        success: Boolean
+        errors: [String]
+        airports: [Airport]
+    }
+
+    extend type Query {
+        airportsBySearchTerm(searchTerm: String): AirportResult
+    }
+
 `;

@@ -1,6 +1,7 @@
 import ApolloClient from 'apollo-boost';
 import Axios from 'axios';
 
+import { AirportDataService } from './data/airportData';
 import { AirfareDataService } from './data/airfareData';
 import { UserDataService } from './data/userData';
 import { TrackerDataService } from './data/trackerData';
@@ -18,5 +19,6 @@ export const DataService = {
   ...IPDataService({graphClient, axiosClient}),
   ...UserDataService({graphClient}),
   ...TrackerDataService({graphClient}),
-  ...AirfareDataService({graphClient})
+  ...AirfareDataService({graphClient}),
+  ...AirportDataService({graphClient})
 }

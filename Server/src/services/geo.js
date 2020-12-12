@@ -1,13 +1,7 @@
-const airportResolver = require('../resolvers/airport');
-const trackerResolver = require('../resolvers/tracker');
-
-import { Airport } from '../database/models/Airport';
-import { Tracker } from '../database/models/Tracker';
 import { listFrequentTrackersAirports, findTrackers } from './data/tracker';
-import { closestAirports } from './data/airport';
+import { closestAirports, airportsWithFilter } from './data/airport';
 
-const EARTH_RADIUS = 6371; // Radius of the earth in km
-const NB_TRACKERS = 6;
+import { NB_TRACKERS, EARTH_RADIUS } from './constants';
 
 export const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 	let R = EARTH_RADIUS; 
@@ -31,7 +25,7 @@ export const findClosestTrackersAndSort = async(airports, numberAirports) =>{
 	let query;
 	const fields = {_id: 1, from: 1, to: 1};
 	for(let i = 0; i < airports.length; i++){
-		query = {$or: [{"from": airports[i]}, {"to": airports[i]}]}
+		query = {$and: [{type: 'F'},{$or: [{"from": airports[i]}, {"to": airports[i]}]}]}
 		cTrackers.push(...await findTrackers(query, fields))
 		if(cTrackers.length >= numberAirports) break;
 	}
@@ -66,10 +60,13 @@ export const findClosestTrackers = async({longitude, latitude}, numberAirports =
 	})
 };
 
-export const findClosestAirport = (userInfo) => {
+export const findClosestAirport = ({longitude, latitude}) => {
 	return new Promise(async (resolve) => {
-		let cAirports = await closestAirports(userInfo, 1, {iataCode: {$ne: ''}});
-		resolve(cAirports[0]);
+		let cAirports = await closestAirports({longitude, latitude}, 1, {iataCode: {$ne: ''}});
+		if(cAirports.length === 0) return resolve(null);
+		let cAirport = cAirports[0];
+		cAirport.distance = getDistanceFromLatLonInKm(latitude, longitude, cAirport.latitude, cAirport.longitude);
+		resolve(cAirport);
 	});
 }
 
@@ -90,7 +87,7 @@ export const getClosestAirport = async (userIPInfo) => {
 			{iataCode:{$ne: ''}}
 		]};
 
-		const bigAirports = await airportResolver.GetAirports(query, fields);
+		const bigAirports = await airportsWithFilter(query, fields);
 		
 		bigAirports.forEach((airport) => {
 			//Compute distance between user and airports

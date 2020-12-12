@@ -67,24 +67,8 @@
             position: absolute;
             width: 300%;
             transition: transform 1s;
-            .card{
-                width: calc(100% / 6);
-                display: inline-block;
-                
-                .card-container{
-                    width: 65%;
-                    margin: auto;
-                    background-color: #201D3A;
-                    border: 1px solid #525254;
-                    .top{
-                        height: 55px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-bottom: 1px solid #525254;
-                    }
-                }
-            }
+            
         }
     }
 }
+

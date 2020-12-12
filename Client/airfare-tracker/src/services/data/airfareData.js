@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export function AirfareDataService(options) {
     return {
         // actual module
-        getAirfaresByTracker: (trackerId) => {
+        airfaresByTrackerId: (trackerId) => {
             return options.graphClient.query({
               query: gql`
               query ($trackerId: String){
@@ -16,7 +16,9 @@ export function AirfareDataService(options) {
                     medianPrice
                     averagePrice
                     range
+                    occurrence{length, interval}
                     trackerId
+                    createdAt
                 }
               }
               `,
@@ -25,7 +27,7 @@ export function AirfareDataService(options) {
               }
             })
               .then(result => result.data)
-              .then(data => data ? data.airfaresByTrackerId : null)
+              .then(data => ({trackerId, airfares: data.airfaresByTrackerId}));
         },
 
         getAirfareNumber: () => {

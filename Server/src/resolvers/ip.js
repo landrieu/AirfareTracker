@@ -27,12 +27,12 @@ module.exports = {
             
     },
     Mutation: {
-        createIP: async (_, {},{clientIPAddress}) => {
+        findIPData: async (_, {},{clientIPAddress}) => {
             console.log('HERE', clientIPAddress);
             console.log('Check client IP address');
 
             //Simulate external IP
-            clientIPAddress = worldIPs.Brescia;
+            clientIPAddress = worldIPs.Dallas;
     
             //Check if the IP address is local, and fetch IP details
             let ipDetails = await findIPLocation(clientIPAddress);

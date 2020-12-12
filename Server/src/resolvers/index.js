@@ -22,11 +22,13 @@ import userResolver from './user';
 import trackerResolver from './tracker';
 import ipResolver from './ip';
 import airfareResolver from './airfare';
+import airportResolver from './airport';
 import scalars from './scalars';
 
 const resolversArray = [
   userResolver,
   airfareResolver,
+  airportResolver,
   trackerResolver,
   ipResolver,
   scalars

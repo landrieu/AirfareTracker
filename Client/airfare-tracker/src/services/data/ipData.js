@@ -6,7 +6,7 @@ export function IPDataService(options) {
             return options.graphClient.mutate({
               mutation: gql`
               mutation {
-                createIP{
+                findIPData{
                   success
                   closestAirport{
                     name
@@ -14,11 +14,12 @@ export function IPDataService(options) {
                     iataCode
                     distance
                   }
-                  mostITrackers{
+                  closestTrackers{
+                    id
                     from{
                       city
-                    iataCode
-                    name
+                      iataCode
+                      name
                     }
                     to{
                       name 
@@ -31,7 +32,7 @@ export function IPDataService(options) {
               `
             })
               .then(result => result.data)
-              .then(data => data ? data.createIP : null)
+              .then(data => data ? data.findIPData : null)
         },
 
         postIP: () => {

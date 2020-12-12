@@ -11,6 +11,10 @@ export const FrequentTrackerOccurrences = [
     {interval: '9m', length: '2w'}
 ];
 
+export const NB_TRACKERS = 6;
+export const EARTH_RADIUS = 6371; // Radius of the earth in km
+
+
 /** AUSTRALIA - Local
  * Melbourne - Sydney   X
  * Brisbane - Sydney    X
