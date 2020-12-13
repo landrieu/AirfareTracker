@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const user = gql`
+export const userTypeDefs = gql`
     type User {
         id: ID!
         email: String!
@@ -30,6 +30,7 @@ export const user = gql`
     extend type Query {
         users: [User!]!
         userByEmail(email: String): User
+        validAuthentication: Boolean
     }
 
     type AuthenticationError{

@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const ip = gql`
-
+export const ipTypeDefs = gql`
     type IP{
         address: String
         country: String

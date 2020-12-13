@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {AUTH_SECRET} from './config';
+import {AUTH_SECRET} from '../config';
 import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
 
 export const GenerateToken = ({id, email}) => {

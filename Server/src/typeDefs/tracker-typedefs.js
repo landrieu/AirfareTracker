@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const tracker = gql`
-
+export const trackerTypeDefs = gql`
     scalar Date
     scalar GraphQLDate
 

@@ -3,7 +3,7 @@ import { ObjectID } from 'mongodb';
 
 import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
-import {GenerateToken} from '../services/authentication';
+import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
 
 import {UserInputError, /*AuthenticationError, */ValidationError} from 'apollo-server';
 
@@ -57,6 +57,15 @@ module.exports = {
         },
         userByEmail: (_, {email}) => {
             return User.findOne({email});
+        },  
+        validAuthentication: async (_, {}, {auth}) => {
+            try {
+                const user = await VerifyAuthentication(auth);
+                return !!user;
+            }catch{
+                //console.log(error.message, error.name)
+                return false;
+            }
         }
     },
     Mutation: {

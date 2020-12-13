@@ -1,4 +1,4 @@
-import {VerifyAuthentication} from '../services/authentication';
+import { VerifyAuthentication } from '../services/helpers/authentication';
 
 import { ObjectID } from 'mongodb';
 import { Tracker } from '../database/models/Tracker';
@@ -6,11 +6,9 @@ import { Airport } from '../database/models/Airport';
 import { Airfare } from '../database/models/Airfare';
 import { User } from '../database/models/User';
 
-import {validateNewTracker} from '../services/validation/tracker';
-import {UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
+import { validateNewTracker } from '../services/form-validation/tracker';
+import { UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
 import {FrequentTrackerOccurrences} from '../services/constants'
-import { airfare } from '../typeDefs/airfare';
-
 
 module.exports = {
     Query: {
@@ -145,6 +143,14 @@ module.exports = {
         },
         async airfares(tracker){
             let airfares = await Airfare.find({"trackerId": tracker._id});
+
+            //Create a map containing all the occurences
+            let occurrencesMap = new Map(airfares.map((airfare) => {
+                return [`${airfare.occurrence.interval}${airfare.occurrence.length}`, airfare.occurrence];
+            }));
+
+            console.log(occurrencesMap)
+            //occurrencesMap.
             /*let map = {};
             // id, data, position
             let airfaresPerOccurence = airfares.reduce((acc, cur) => {

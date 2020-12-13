@@ -1,7 +1,7 @@
-import { listFrequentTrackersAirports, findTrackers } from './data/tracker';
-import { closestAirports, airportsWithFilter } from './data/airport';
+import { listFrequentTrackersAirports, findTrackers } from '../data/tracker';
+import { closestAirports, airportsWithFilter } from '../data/airport';
 
-import { NB_TRACKERS, EARTH_RADIUS } from './constants';
+import { NB_TRACKERS, EARTH_RADIUS } from '../constants';
 
 export const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 	let R = EARTH_RADIUS; 

@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const root = gql`
+export const rootTypeDefs = gql`
   type Query {
       root: String
   }

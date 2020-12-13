@@ -1,6 +1,8 @@
 //const FlexSearch = require("@talaikis/flexsearch");
 import FlexSearch from '@talaikis/flexsearch';
-import { Airport } from '../../database/models/Airport';;
+import { Airport } from '../../database/models/Airport';
+
+import { AIRPORT_TYPES } from '../constants';
 
 let airportSearch;
 
@@ -136,7 +138,7 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
         index.add(airports);
     
         console.time('Flex search');
-        const airportTypes = ['medium_airport', 'large_airport', 'multi_airport'];
+        //const airportTypes = ['medium_airport', 'large_airport', 'multi_airport'];
         let res = index.search({
             query: searchTerm,
             limit: 100,
@@ -144,7 +146,7 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
             depth: 3,
             sort: (a, b) => {
                 //if(airportTypes.indexOf(b.type) !== airportTypes.indexOf(a.type)){
-                    return airportTypes.indexOf(b.type) - airportTypes.indexOf(a.type)
+                    return AIRPORT_TYPES.indexOf(b.type) - AIRPORT_TYPES.indexOf(a.type)
                 //}
             }
         });

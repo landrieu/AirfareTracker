@@ -1,12 +1,10 @@
 //import IP from '../database/models/IP';
-import { renameObjectKey } from '../services/helpers';
-import { findClosestTrackers, findClosestAirport } from '../services/geo';
+import { renameObjectKey } from '../services/helpers/object';
+import { findClosestTrackers, findClosestAirport } from '../services/helpers/geo';
 import { randomTrackers } from '../services/data/tracker';
-import { Date } from './scalars';
+
 const ipModel = require('../database/models/ip');
-
 const request = require('request');
-
 
 const localIPs = ["::ffff:127.0.0.1", "::1"];
 const worldIPs = {

@@ -8,10 +8,14 @@ export const mongo = {
             resolve('OK');
         });*/
 
-        return mongoose.connect(config.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+        return mongoose.connect(config.uri, { 
+            useUnifiedTopology: true, 
+            useNewUrlParser: true, 
+            useCreateIndex: true 
+        });
     },
     disconnect: () => {
-        mongoose.disconnect();
+        return mongoose.disconnect();
     }
 }
 

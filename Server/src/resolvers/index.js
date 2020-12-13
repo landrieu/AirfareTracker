@@ -18,18 +18,18 @@ export const resolvers = {
 }*/
 
 const { mergeResolvers } = require('@graphql-tools/merge');
-import userResolver from './user';
-import trackerResolver from './tracker';
-import ipResolver from './ip';
-import airfareResolver from './airfare';
-import airportResolver from './airport';
-import scalars from './scalars';
+import userResolver from './user-resolver';
+import trackerResolver from './tracker-resolver';
+import ipResolver from './ip-resolver';
+import airfareResolver from './airfare-resolver';
+import airportResolver from './airport-resolver';
+import scalars from './scalars-resolver';
 
 const resolversArray = [
   userResolver,
   airfareResolver,
   airportResolver,
-  trackerResolver,
+  trackerResolver, 
   ipResolver,
   scalars
 ];

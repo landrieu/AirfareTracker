@@ -1,4 +1,7 @@
 import gql from 'graphql-tag';
+import { useState } from 'react';
+
+import { authService } from '../authService';
 
 export function UserDataService(options) {
     return {
@@ -63,6 +66,13 @@ export function UserDataService(options) {
           })
             .then(result => result.data)
             .then(data => data ? data.loginUser : null)
+            .then(userData => {
+                if(userData.success){
+                    authService.storeUserData(userData);
+                }
+                
+                return userData;
+            })
         }
     }
 }

@@ -1,4 +1,4 @@
-import {validateNewTracker} from '../src/services/validation/tracker';
+import {validateNewTracker} from '../src/services/form-validation/tracker';
 import {expect} from 'chai';
 
 describe("Validate form", function() {

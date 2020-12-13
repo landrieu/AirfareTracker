@@ -6,7 +6,6 @@ import { Email } from './steps/Email';
 import { Location } from './steps/Location';
 import { Dates } from './steps/Dates';
 import { Alert } from './steps/Alert';
-import { Autocomplete } from '../others/Autocomplete';
 
 export const Form = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
@@ -14,7 +13,6 @@ export const Form = (props) => {
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
     const [readOnlyForm, setReadOnlyForm] = useState(false);
-
 
     const authSequence = ['Location', 'Dates', 'Alert'];
     const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];

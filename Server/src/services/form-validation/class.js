@@ -12,22 +12,22 @@ export class FormValidator {
     /**
      * 
      * @param {Object} form Object to validate
-     * @param {Object} rConf Required fields configuration
-     * @param {Object} vConf Value fields configuration
+     * @param {Object} requiredFields Required fields configuration
+     * @param {Object} valueFields Value fields configuration
      * @param  {Functions} additionalValidations Additional validations functions to execute
      */
-    constructor(form, rConf, vConf, ...additionalValidations){
+    constructor(form, {requiredFields = {}, valueFields = {}}, ...additionalValidations){
         this.form = form;
-        this.rConf = rConf;
-        this.vConf = vConf;
+        this.requiredFields = requiredFields;
+        this.valueFields = valueFields;
         this.additionalValidations = additionalValidations;
         this.errors = [];
     }
 
     async execute(){
-        this.requiredFields();
+        this.checkRequiredFields();
 
-        this.valueFields();
+        this.checkValueFields();
 
         if(this.additionalValidations){
             for(let v of this.additionalValidations){
@@ -45,9 +45,9 @@ export class FormValidator {
         return { valid: this.errors.length === 0, errors: this.errors };
     }
 
-    requiredFields(){
-        for(let field in this.rConf){
-            let fieldConf = this.rConf[field];
+    checkRequiredFields(){
+        for(let field in this.requiredFields){
+            let fieldConf = this.requiredFields[field];
             let isRequired = (fieldConf.condition && fieldConf.condition(this.form)) 
                           || (!fieldConf.condition);
     
@@ -65,21 +65,21 @@ export class FormValidator {
         }
     }
 
-    typeFields(){
+    checkTypeFields(){
 
     }
 
-    valueFields(){
-        for(let field in this.vConf){
-            let fieldConf = this.vConf[field];
+    checkValueFields(){
+        for(let field in this.valueFields){
+            let params = this.valueFields[field];
             let value = this.form[field];
             if(!value) continue;
 
-            if(fieldConf.minLength && value.length < fieldConf.minLength){
+            if(params.minLength && value.length < params.minLength){
                 this.errors.push(`Length must be greater than ${minLength}`);
-            }else if(fieldConf.maxLength && value.length > fieldConf.maxLength){
+            }else if(params.maxLength && value.length > params.maxLength){
                 this.errors.push(`Length must be lower than ${maxLength}`);
-            }else if(fieldConf.possibleValues && fieldConf.possibleValues.indexOf(value) === -1){
+            }else if(params.possibleValues && params.possibleValues.indexOf(value) === -1){
                 this.errors.push(`The value: '${value}' is not authorized  for ${field}`);
             }
         }

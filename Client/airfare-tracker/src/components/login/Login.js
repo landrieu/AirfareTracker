@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { DataService } from '../../services/dataService';
 import './Login.scss';
 
+import { authService } from '../../services/authService';
+
 export const Login = (props) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('lio23@hotmail.fr');
+    const [password, setPassword] = useState('toulouse');
 
     const [emailError, setEmailError] = useState('');
 
@@ -26,7 +28,10 @@ export const Login = (props) => {
             //Send request
             console.log(email, password)
             let auth = await DataService.loginUser({email, password});
-            console.log(auth);
+            /*console.log(auth);
+            console.log(authService);*/
+            console.log(`Is logged in ${authService.loggedIn()}`);
+            console.log(authService.loadToken());
         }catch (error) {
             //Unexpected error
             console.log(error);

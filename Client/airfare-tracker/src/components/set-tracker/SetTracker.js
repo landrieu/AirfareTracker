@@ -6,7 +6,7 @@ import { Form } from './Form';
 import './SetTracker.scss';
 
 export const SetTracker = (props) => {
-    const [canCreateTracker, setCanCreateTracker] = useState(false);
+    const [canCreateTracker, setCanCreateTracker] = useState(true);
 
     const airports = [{city: 'Toulouse'}, {city: 'Paris'}, {city: 'Tours'}, {city: 'Toulon'}];
 
@@ -16,7 +16,7 @@ export const SetTracker = (props) => {
         //If registered up to 5
         //Else 2
         setTimeout(() => {
-            setCanCreateTracker(true);
+            //setCanCreateTracker(true);
         }, 5000);
 
         //setTimeout(() => {

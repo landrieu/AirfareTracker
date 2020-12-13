@@ -4,6 +4,8 @@ import { resolvers } from './resolvers';
 import { typeDefs } from './typeDefs';
 import { mongo } from './database/index';
 
+import _ from './services/helpers/date';
+
 const bodyParser = require('body-parser')
 const app = express();
 

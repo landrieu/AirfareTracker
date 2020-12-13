@@ -3,8 +3,8 @@ const router = express.Router();
 const ipModel = require('../database/models/ip');
 const request = require('request');
 
-import {renameObjectKey} from '../services/helpers';
-import {findClosestAirport} from '../services/geo';
+import {renameObjectKey} from '../services/helpers/object';
+import {findClosestAirport} from '../services/helpers/geo';
 
 const localIPs = ["::ffff:127.0.0.1", "::1"];
 

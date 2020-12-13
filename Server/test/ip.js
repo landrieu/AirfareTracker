@@ -1,4 +1,4 @@
-import {findClosestTrackers} from '../src/services/geo';
+import {findClosestTrackers} from '../src/services/helpers/geo';
 import {expect} from 'chai';
 import { mongo } from '../src/database/index';
 

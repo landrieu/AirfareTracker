@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const airport = gql`
-
+export const airportTypeDefs = gql`
     type Airport {
         id: ID!
         identification: String

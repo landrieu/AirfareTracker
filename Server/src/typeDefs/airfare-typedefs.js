@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-express';
 
-export const airfare = gql`
-
+export const airfareTypeDefs = gql`
     type Airfare {
         id: ID!
         from: Airport,
@@ -20,9 +19,27 @@ export const airfare = gql`
         createdAt: GraphQLDate
     }
 
+    type AirfareFormatted{
+        from: Airport,
+        to: Airport,
+        minPrice: Float,
+        maxPrice: Float,
+        medianPrice: Float,
+        averagePrice: Float,
+        nbResults: Int,
+        nbAirfares: Int,
+        trackerId: ID,
+        createdAt: GraphQLDate
+    }
+
+    type AirfaresResult{
+        term: String,
+        data: [AirfareFormatted]
+    }
+
     extend type Query {
         airfares: [Airfare]
-        airfaresByTrackerId(trackerId: String): [Airfare]
+        airfaresByTrackerId(trackerId: String): [AirfaresResult]
         airfaresNumber(trackerId: String): Number
     }
 `;

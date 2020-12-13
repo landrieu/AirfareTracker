@@ -8,17 +8,14 @@ export function AirfareDataService(options) {
               query: gql`
               query ($trackerId: String){
                 airfaresByTrackerId(trackerId: $trackerId){
-                    id
-                    startDate
-                    endDate
+                  term
+                  data{
                     minPrice
                     maxPrice
-                    medianPrice
-                    averagePrice
-                    range
-                    occurrence{length, interval}
-                    trackerId
+                    nbResults
+                    nbAirfares
                     createdAt
+                  }
                 }
               }
               `,

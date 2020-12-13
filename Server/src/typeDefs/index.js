@@ -1,9 +1,16 @@
-import {root} from './root';
-import {user} from './user';
-import {tracker} from './tracker';
-import {ip} from './ip';
-import {airport} from './airport';
-import {airfare} from './airfare';
+import {rootTypeDefs} from './root-typedefs';
+import {userTypeDefs} from './user-typedefs';
+import {trackerTypeDefs} from './tracker-typedefs';
+import {ipTypeDefs} from './ip-typedefs';
+import {airportTypeDefs} from './airport-typedefs';
+import {airfareTypeDefs} from './airfare-typedefs';
 
-export const typeDefs = [root, user, tracker, ip, airport, airfare];
+export const typeDefs = [
+    rootTypeDefs, 
+    userTypeDefs,  
+    trackerTypeDefs, 
+    ipTypeDefs, 
+    airportTypeDefs, 
+    airfareTypeDefs
+];
 

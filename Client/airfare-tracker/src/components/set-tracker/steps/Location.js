@@ -53,6 +53,9 @@ export const Location = (props) => {
                     `${airport.name} - ${airport.city} (${airport.iataCode})` :
                     `${airport.city}, ${airport.country} (${airport.iataCode}) - All airports`
             })));
+        }).catch(err => {
+            //Failed to fetch new suggestions
+            console.log(err);
         });
     }
 

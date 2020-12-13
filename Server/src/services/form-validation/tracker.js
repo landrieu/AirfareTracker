@@ -1,10 +1,10 @@
 //import { tracker } from '../../typeDefs/tracker';
 import { Airport } from '../../database/models/Airport';
 
-import { FormValidator } from '../validation';
+import { FormValidator } from './class';
 
 const NTrackerValidators = () => {
-    const rFields = {
+    const requiredFields = {
         from:       {type: 'string'},
         to:         {type: 'string'},
         startDates: {type: 'object', condition: (tr) => tr.type === 'N'},
@@ -12,7 +12,7 @@ const NTrackerValidators = () => {
         type:       {type: 'string'},
     };
 
-    const vFields = {
+    const valueFields = {
         startDates: {min: new Date()},
         endDates:   {min: new Date()},
         type:       {possibleValues: ['N']},
@@ -20,18 +20,18 @@ const NTrackerValidators = () => {
 
     const additionnalValidators = [validateDates, endDatesAreAfterStartDates, airportsExist];
 
-    return [rFields, vFields, additionnalValidators];
+    return [requiredFields, valueFields, additionnalValidators];
 };
 
 const FTrackerValidators = () => {
-    const rFields = {
+    const requiredFields = {
         from:         {type: 'string'},
         to:           {type: 'string'},
         type:         {type: 'string'},
         occurrences:  {type: 'object', condition: (tr) => tr.type === 'F'},
     };
 
-    const vFields = {
+    const valueFields = {
         startDates: {min: new Date()},
         endDates:   {min: new Date()},
         type:       {possibleValues: ['F']},
@@ -39,21 +39,21 @@ const FTrackerValidators = () => {
 
     const additionnalValidators = [airportsExist];
 
-    return [rFields, vFields, additionnalValidators];
+    return [requiredFields, valueFields, additionnalValidators];
 };
 
 export const validateNewTracker = async (tracker) => {
-    let rFields, vFields, additionnalValidators;
+    let requiredFields, valueFields, additionnalValidators;
 
     if(tracker.type === 'N'){
-        [rFields, vFields, additionnalValidators] = NTrackerValidators();
+        [requiredFields, valueFields, additionnalValidators] = NTrackerValidators();
     }else if (tracker.type ==="F"){
-        [rFields, vFields, additionnalValidators] = FTrackerValidators();
+        [requiredFields, valueFields, additionnalValidators] = FTrackerValidators();
     }else{
         return {valid: false, errors: ["Tracker type unknow"]};
     }
     
-    let trackerValidator = new FormValidator(tracker, rFields, vFields, ...additionnalValidators);
+    let trackerValidator = new FormValidator(tracker, {requiredFields, valueFields}, ...additionnalValidators);
     let { valid, errors } = await trackerValidator.execute();
 
     return { valid, errors};
