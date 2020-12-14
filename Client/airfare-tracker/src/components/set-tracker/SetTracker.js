@@ -8,9 +8,6 @@ import './SetTracker.scss';
 export const SetTracker = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(true);
 
-    const airports = [{city: 'Toulouse'}, {city: 'Paris'}, {city: 'Tours'}, {city: 'Toulon'}];
-
-
     useEffect(() => {
         //Check if the user can create a new tracker
         //If registered up to 5

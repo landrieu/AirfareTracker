@@ -24,7 +24,25 @@ export const ipTypeDefs = gql`
         closestTrackers: [Tracker]
     }
 
+    type IPRes{
+        success: Boolean
+        data: IP
+    }
+
+    type IPAirportResult{
+        success: Boolean
+        airport: Airport
+    }
+
+    type IPTrackersResult{
+        success: Boolean
+        trackers: [TrackerShort]
+    }
+
     extend type Mutation {
         findIPData: IPDataResult
+        findIP: IPRes
+        findIPAirport: IPAirportResult
+        findIPTrackers: IPTrackersResult
     }
 `;

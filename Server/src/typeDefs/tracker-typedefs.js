@@ -22,6 +22,12 @@ export const trackerTypeDefs = gql`
         airfares: [Airfare]
     }
 
+    type TrackerShort{
+        id: ID!
+        from: Airport
+        to: Airport
+    }
+
     type TrackerPayLoad {
         success: Boolean
         error: String

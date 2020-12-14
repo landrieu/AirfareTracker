@@ -130,6 +130,14 @@ module.exports = {
             
         }
     },
+    TrackerShort: {
+        from(tracker) {
+            return Airport.findOne({"iataCode": tracker.from});
+        },
+        to(tracker) {
+            return Airport.findOne({"iataCode": tracker.to});
+        }
+    },
     Tracker: {
         /**
          * Return trackers associated to a user

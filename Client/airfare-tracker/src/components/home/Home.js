@@ -67,7 +67,22 @@ export const Home = (props) => {
     }
 
     const retrieveData = useCallback(() => {
-        DataService.getUserInfo().then(res => {
+        DataService.getClosestAirport().then(airport => {
+            setNearestAirport(airport ? airport : null);
+        });
+
+        DataService.getClosestTrackers().then(trackers => {
+            if(trackers){
+                setTrackers({updateType: trackerUpdateStatus.init, data: trackers});
+                fetchTrackers(trackers);
+            }
+        }).catch(err => {
+            //Failed to fetch IP info
+            console.log(err);
+            setTrackers({updateType: 'status', data: {status: trackerUpdateStatus.fail, error: errorMessages.connectionIssue}})
+        });
+
+        /*DataService.getUserInfo().then(res => {
             if(res.success){
                 setNearestAirport(res.closestAirport);
                 setTrackers({updateType: trackerUpdateStatus.init, data: res.closestTrackers});
@@ -77,7 +92,7 @@ export const Home = (props) => {
             //Failed to fetch IP info
             console.log(err);
             setTrackers({updateType: 'status', data: {status: trackerUpdateStatus.fail, error: errorMessages.connectionIssue}})
-        });
+        });*/
     });
     
     useEffect(() => {

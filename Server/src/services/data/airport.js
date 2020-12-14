@@ -4,7 +4,7 @@ import { Airport } from '../../database/models/Airport';
 
 import { AIRPORT_TYPES } from '../constants';
 
-let airportSearch;
+export let airportSearch = null;
 
 class AirportSearch{
     /**
@@ -23,7 +23,7 @@ class AirportSearch{
         this.status = 0;
         this.resolvers = [];
 
-        //this.update();
+        this.update();
     }
 
     update(){
@@ -83,8 +83,6 @@ class AirportSearch{
     }
 }
 
-initializeAirportSearch();
-
 /**
  * Return only medium or large airports, and with a iata code
  * @param {Object} param0 
@@ -107,7 +105,7 @@ export const closestAirports = async ({longitude, latitude}, numberAirports, fil
 	).limit(numberAirports);
 }
 
-function initializeAirportSearch(){
+export function initializeAirportSearch(){
     let filter = {$and: 
         [
             {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
