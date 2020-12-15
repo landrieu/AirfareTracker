@@ -22,6 +22,7 @@ export const airportTypeDefs = gql`
 
     type AirportResult {
         success: Boolean
+        searchTerm: String
         errors: [String]
         airports: [Airport]
     }

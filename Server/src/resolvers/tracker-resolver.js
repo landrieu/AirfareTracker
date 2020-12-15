@@ -8,7 +8,9 @@ import { User } from '../database/models/User';
 
 import { validateNewTracker } from '../services/form-validation/tracker';
 import { UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
-import {FrequentTrackerOccurrences} from '../services/constants'
+import {FrequentTrackerOccurrences} from '../services/constants';
+
+import { airportSearch } from '../services/data/airport';
 
 module.exports = {
     Query: {
@@ -132,9 +134,15 @@ module.exports = {
     },
     TrackerShort: {
         from(tracker) {
+            if(airportSearch.dataLoaded()){
+                return airportSearch.getAirport(tracker.from);
+            }
             return Airport.findOne({"iataCode": tracker.from});
         },
         to(tracker) {
+            if(airportSearch.dataLoaded()){
+                return airportSearch.getAirport(tracker.to);
+            }
             return Airport.findOne({"iataCode": tracker.to});
         }
     },

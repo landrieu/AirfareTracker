@@ -1,7 +1,7 @@
 //import { tracker } from '../../typeDefs/tracker';
 import { Airport } from '../../database/models/Airport';
 
-import { FormValidator } from './class';
+import { FormValidator } from '../../classes/FormValidator';
 
 const NTrackerValidators = () => {
     const requiredFields = {

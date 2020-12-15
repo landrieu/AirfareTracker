@@ -67,9 +67,6 @@ export const Home = (props) => {
     }
 
     const retrieveData = useCallback(() => {
-        DataService.getClosestAirport().then(airport => {
-            setNearestAirport(airport ? airport : null);
-        });
 
         DataService.getClosestTrackers().then(trackers => {
             if(trackers){
@@ -80,6 +77,10 @@ export const Home = (props) => {
             //Failed to fetch IP info
             console.log(err);
             setTrackers({updateType: 'status', data: {status: trackerUpdateStatus.fail, error: errorMessages.connectionIssue}})
+        });
+
+        DataService.getClosestAirport().then(airport => {
+            setNearestAirport(airport ? airport : null);
         });
 
         /*DataService.getUserInfo().then(res => {

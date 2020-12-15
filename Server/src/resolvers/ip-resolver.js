@@ -3,6 +3,8 @@ import { renameObjectKey } from '../services/helpers/object';
 import { findClosestTrackers, findClosestAirport } from '../services/helpers/geo';
 import { randomTrackers } from '../services/data/tracker';
 
+import { IPFinder } from '../classes/IPFinder'; 
+
 const ipModel = require('../database/models/ip');
 const request = require('request');
 
@@ -18,7 +20,7 @@ const worldIPs = {
     /*Jinan*/               Jinan: '111.35.38.197',
     /*Torino*/              Torino: '46.233.156.79',
     /*Reserved IP*/         Reserved: '250.133.201.118',
-}
+};
 
 module.exports = {
     Query: {
@@ -69,6 +71,7 @@ module.exports = {
             return new Promise(resolver => {
                 const findAirport = async ({success, data}) => {
                     if(!success) return resolver({success});
+
                     let airport = await findClosestAirport(data);
                     resolver({success: true, airport});
                 }
@@ -80,9 +83,11 @@ module.exports = {
             return new Promise(resolver => {
                 const findTrackers = async ({success, data}) => {
                     if(!success) return resolver({success});
+                    
                     let trackers = await findClosestTrackers(data, 6);
                     resolver({success: true, trackers});
                 }
+
                 ipFinder.search(clientIPAddress, findTrackers);
             });
         }
@@ -113,149 +118,5 @@ function isLocalIP(clientIPAddress){
     return localIPs.indexOf(clientIPAddress)!== -1;
 }
 
-class IPFinder{
-    constructor(purgeTime = (1000 * 60 * 60 /*1hr*/)){
-        this.addresses = new Map();
-        this.localIPs = ["::ffff:127.0.0.1", "::1"];
-        this.purgeTime = purgeTime;
-    }
-
-    async search(clientIPAddress, subscriber){
-        let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
-        clientIPAddress = worldIPs[p[Math.floor(Math.random() * p.length)]];
-
-        //Purge existing ips
-        this.purge();
-
-        //Search IP stored locally
-        let {cacheIP, pendingIP} = this.checkCache(clientIPAddress, subscriber);
-        console.log(!!cacheIP);
-        //Return the cache IP data
-        if(cacheIP) return subscriber({success: cacheIP.success, data: cacheIP.data});
-        //Wait for request to be received
-        if(pendingIP)  return;
-
-        //Search IP from the API
-        this.storePendingIP(clientIPAddress, subscriber);
-
-        let ipDetails = await this.request(clientIPAddress);
-
-        if(!ipDetails.success || !ipDetails.data || ipDetails.data.status === 'fail'){
-            return this.updatePendingIP(clientIPAddress, false, null)
-        } 
-
-        //Store IP info
-        this.updatePendingIP(clientIPAddress, true, ipDetails);
-    }
-
-    updatePendingIP(address, success, ipDetails){
-        this.addresses.get(address).updateData(success, ipDetails ? ipDetails.data : null);
-    }
-
-    storePendingIP(address, callback){
-        let ip = new IP(address, callback);
-        this.addresses.set(address, ip);
-    }
-
-    subscribe(address, subscriber){
-        if(this.addresses.has(address)){
-            this.addresses.get(address).subscribe(subscriber);
-            return true;
-        }
-
-        return false;
-    }
-
-    checkCache(address, subscriber){
-        let ip = this.fetchIP(address);
-        if(!ip) return {cacheIP: null, pendingIP: false} ;
-
-        if(ip.status === 'received') return {cacheIP: ip, pendingIP: false};
-
-        ip.subscribe(subscriber);
-        return {cacheIP: null, pendingIP: true};
-    }
-
-    fetchIP(address){
-        if(this.addresses.has(address)) 
-        return this.addresses.get(address);
-
-        return null;
-    }
-
-    request(clientIPAddress){
-        return new Promise((resolve) => {
-            if(isLocalIP(clientIPAddress)){
-                return resolve({success: false, origin: 'intern'});
-            }
-    
-            const url = `http://ip-api.com/json/${clientIPAddress}`;
-    
-            request.get(url, {json: true}, (err, res, body) => {
-                if(err) return resolve({success: false, origin: 'extern'});
- 
-                /*await new Promise((resolveT) => {
-                    setTimeout(() => {resolveT()}, 2000);
-                });*/
-                
-                let ipInfo = {...body, address: clientIPAddress};
-                renameObjectKey(ipInfo, 'longitude', 'lon');
-                renameObjectKey(ipInfo, 'latitude', 'lat');
-                return resolve({success: true, origin: 'extern', data: ipInfo});
-            });
-        });
-    }
-
-    purge(address){
-        if(address) return this.addresses.delete(address);
-        //Purge old stored ips
-        for (const [key, value] of this.addresses.entries()) {
-            if(new Date() - new Date(value.date) > this.purgeTime){
-                this.addresses.delete(key);
-            }
-        }
-    }
-
-    isLocalIP(address){
-        return this.localIPs.indexOf(address)!== -1;
-    }
-}
-
-class IP{
-    constructor(address, subscriber){
-        this.address = address;
-        this.subscribers = new Set(subscriber ? [subscriber] : []);
-        //this.subscribers = subscriber ? [subscriber] : [];
-        this.data = null;
-        this.date = new Date();
-        this.status = 'pending';
-        this.success = null;
-    }
-    
-    updateData(success, data = {}){
-        this.success = success;
-        this.data = data;
-        this.status = 'received';
-        this.success = success;
-
-        this.dispatch();
-
-        this.purge();
-    }
-
-    dispatch(){
-        for(let subscriber of this.subscribers){
-            subscriber({success: this.success, data: this.data});
-        }
-    }
-
-    purge(){
-        this.subscribers.clear();
-    }
-
-    subscribe(subscriber){
-        this.subscribers.add(subscriber);
-    }
-}
 
 let ipFinder = new IPFinder();

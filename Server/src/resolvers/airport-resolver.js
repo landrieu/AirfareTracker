@@ -10,7 +10,7 @@ module.exports = {
             let airports = await searchAirportsByTerm(searchTerm);
             if(!airports) return {success: false, errors: ['No airport found']};
 
-            return {success: true, airports};
+            return {success: true, airports, searchTerm};
         }
     },
     Mutation: {

@@ -13,7 +13,7 @@ module.exports = {
         airfaresByTrackerId: async (_, {trackerId}) => {
             const query = {trackerId};
             let airfares = await Airfare.find(query);
-
+            console.log(airfares);
             let occurrencesMap = new Map();
 
             let key, existingMap;

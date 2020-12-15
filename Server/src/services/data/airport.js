@@ -1,94 +1,18 @@
 //const FlexSearch = require("@talaikis/flexsearch");
 import FlexSearch from '@talaikis/flexsearch';
 import { Airport } from '../../database/models/Airport';
+import { AirportSearch } from '../../classes/AirportSearch';
+
+import { computeGeoDistance } from '../helpers/geo';
 
 import { AIRPORT_TYPES } from '../constants';
-
-export let airportSearch = null;
-
-class AirportSearch{
-    /**
-     * Status
-     * 0 - Init
-     * 1 - Loading
-     * 2 - Complete
-     * @param {*} param0 
-     */
-    constructor({filter = {}, updateTimeGap = 24 * 3600} = {}){
-        this.airports = [];
-        this.filter = filter;
-        this.updatedAt = null;
-        this.updateTimeGap = updateTimeGap;
-
-        this.status = 0;
-        this.resolvers = [];
-
-        this.update();
-    }
-
-    update(){
-        return new Promise(async(resolve) => {
-            this.updateStatus(1);
-            this.updatedAt = new Date();
-            let airports = await Airport.find(this.filter);
-
-            this.updateResource('airports', airports);
-            this.updateStatus(2);
-            resolve();
-        });
-    }
-
-    updateStatus(statusLevel){
-        this.status = statusLevel;
-    }
-
-    updateResource(resource, data){
-        this[resource] = data;
-        this.call(resource);
-    }
-
-    subscribe(resolver, resource){
-        this.resolvers.push({resource, fc: resolver});
-    }
-
-    call(resource){
-        for(let i = 0; i < this.resolvers.length; i++){
-            if(this.resolvers[i].resource === resource){
-                let res = this.resolvers.splice(i, 1)[0];
-                res.fc(this[res.resource]);
-                i--;
-            }
-        }
-    }
-
-    fetch(){
-        return new Promise(async (resolve) => {
-            //If updating data, subscribe to the feed
-            if(this.status === 1){
-                this.subscribe(resolve, 'airports');
-                return;
-            }
-
-            if(this.airports.length === 0 ||
-              ((new Date() - this.updatedAt) /1000) > this.updateTimeGap){
-                await this.update();
-            }
-            
-            resolve(this.airports);
-        });
-    }
-
-    purge(){
-        this.airports = [];
-    }
-}
 
 /**
  * Return only medium or large airports, and with a iata code
  * @param {Object} param0 
  * @param {Number} numberAirports 
  */
-export const closestAirports = async ({longitude, latitude}, numberAirports, filter) => {
+export const closestAirportsFromDb = async ({longitude, latitude}, numberAirports, filter) => {
 	return Airport.find(
 		{ $and: [
 			{$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
@@ -105,14 +29,28 @@ export const closestAirports = async ({longitude, latitude}, numberAirports, fil
 	).limit(numberAirports);
 }
 
+export const closestAirports = async ({longitude, latitude}, numberAirports, airportsTracker) =>{
+    //If the aiports have not been loaded yet, check closest airports directly in the database
+    if(!airportSearch.dataLoaded()){
+        let filter = {iataCode: {$in: airportsTracker}};
+        return closestAirportsFromDb({longitude, latitude}, numberAirports, filter);
+    } 
+
+    return airportsTracker
+    .map(iataCode => airportSearch.getAirport(iataCode))
+    .sort((a, b) => (computeGeoDistance(latitude, longitude, a.latitude, a.longitude) - computeGeoDistance(latitude, longitude, b.latitude, b.longitude)))
+    .slice(0, numberAirports);
+}
+
 export function initializeAirportSearch(){
-    let filter = {$and: 
+    /*let filter = {$and: 
         [
             {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
             {iataCode:{$ne: ''}}
         ]
     };
-    airportSearch = new AirportSearch({filter});
+    airportSearch = new AirportSearch({filter});*/
+    airportSearch.fetch();
 }
 
 export const airportsBySearchTerm = (searchTerm, limit = 6) => {
@@ -122,12 +60,7 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
         let index = new FlexSearch({
             doc: {
                 id: "id",
-                field: [
-                    "city",
-                    "name",
-                    "iataCode",
-                    "country"
-                ]
+                field: ["city", "name", "iataCode", "country"]
             }
         });
     
@@ -136,17 +69,12 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
         index.add(airports);
     
         console.time('Flex search');
-        //const airportTypes = ['medium_airport', 'large_airport', 'multi_airport'];
         let res = index.search({
             query: searchTerm,
             limit: 100,
             threshold: 5, // >= threshold
             depth: 3,
-            sort: (a, b) => {
-                //if(airportTypes.indexOf(b.type) !== airportTypes.indexOf(a.type)){
-                    return AIRPORT_TYPES.indexOf(b.type) - AIRPORT_TYPES.indexOf(a.type)
-                //}
-            }
+            sort: (a, b) => AIRPORT_TYPES.indexOf(b.type) - AIRPORT_TYPES.indexOf(a.type)
         });
         console.timeEnd('Flex search');
         resolve(res.slice(0, limit));
@@ -171,3 +99,11 @@ export const airportsBySearchTermMongo = async (searchTerm, limitRes = 6) => {
         ]}
     ).limit(limitRes);
 };
+
+let filterAirportSearch = {$and: 
+    [
+        {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
+        {iataCode:{$ne: ''}}
+    ]
+};
+export let airportSearch = new AirportSearch({filterAirportSearch});

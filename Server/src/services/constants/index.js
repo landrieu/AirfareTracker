@@ -48,38 +48,39 @@ export const TERMS_TYPES = {
   * New York, Miami, Boston, Chicago, Washington, Dallas, San Francisco, Atlanta, Los Angeles, Seatle, 
   * Toronto, Vancouver, Mexico
   * 
-  * New York - Miami
-  * Los Angeles - New York
-  * Los Angeles - San Francisco
-  * New York - Toronto
+  * New York - Miami   X
+  * Los Angeles - New York  X
+  * Los Angeles - San Francisco  X
+  * New York - Chicago  X
+  * New York - Toronto X
   */
 
   /** EUROPE
    * London, Paris, Berlin, Madrid, Rome, Dublin
    * Dublin - London
-   * Paris - London
-   * London - Madrid
-   * London - Rome
-   * Paris - Madrid
-   * Paris - Rome
+   * Paris - London X
+   * London - Madrid X
+   * London - Rome X
+   * Paris - Madrid X
+   * Paris - Rome X
    */
 
    /** ASIA
     * 
-    * Hong Kong - Taipei
-    * Kuala Lumpur - Singapore
-    * Jakarta - Singapore
-    * Jakarta - Kuala Lumpur
-    * Hong Kong-Shanghai
-    * Hong Kong - Seoul
-    * Beijing - Hong Kong
-    * Bangkok - Singapore
+    * Hong Kong - Taipei X
+    * Kuala Lumpur - Singapore X
+    * Jakarta - Singapore X
+    * Jakarta - Kuala Lumpur X
+    * Hong Kong - Shanghai X
+    * Hong Kong - Seoul (SEL) not existing
+    * Beijing - Hong Kong X
+    * Bangkok - Singapore X
     */
 
     /** FRANCE
      *  Paris, Marseille, Toulouse, Nice, Lyon
-     *  Paris - Toulouse
-     *  Paris - Nice
-     *  Paris - Lyon
-     *  Paris - Marseille
+     *  Paris - Toulouse X
+     *  Paris - Nice X
+     *  Paris - Lyon X
+     *  Paris - Marseille X
      */

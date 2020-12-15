@@ -7,43 +7,7 @@ import { GenerateToken, VerifyAuthentication } from '../services/helpers/authent
 
 import {UserInputError, /*AuthenticationError, */ValidationError} from 'apollo-server';
 
-class Error{
-    constructor(type, message){
-        this.type = type;
-        this.message = message;
-        this.success = false;
-    }
-}
-
-class AuthenticationError extends Error{
-    constructor(message, errors){
-        super("AUTHENTICATION_ERROR", message)
-        this.errors = errors;
-    }
-}
-
-class AuthenticationSuccess{
-    constructor(id, user, token){
-        this.success = true;
-        this.id = id;
-        this.user = user;
-        this.token = token;
-    }
-}
-
-class OperationError extends Error{
-    constructor(message, operationType){
-        super("OPERATION_ERROR", message);
-        this.operationType = operationType;
-    }
-}
-
-class OperationSuccess{
-    constructor(resource){
-        this.success = true;
-    }
-}
-
+import { AuthenticationError, AuthenticationSuccess, OperationError, OperationSuccess} from '../classes/RequestOperation';
 
 const roles = {
     admin: "ADMIN",

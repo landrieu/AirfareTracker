@@ -46,8 +46,9 @@ export const Location = (props) => {
         if(typeof searchTerm === 'object') return;
         if(searchTerm.length < 3) return setAirportSuggestions([]);
 
-        DataService.airportsBySearchTerm(searchTerm).then(res => {
-            setAirportSuggestions(res.map(airport => ({
+        DataService.airportsBySearchTerm(searchTerm).then(({airports, searchTermQuery}) => {
+            if(searchTermQuery !== searchTerm) return;
+            setAirportSuggestions(airports.map(airport => ({
                 ...airport,
                 text: airport.isSingleAirport ? 
                     `${airport.name} - ${airport.city} (${airport.iataCode})` :

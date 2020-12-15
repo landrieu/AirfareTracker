@@ -9,6 +9,7 @@ export function AirportDataService(options) {
               query ($searchTerm: String){
                 airportsBySearchTerm(searchTerm: $searchTerm){
                     success
+                    searchTerm
                     airports{
                         id
                         city
@@ -27,7 +28,9 @@ export function AirportDataService(options) {
             })
               .then(result => result.data)
               .then(data => data.airportsBySearchTerm)
-              .then(res => res.success ? res.airports : []);
+              .then(res => res.success ? 
+                {airports: res.airports, searchTermQuery : searchTerm} : 
+                {airports: [], searchTermQuery: searchTerm});
         }
     }
 }

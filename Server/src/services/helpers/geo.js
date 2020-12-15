@@ -1,9 +1,9 @@
 import { listFrequentTrackersAirports, findTrackers } from '../data/tracker';
-import { closestAirports, airportsWithFilter } from '../data/airport';
+import { closestAirports, closestAirportsLocal, airportsWithFilter, closestAirportsFromDb } from '../data/airport';
 
 import { NB_TRACKERS, EARTH_RADIUS } from '../constants';
 
-export const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+export const computeGeoDistance = (lat1, lon1, lat2, lon2) => {
 	let R = EARTH_RADIUS; 
 	let dLat = deg2rad(lat2-lat1);  // deg2rad below
 	let dLon = deg2rad(lon2-lon1); 
@@ -50,9 +50,12 @@ export const findClosestTrackers = async({longitude, latitude}, numberAirports =
 	return new Promise(async (resolve) => {
 		//List all airports used for trackers
 		let tAirports = await listFrequentTrackersAirports();
+
 		//Then find the closest airports
-		let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, {iataCode: {$in: tAirports}});
+		//let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, {iataCode: {$in: tAirports}});
+		let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, tAirports);
 		let cAirportsIata = cAirports.map(a => a.iataCode);
+
 		//Then return trackers with the closest airports
 		let cTrackers = await findClosestTrackersAndSort(cAirportsIata, numberAirports);
 
@@ -62,10 +65,10 @@ export const findClosestTrackers = async({longitude, latitude}, numberAirports =
 
 export const findClosestAirport = ({longitude, latitude}) => {
 	return new Promise(async (resolve) => {
-		let cAirports = await closestAirports({longitude, latitude}, 1, {iataCode: {$ne: ''}});
+		let cAirports = await closestAirportsFromDb({longitude, latitude}, 1, {iataCode: {$ne: ''}});
 		if(cAirports.length === 0) return resolve(null);
 		let cAirport = cAirports[0];
-		cAirport.distance = getDistanceFromLatLonInKm(latitude, longitude, cAirport.latitude, cAirport.longitude);
+		cAirport.distance = computeGeoDistance(latitude, longitude, cAirport.latitude, cAirport.longitude);
 		resolve(cAirport);
 	});
 }
@@ -91,7 +94,7 @@ export const getClosestAirport = async (userIPInfo) => {
 		
 		bigAirports.forEach((airport) => {
 			//Compute distance between user and airports
-			distance = getDistanceFromLatLonInKm(latitude, longitude, airport.latitude, airport.longitude);
+			distance = computeGeoDistance(latitude, longitude, airport.latitude, airport.longitude);
 
 			if(!closestAirport || distance < closestAirport.distance){
 				closestAirport = Object.assign({}, {distance}, airport._doc);
