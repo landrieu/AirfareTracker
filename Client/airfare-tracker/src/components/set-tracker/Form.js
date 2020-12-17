@@ -9,7 +9,25 @@ import { Dates } from './steps/Dates';
 import { Alert } from './steps/Alert';
 import { DataService } from '../../services/dataService';
 
-export const Form = (props) => {
+import { saveForm } from '../../redux/SetTracker/actions';
+import {connect} from 'react-redux'
+
+const mapStateToProps = (state) => {
+    return {
+        currentTrackerForm: state.currentTrackerForm
+    }
+}
+
+const mapDispatchToProps = (dispatch) =>{
+    return {
+        setTracker: (trackerObj) => {
+            dispatch({type: 'SAVE', email: 'lio'})
+        }
+    }
+}
+
+
+export const Form = connect(mapStateToProps, mapDispatchToProps)((props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
     const [loading, setLoading] = useState(true);
     const [stepSequence, setStepSequence] = useState([]);
@@ -18,6 +36,8 @@ export const Form = (props) => {
 
     const authSequence = ['Location', 'Dates', 'Alert'];
     const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
+
+    const [currentTrackerForm, setCurrentTrackerForm] = useState({});
     
     //Email 
     const [email, setEmail] = useState('lio23@hotmail.fr');
@@ -35,6 +55,11 @@ export const Form = (props) => {
             setActiveStep(0);
         }, 500);
 
+        return () => {
+            console.log("ferf")
+            props.setTracker({email: 'lio'})
+            //saveForm({email: email, from: 'TLS', to: 'PAR'});
+        }
     }, []);
 
     function checkTrackerCreation(){
@@ -167,4 +192,4 @@ export const Form = (props) => {
             {displayCanCreateTracker()}
         </div>
     )
-}
+})
