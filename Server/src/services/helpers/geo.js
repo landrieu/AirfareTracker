@@ -20,16 +20,24 @@ function deg2rad(deg) {
 	return deg * (Math.PI/180)
 }
 
-export const findClosestTrackersAndSort = async(airports, numberAirports) =>{
+export const findClosestTrackersAndSort = async(airports, numberTrackers) =>{
 	let cTrackers = [];
 	let query;
 	const fields = {_id: 1, from: 1, to: 1};
+	let trackersByID = new Map();
 	for(let i = 0; i < airports.length; i++){
 		query = {$and: [{type: 'F'},{$or: [{"from": airports[i]}, {"to": airports[i]}]}]}
-		cTrackers.push(...await findTrackers(query, fields))
-		if(cTrackers.length >= numberAirports) break;
+		let trackersQueried  = await findTrackers(query, fields);
+		
+		for(let j = 0; j < trackersQueried.length; j++){
+			if(!trackersByID.has(trackersQueried[j]._id.toString())){
+				trackersByID.set(trackersQueried[j]._id.toString(), trackersQueried[j]);
+			}
+		}
+		if(trackersByID.size >= numberTrackers) break;
 	}
 
+	cTrackers = [...trackersByID.values()];
 	//Sort out, based on airports
 	cTrackers.sort((a, b) => {
 		let aScoreFrom = airports.indexOf(a.from) !== -1 ? airports.indexOf(a.from) : 100;
@@ -41,25 +49,26 @@ export const findClosestTrackersAndSort = async(airports, numberAirports) =>{
 		let bScore = bScoreFrom + bScoreTo;
 		return aScore - bScore;
 	});
-
+	
 	return cTrackers;
 };
 
 //Get the most interesting trackers (closest airports from the user)
-export const findClosestTrackers = async({longitude, latitude}, numberAirports = NB_TRACKERS) => {
+export const findClosestTrackers = async({longitude, latitude}, numberTrackers = NB_TRACKERS) => {
 	return new Promise(async (resolve) => {
 		//List all airports used for trackers
 		let tAirports = await listFrequentTrackersAirports();
 
 		//Then find the closest airports
 		//let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, {iataCode: {$in: tAirports}});
-		let cAirports = await closestAirports({longitude, latitude}, numberAirports * 2, tAirports);
+		let cAirports = await closestAirports({longitude, latitude}, numberTrackers * 2, tAirports);
 		let cAirportsIata = cAirports.map(a => a.iataCode);
 
+		console.log(cAirportsIata.length);
 		//Then return trackers with the closest airports
-		let cTrackers = await findClosestTrackersAndSort(cAirportsIata, numberAirports);
+		let cTrackers = await findClosestTrackersAndSort(cAirportsIata, numberTrackers);
 
-		resolve(cTrackers.slice(0, numberAirports));
+		resolve(cTrackers.slice(0, numberTrackers));
 	})
 };
 

@@ -149,7 +149,7 @@ export class AirportSearch{
               ((new Date() - this.updatedAt) /1000) > this.updateTimeGap){
                 await this.update();
             }
-            console.log(this.airportsMap.get('PAR'))
+
             resolve(this.airports);
         });
     }

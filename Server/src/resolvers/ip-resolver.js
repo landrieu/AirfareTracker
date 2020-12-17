@@ -28,8 +28,7 @@ module.exports = {
     },
     Mutation: {
         findIPData: async (_, {},{clientIPAddress}) => {
-            console.log('HERE', clientIPAddress);
-            console.log('Check client IP address');
+            console.log(`Check client IP address ${clientIPAddress}`);
 
             //Simulate external IP
             clientIPAddress = worldIPs.Dallas;
