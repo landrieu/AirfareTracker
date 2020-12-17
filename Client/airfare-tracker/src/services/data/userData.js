@@ -73,7 +73,32 @@ export function UserDataService(options) {
                 
                 return userData;
             })
-        }
+        },
+
+        canCreateNewTracker: () => {
+            console.log(authService.loadToken());
+            return options.graphClient.query({
+              query: gql`
+              query{
+                numberTrackersCreatable{
+                  success
+                  error
+                  nbTrackersCreated
+                  canCreateNewTracker
+                }
+              }
+              `,
+              options: {
+                  context: {
+                      headers:{
+                        "Authorization": authService.loadToken()
+                      }
+                  }
+              }
+            })
+              .then(result => result.data)
+              .then(data => data ? data.numberTrackersCreatable : null)
+          }
     }
 }
 

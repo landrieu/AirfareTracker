@@ -71,5 +71,5 @@ const defineRoutes = () => {
 }
 //deifne project directory
 global.__basedir = __dirname;
-console.log(__basedir);
+
 startServer();

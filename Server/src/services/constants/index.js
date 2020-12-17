@@ -12,6 +12,10 @@ export const FrequentTrackerOccurrences = [
 ];
 
 export const NB_TRACKERS = 6;
+export const NB_TRACKERS_PER_USER = {
+    REGISTERED: 6,
+    VISITOR: 3
+};
 export const EARTH_RADIUS = 6371; // Radius of the earth in km
 export const AIRPORT_TYPES = ['medium_airport', 'large_airport', 'multi_airport'];
 

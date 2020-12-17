@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import './Form.scss';
+import { authService } from '../../services/authService';
 
 import { Email } from './steps/Email';
 import { Location } from './steps/Location';
 import { Dates } from './steps/Dates';
 import { Alert } from './steps/Alert';
+import { DataService } from '../../services/dataService';
 
 export const Form = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
@@ -26,6 +28,7 @@ export const Form = (props) => {
         //If registered up to 5
         //Else 2
         setTimeout(() => {
+            checkTrackerCreation();
             setStepSequence(unknSequence);
             setLoading(false);
             setCanCreateTracker(true);
@@ -35,6 +38,13 @@ export const Form = (props) => {
     }, []);
 
     function checkTrackerCreation(){
+        if(authService.loggedIn()){
+            DataService.canCreateNewTracker().then(res => {
+                console.log(res);
+            })
+        }else{
+            setStepSequence(unknSequence);
+        }
         //Check if auth or not
             //Yes, nb trackers created < 5
                 //Set auth Sequence

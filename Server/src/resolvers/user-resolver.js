@@ -4,6 +4,7 @@ import { ObjectID } from 'mongodb';
 import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
 import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
+import { NB_TRACKERS_PER_USER } from '../services/constants';
 
 import {UserInputError, /*AuthenticationError, */ValidationError} from 'apollo-server';
 
@@ -29,6 +30,19 @@ module.exports = {
             }catch{
                 //console.log(error.message, error.name)
                 return false;
+            }
+        },
+        numberTrackersCreatable: async (_, {}, {auth}) => {
+            try {
+                console.log(auth);
+                const user = await VerifyAuthentication(auth);
+                let nbTrackersCreated = await Tracker.countDocuments({$or: [{userId: user.id}, {userEmail: user.email}] });
+                let nbTrackersCreatable = NB_TRACKERS_PER_USER.REGISTERED - nbTrackersCreated;
+                console.log(nbTrackersCreated, nbTrackersCreatable,  NB_TRACKERS_PER_USER.REGISTERED);
+                return {success: true, canCreateNewTracker: nbTrackersCreatable > 0, nbTrackersCreated};
+            }catch{
+                //console.log(error.message, error.name)
+                return {success: false, error: 'The authentication is incorrect'};
             }
         }
     },

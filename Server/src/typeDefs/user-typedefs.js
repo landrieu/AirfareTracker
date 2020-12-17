@@ -26,11 +26,19 @@ export const userTypeDefs = gql`
         success: Boolean!
         error: String
     }
+
+    type TrackerCreationCheckResult {
+        success: Boolean
+        error: String
+        canCreateNewTracker: Boolean
+        nbTrackersCreated: Int
+    }
     
     extend type Query {
         users: [User!]!
         userByEmail(email: String): User
         validAuthentication: Boolean
+        numberTrackersCreatable: TrackerCreationCheckResult
     }
 
     type AuthenticationError{
