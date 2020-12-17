@@ -3,7 +3,6 @@ import express from 'express';
 import { resolvers } from './resolvers';
 import { typeDefs } from './typeDefs';
 import { mongo } from './database/index';
-
 import _ from './services/helpers/date';
 
 const bodyParser = require('body-parser')
@@ -70,5 +69,7 @@ const defineRoutes = () => {
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     )
 }
-
+//deifne project directory
+global.__basedir = __dirname;
+console.log(__basedir);
 startServer();

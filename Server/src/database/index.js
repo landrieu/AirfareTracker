@@ -25,7 +25,7 @@ mongoose.connection.on('connected',()=>{
     console.log("Connected to DB");
 
     //Load airports once connected to the Db
-    //initializeAirportSearch();
+    initializeAirportSearch();
 });
 
 mongoose.connection.on('error',(err)=>{

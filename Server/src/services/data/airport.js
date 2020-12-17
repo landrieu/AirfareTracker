@@ -50,16 +50,16 @@ export function initializeAirportSearch(){
         ]
     };
     airportSearch = new AirportSearch({filter});*/
-    airportSearch.fetch();
+    airportSearch.initialize();
 }
 
 export const airportsBySearchTerm = (searchTerm, limit = 6) => {
-    if(!airportSearch) initializeAirportSearch();
+    //if(!airportSearch) initializeAirportSearch();
 
     return new Promise(async (resolve) => {
         let index = new FlexSearch({
             doc: {
-                id: "id",
+                id: "_id",
                 field: ["city", "name", "iataCode", "country"]
             }
         });
@@ -75,7 +75,7 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
             threshold: 5, // >= threshold
             depth: 3,
             sort: (a, b) => AIRPORT_TYPES.indexOf(b.type) - AIRPORT_TYPES.indexOf(a.type)
-        });
+        }).map(r => ({...r, id: r._id}));
         console.timeEnd('Flex search');
         resolve(res.slice(0, limit));
     });
@@ -100,10 +100,4 @@ export const airportsBySearchTermMongo = async (searchTerm, limitRes = 6) => {
     ).limit(limitRes);
 };
 
-let filterAirportSearch = {$and: 
-    [
-        {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
-        {iataCode:{$ne: ''}}
-    ]
-};
-export let airportSearch = new AirportSearch({filterAirportSearch});
+export let airportSearch = new AirportSearch();

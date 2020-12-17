@@ -1,4 +1,12 @@
 import { Airport } from '../database/models/Airport';
+import { Exporter } from './Exporter';
+
+let defaultFilter = {$and: 
+    [
+        {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
+        {iataCode:{$ne: ''}}
+    ]
+};
 
 export class AirportSearch{
     /**
@@ -8,7 +16,7 @@ export class AirportSearch{
      * 2 - Complete
      * @param {*} param0 
      */
-    constructor({filter = {}, updateTimeGap = 24 * 3600} = {}){
+    constructor({filter = defaultFilter, updateTimeGap = 24 * 3600, localStorage = {useLocalData: true}} = {}){
         this.airports = [];
         this.airportsMap = new Map();
         this.filter = filter;
@@ -18,7 +26,11 @@ export class AirportSearch{
         this.status = 0;
         this.resolvers = new Set();
 
-        this.update();
+        this.useLocalData = localStorage.useLocalData;
+        this.localDataValidityTime = localStorage.localDataValidityTime || 24 * 60 * 60 * 1000; //1 day
+        this.exporter = null;
+        //this.initLocalData();
+        //this.update();
     }
 
     /**
@@ -32,10 +44,35 @@ export class AirportSearch{
             let airports = (await Airport.find(this.filter)).map(airport => airport._doc);
             this.updatedAt = new Date();
 
-            this.updateAirports(airports);
+            this.updateAirports(airports, true);
             this.updateStatus(2);
             resolve();
         });
+    }
+
+    async initialize(){
+        if(this.useLocalData){
+            this.exporter = new Exporter('airports', 'DATA', `/data`, null);
+
+            let localData = await this.exporter.read();
+
+            if(!localData || !localData.date) return this.fetch();
+
+            if(new Date - new Date(localData.date) > this.localDataValidityTime) return this.fetch();
+            this.updatedAt = new Date();
+            this.updateAirports(localData.airports, false);
+
+        }else{
+            this.fetch();
+        }
+    }
+
+    writeAirportsLocalData(){
+        let data = {
+            date: new Date(),
+            airports: this.airports
+        }
+        this.exporter.run({data: JSON.stringify(data)});
     }
 
     /**
@@ -46,15 +83,28 @@ export class AirportSearch{
         this.status = statusLevel;
     }
 
+    updateLocalData(airports){
+        let localData = {
+            date: new Date(),
+            airports
+        }
+        this.exporter.run({data: JSON.stringify(localData)})
+    }
+
     /**
      * Set airport to the data then dispatch the data
      * @param {Array} data Contains airports objects
      */
-    updateAirports(data){
-        this.airports = data;
-        data.forEach((airport) => {
+    updateAirports(airports, fromDatabase){
+        this.airports = airports;
+        airports.forEach((airport) => {
             this.airportsMap.set(airport.iataCode, airport);
         });
+
+        if(this.useLocalData && fromDatabase){
+            this.updateLocalData(airports);
+        }
+
         console.log('Airports loaded!');
         this.dispatch();
     }
@@ -99,7 +149,7 @@ export class AirportSearch{
               ((new Date() - this.updatedAt) /1000) > this.updateTimeGap){
                 await this.update();
             }
-            
+            console.log(this.airportsMap.get('PAR'))
             resolve(this.airports);
         });
     }

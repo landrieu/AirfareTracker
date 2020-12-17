@@ -9,7 +9,7 @@ module.exports = {
         airportsBySearchTerm: async (_, {searchTerm}) => {
             let airports = await searchAirportsByTerm(searchTerm);
             if(!airports) return {success: false, errors: ['No airport found']};
-
+            
             return {success: true, airports, searchTerm};
         }
     },
