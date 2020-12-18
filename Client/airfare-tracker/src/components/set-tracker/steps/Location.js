@@ -1,16 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Autocomplete } from '../../others/Autocomplete';
 import { DataService } from '../../../services/dataService'
-import './Location.scss'
+import './Location.scss';
+
+import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { useDispatch, useSelector} from 'react-redux';
 
 export const Location = (props) => {
-    const [from, setFrom] = useState('');
-    const [to, setTo] = useState('');
+    //const [from, setFrom] = useState('');
+    //const [to, setTo] = useState('');
 
     const [fromError, setFromError] = useState('');
     const [toError, setToError] = useState('');
 
     const [airportSuggestions, setAirportSuggestions] = useState([]);
+
+    const from = useSelector(state => state.setTracker.from);
+    const to = useSelector(state => state.setTracker.to);
+    const dispatch = useDispatch();
 
     function onSubmit(){
         let errors = validate();
@@ -38,8 +45,16 @@ export const Location = (props) => {
 
     
     function setDefaultValue(type, index){
-        if(type === 'from') setFrom(airportSuggestions[index])
-        if(type === 'to') setTo(airportSuggestions[index])
+        if(type === 'from') setFrom(airportSuggestions[index]);
+        if(type === 'to') setTo(airportSuggestions[index]);
+    }
+
+    function setFrom(value){
+        dispatch(updateForm({from: value}));
+    }
+
+    function setTo(value){
+        dispatch(updateForm({to: value}));
     }
 
     function fetchSuggestions(searchTerm){

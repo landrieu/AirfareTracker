@@ -10,24 +10,9 @@ import { Alert } from './steps/Alert';
 import { DataService } from '../../services/dataService';
 
 import { saveForm } from '../../redux/SetTracker/actions';
-import {connect} from 'react-redux'
+import { useDispatch, useSelector} from 'react-redux';
 
-const mapStateToProps = (state) => {
-    return {
-        currentTrackerForm: state.currentTrackerForm
-    }
-}
-
-const mapDispatchToProps = (dispatch) =>{
-    return {
-        setTracker: (trackerObj) => {
-            dispatch({type: 'SAVE', email: 'lio'})
-        }
-    }
-}
-
-
-export const Form = connect(mapStateToProps, mapDispatchToProps)((props) => {
+export const Form = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
     const [loading, setLoading] = useState(true);
     const [stepSequence, setStepSequence] = useState([]);
@@ -43,6 +28,9 @@ export const Form = connect(mapStateToProps, mapDispatchToProps)((props) => {
     const [email, setEmail] = useState('lio23@hotmail.fr');
     const [departureDates, setDepartureDates] = useState('');
 
+    const fromU = useSelector(state => state.setTracker.from);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         //Check if the user can create a new tracker
         //If registered up to 5
@@ -53,11 +41,14 @@ export const Form = connect(mapStateToProps, mapDispatchToProps)((props) => {
             setLoading(false);
             setCanCreateTracker(true);
             setActiveStep(0);
+
+            //dispatch(saveForm({email: 'LO', from: 'TLS'}));
         }, 500);
 
         return () => {
             console.log("ferf")
-            props.setTracker({email: 'lio'})
+            //props.setTracker({email: 'lio'})
+            
             //saveForm({email: email, from: 'TLS', to: 'PAR'});
         }
     }, []);
@@ -192,4 +183,4 @@ export const Form = connect(mapStateToProps, mapDispatchToProps)((props) => {
             {displayCanCreateTracker()}
         </div>
     )
-})
+}
