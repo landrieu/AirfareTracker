@@ -54,7 +54,7 @@ export const findClosestTrackersAndSort = async(airports, numberTrackers) =>{
 };
 
 //Get the most interesting trackers (closest airports from the user)
-export const findClosestTrackers = async({longitude, latitude}, numberTrackers = NB_TRACKERS) => {
+export const findClosestTrackers = async({longitude, latitude, city}, numberTrackers = NB_TRACKERS) => {
 	return new Promise(async (resolve) => {
 		//List all airports used for trackers
 		let tAirports = await listFrequentTrackersAirports();
@@ -64,7 +64,7 @@ export const findClosestTrackers = async({longitude, latitude}, numberTrackers =
 		let cAirports = await closestAirports({longitude, latitude}, numberTrackers * 2, tAirports);
 		let cAirportsIata = cAirports.map(a => a.iataCode);
 
-		console.log(cAirportsIata.length);
+		console.log(cAirportsIata, city);
 		//Then return trackers with the closest airports
 		let cTrackers = await findClosestTrackersAndSort(cAirportsIata, numberTrackers);
 

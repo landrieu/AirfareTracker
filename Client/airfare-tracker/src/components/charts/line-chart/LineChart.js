@@ -1,15 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import Chart from 'chart.js';
 
 import './LineChart.scss'
 
 export const LineChart = (props) => {
-    //let chart;
     const [chart, setChart] = useState();
 
-    useEffect(() => {
-        if(props.datasets.length === 0) return
-
+    const initChart = useCallback(() => {
         let ctx = document.getElementById(props.chartID);
 
         setChart(new Chart(ctx, {
@@ -33,6 +30,14 @@ export const LineChart = (props) => {
                 }
             }
         }));
+    })
+
+    useEffect(() => {
+        if(props.datasets.length === 0) return;
+        
+        if(!chart) initChart();
+        
+        
     }, [props.datasets])
 
     return(

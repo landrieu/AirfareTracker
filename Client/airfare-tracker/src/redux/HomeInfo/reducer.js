@@ -7,7 +7,6 @@ const INITIAL_STATE = {
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
-    console.log('n', action.type)
     switch (action.type) {
         case UPDATE_AIRPORT:
             return {
@@ -15,7 +14,6 @@ const reducer = (state = INITIAL_STATE, action) => {
             };
 
         case UPDATE_TRACKERS:
-            console.log('n', action.command)
             let nearestTrackers = updateTrackersReducer(state.nearestTrackers, action.command);
             
             return {

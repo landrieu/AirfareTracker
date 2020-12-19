@@ -7,7 +7,6 @@ export const updateNearestAirport = (nearestAirport) => {
 };
 
 export const updateNearestTrackers = (command) => {
-    console.log(command);
     return {
         type: UPDATE_TRACKERS, command
     };

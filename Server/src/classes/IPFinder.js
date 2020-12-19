@@ -21,12 +21,16 @@ export class IPFinder{
         this.addresses = new Map();
         this.localIPs = ["::ffff:127.0.0.1", "::1"];
         this.purgeTime = purgeTime;
+
+        //TEST
+        let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
+        this.clientIPAddressTEST = worldIPs[p[Math.floor(Math.random() * p.length)]];
     }
 
     async search(clientIPAddress, subscriber){
-        let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
-        clientIPAddress = worldIPs[p[Math.floor(Math.random() * p.length)]];
-        clientIPAddress = worldIPs.Brescia;
+        
+        //TEST
+        clientIPAddress = this.clientIPAddressTEST;
 
         //Purge existing ips
         this.purge();
