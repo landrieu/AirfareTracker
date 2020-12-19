@@ -1,13 +1,22 @@
 import { useState } from 'react';
-import './Email.scss'
+import './Email.scss';
+
+import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { useDispatch, useSelector} from 'react-redux';
 
 export const Email = (props) => {
     const [emailError, setEmailError] = useState('');
+    const email = useSelector(state => state.setTracker.email);
+    const dispatch = useDispatch();
 
     function onSubmit(){
         let {valid, error} = validate();
         if(valid) props.nextStep(1);
         else setEmailError(error);
+    }
+
+    function setEmail(value){
+        dispatch(updateForm({email: value}));
     }
 
     function backStep(){
@@ -18,7 +27,7 @@ export const Email = (props) => {
 
     function validate(){
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const isEmailValid = re.test(props.email);
+        const isEmailValid = re.test(email);
         
         return isEmailValid ? {valid: true} : {valid: false, error: "Email format is incorrect"};
     }
@@ -26,7 +35,7 @@ export const Email = (props) => {
     const activeDisplay = (
         <div>
             <div className="inline-fields">
-                <input type="text" placeholder="Email" value={props.email} onChange={e => props.setEmail(e.currentTarget.value)}></input>
+                <input type="text" placeholder="Email" value={email} onChange={e => setEmail(e.currentTarget.value)}></input>
                 <span>{emailError}</span>
             </div>
             <div id="email-button" className="button" onClick={onSubmit}>
@@ -37,7 +46,7 @@ export const Email = (props) => {
 
     const unactiveDisplay = (
         <div>
-            {props.email && <span>Email: {props.email}</span>}
+            {email && <span>Email: {email}</span>}
         </div>
     )
 

@@ -2,7 +2,7 @@ import { updateForm } from './actions';
 import { SAVE, CLEAR, UPDATE } from './types';
 
 const INITIAL_STATE = {
-    email: '',
+    email: 'lio23@hotmail.fr',
     from: '',
     to: '',
     departureDates: null,
@@ -10,7 +10,6 @@ const INITIAL_STATE = {
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
-    console.log(action)
     switch (action.type) {
         case SAVE:
             return {

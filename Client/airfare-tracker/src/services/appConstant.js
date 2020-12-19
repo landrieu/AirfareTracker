@@ -6,11 +6,11 @@ export const errorMessages = {
     connectionIssue: 'Could not fetch data, check your network',
 }
 
-export const trackerUpdateStatus = {
-    init: 'init',
-    loading: 'loading',
-    fail: 'fail',
-    complete: 'complete'
+export const TRACKER_STATUS = {
+    INIT: 'INIT',
+    LOADING: 'LOADING',
+    FAIL: 'FAIL',
+    COMPLETE: 'COMPLETE'
 }
 
 export const NB_TRACKERS = 6;

@@ -146,8 +146,6 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Email')} 
                         isVisible={isVisible('Email')}
-                        email={email}
-                        setEmail={setEmail}
                         buttonLabel={stepSequence.indexOf('Email') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />}
                     <Location 

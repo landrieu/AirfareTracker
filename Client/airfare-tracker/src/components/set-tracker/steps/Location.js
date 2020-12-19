@@ -7,9 +7,6 @@ import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
 import { useDispatch, useSelector} from 'react-redux';
 
 export const Location = (props) => {
-    //const [from, setFrom] = useState('');
-    //const [to, setTo] = useState('');
-
     const [fromError, setFromError] = useState('');
     const [toError, setToError] = useState('');
 

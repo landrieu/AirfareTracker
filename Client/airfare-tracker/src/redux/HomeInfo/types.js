@@ -1,0 +1,2 @@
+export const UPDATE_AIRPORT = 'UPDATE_AIRPORT';
+export const UPDATE_TRACKERS = 'UPDATE_TRACKERS';

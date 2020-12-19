@@ -4,12 +4,14 @@ import {AirportTableCase} from './airport-table-case/AirportTableCase';
 
 export const AirportTable = (props) => {
     const [displayFull, setDisplayFull] = useState(false);
+    const firstInit = () => !props.nearestAirport
 
     useEffect(() => {
         if(props.nearestAirport){
+            let delay = firstInit ? (15 * 150) : 0
             setTimeout(() => {
                 setDisplayFull(true);
-            }, 15 * 150);
+            }, delay);
             
         }else{
             setDisplayFull(false);

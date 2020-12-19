@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {LineChart} from '../../charts/line-chart/LineChart';
 
-import { NICE_NAMES, GRAPH_COLORS } from '../../../services/appConstant';
+import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
 import './Card.scss'
 
 export const Card = (props) => {
@@ -42,10 +42,10 @@ export const Card = (props) => {
 
     const displayTop = () => {
         switch (props.tracker.status) {
-            case 'init': return '';
-            case 'loading': return '' 
-            case 'fail': return props.tracker.error;
-            case 'complete': return `From ${props.tracker.from.city} to ${props.tracker.to.city}`;        
+            case TRACKER_STATUS.INIT: return '';
+            case TRACKER_STATUS.LOADING: return '' 
+            case TRACKER_STATUS.FAIL: return props.tracker.error;
+            case TRACKER_STATUS.COMPLETE: return `From ${props.tracker.from.city} to ${props.tracker.to.city}`;        
             default: return ''
         }
     }

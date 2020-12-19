@@ -11,7 +11,7 @@ export const LineChart = (props) => {
         if(props.datasets.length === 0) return
 
         let ctx = document.getElementById(props.chartID);
-        console.log(props.datasets);
+
         setChart(new Chart(ctx, {
             type: 'line',
             data: {datasets: props.datasets},
