@@ -76,6 +76,7 @@ export const Autocomplete = (props) => {
 }
 
 export const SuggestionList = (props) => {
+
     function getSuggestionList(){
         return props.suggestions.map((suggestion, index) => {
             let className = props.activeSuggestion === index ? 'active' : '';
@@ -85,7 +86,17 @@ export const SuggestionList = (props) => {
                 key={suggestion.id}
                 onClick={(e) => props.onClick(e, suggestion)}
             >
-                    {suggestion.text}
+                    {/*suggestion.text*/}
+                    
+                    <div className="suggestion-left">
+                        <div className="suggestion-name">
+                            {suggestion.isSingleAirport ? suggestion.name : `${suggestion.city} - All airports`}
+                        </div>
+                        <div className="suggestion-city" style={{display: suggestion.isSingleAirport ? 'block' : 'none'}}>
+                            {suggestion.city}
+                        </div>
+                    </div>
+                    <div className="suggestion-right"><span>{suggestion.iataCode}</span></div>
             </li>)
         });
     }

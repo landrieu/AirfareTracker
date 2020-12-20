@@ -14,11 +14,45 @@
 
         li{
             padding: 3px;
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
 
             &.active, &:hover{
                 background-color: $base-light-gray;
                 cursor: pointer;
             }
+
+            .suggestion-left{
+                width: calc(100% - 50px);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+
+                .suggestion-city, .suggestion-name{
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .suggestion-city{
+                    font-size: 0.8rem;
+                }
+            }
+
+            .suggestion-right{
+                width: 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                span{
+                    border: 1px solid $primary;
+                    padding: 3px; 
+                }
+            }
+
+            
         }
     }
 }

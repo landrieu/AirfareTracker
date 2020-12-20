@@ -10,6 +10,11 @@
         margin: 15px auto;
         /*align-items: center;*/
 
+        #nearest-airport-text{
+            height: 33px;
+            display: flex;
+            align-items: center;
+        }
 
         #nearest-airport-info{
             #letters-slide{
@@ -17,6 +22,9 @@
                 width: 500px;
                 display: flex;
                 justify-content: center;
+            }
+            #full-info{
+                height: 20px;
             }
         }
         

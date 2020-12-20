@@ -112,7 +112,7 @@ button{
         width: 100%;
         justify-content: space-between;
     
-        div:nth-child(1){
+        &>div{
             width: 45%;
         }
     }

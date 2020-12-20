@@ -106,10 +106,6 @@ export class IPFinder{
             request.get(url, {json: true}, (err, res, body) => {
                 if(err) return resolve({success: false, origin: 'extern'});
  
-                /*await new Promise((resolveT) => {
-                    setTimeout(() => {resolveT()}, 2000);
-                });*/
-                
                 let ipInfo = {...body, address: clientIPAddress};
                 renameObjectKey(ipInfo, 'longitude', 'lon');
                 renameObjectKey(ipInfo, 'latitude', 'lat');
