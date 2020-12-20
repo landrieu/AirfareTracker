@@ -32,14 +32,24 @@ export const airfareTypeDefs = gql`
         createdAt: GraphQLDate
     }
 
-    type AirfaresResult{
+    type AirfareStat{
+        text: String
+        value: Float
+    }
+
+    type AirfaresPerTerm{
         term: String,
         data: [AirfareFormatted]
     }
 
+    type AirfaresResult{
+        airfaresPerTerm: [AirfaresPerTerm]
+        stats: [AirfareStat]
+    }
+
     extend type Query {
         airfares: [Airfare]
-        airfaresByTrackerId(trackerId: String): [AirfaresResult]
+        airfaresByTrackerId(trackerId: String, computeStats: String): AirfaresResult
         airfaresNumber(trackerId: String): Number
     }
 `;

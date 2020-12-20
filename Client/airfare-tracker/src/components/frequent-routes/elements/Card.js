@@ -10,6 +10,10 @@ export const Card = (props) => {
         let rand2 = Math.floor(Math.random() * 60) + 40;
         return [rand1, rand2];
     });
+
+    const [stats, setStats] = useState(() => {
+        return new Array(2).fill({text: '', value: ''});
+    });
     //const [sliderXPosition, setSliderXPosition] = useState(0);
     const [trackerDatasets, setTrackerDatasets] = useState([]);
     //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
@@ -37,6 +41,8 @@ export const Card = (props) => {
         });
 
         setTrackerDatasets(datasets);
+
+        setStats(props.tracker.stats);
     }, [props.tracker]);
 
     useEffect(() => {
@@ -49,7 +55,17 @@ export const Card = (props) => {
             case TRACKER_STATUS.LOADING: return '' 
             case TRACKER_STATUS.FAIL: return props.tracker.error;
             case TRACKER_STATUS.COMPLETE: return `From ${props.tracker.from.city} to ${props.tracker.to.city}`;        
-            default: return ''
+            default: return '';
+        }
+    }
+
+    const displayStat = () => {
+        switch (props.tracker.status) {
+            case TRACKER_STATUS.INIT: return '';
+            case TRACKER_STATUS.LOADING: return '' 
+            case TRACKER_STATUS.FAIL: return '';
+            case TRACKER_STATUS.COMPLETE: return `${props.tracker.stats ? props.tracker.stats[0].text : ''} ${props.tracker.stats ? props.tracker.stats[0].value : ''}%`;        
+            default: return '';
         }
     }
 
@@ -73,7 +89,7 @@ export const Card = (props) => {
                     </div>
                     <div className="info">
                         <div className="container" style={{width: defineWidthLoading(1)}}>
-                            
+                        {displayStat()}
                         </div>
                     </div>
                 </div>

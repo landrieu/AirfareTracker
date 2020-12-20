@@ -35,7 +35,7 @@ const updateTrackersReducer = (trackers, {updateType, trackerId, data}) => {
 
         case TRACKER_STATUS.COMPLETE:
             return trackers.map(el => {
-                if(el.id === trackerId) return {...el, airfares: data, status: TRACKER_STATUS.COMPLETE};
+                if(el.id === trackerId) return {...el, airfares: data.airfares, stats: data.stats, status: TRACKER_STATUS.COMPLETE};
                 else return {...el, status: TRACKER_STATUS.COMPLETE}
             });      
 

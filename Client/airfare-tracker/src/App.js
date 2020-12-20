@@ -70,13 +70,13 @@ export default function App() {
             }
         ));
 
-        DataService.airfaresByTrackerId(t.id).then(({trackerId, airfares}) => {
+        DataService.airfaresByTrackerId(t.id).then(({trackerId, data}) => {
             //Update single tracker when fetched
             dispatch(updateNearestTrackers(
                 {
                     updateType: TRACKER_STATUS.COMPLETE, 
                     trackerId, 
-                    data: airfares
+                    data: data
                 }
             ));
         }).catch(err => {

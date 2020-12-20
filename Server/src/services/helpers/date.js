@@ -32,6 +32,12 @@ const rangeSameDay = (startDate, endDate) => {
         startDate.day === endDate.day
 }
 
+export const areDatesOnSameDay = (dateA, dateB) => {
+    let bDateA = breakDownDate(dateA);
+    let bDateB = breakDownDate(dateB);
+    return rangeSameDay(bDateA, bDateB);
+}
+
 /**
  * Check if the time is similar
  * @param {Date} startDate 
@@ -122,4 +128,12 @@ Date.prototype.addYears = function(y) {
     let weeksPerMonth = 52 / 12;
     this.setTime(this.getTime() + (y*12*weeksPerMonth*7*24*60*60*1000));
     return this;
+}
+
+Date.prototype.clone = function() { 
+    return new Date(this.getTime()); 
+};
+
+Number.prototype.rounding = function(dec) {
+    return Math.round((this + Number.EPSILON) * Math.pow(10, dec)) / Math.pow(10, dec);
 }
