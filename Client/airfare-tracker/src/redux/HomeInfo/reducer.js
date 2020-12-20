@@ -3,7 +3,7 @@ import { TRACKER_STATUS } from '../../services/appConstant';
 
 const INITIAL_STATE = {
     nearestAirport: null,
-    nearestTrackers: (new Array(6)).fill({status: 'inactive'})
+    nearestTrackers: (new Array(6)).fill({status: TRACKER_STATUS.INACTIVE})
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

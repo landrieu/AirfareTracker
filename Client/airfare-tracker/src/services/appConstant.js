@@ -7,6 +7,7 @@ export const errorMessages = {
 }
 
 export const TRACKER_STATUS = {
+    INACTIVE: 'INACTIVE',
     INIT: 'INIT',
     LOADING: 'LOADING',
     FAIL: 'FAIL',

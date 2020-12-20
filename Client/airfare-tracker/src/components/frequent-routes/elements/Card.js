@@ -2,9 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {LineChart} from '../../charts/line-chart/LineChart';
 
 import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
-import './Card.scss'
+import './Card.scss';
 
 export const Card = (props) => {
+    const [randomWidth] = useState(() => {
+        let rand1 = Math.floor(Math.random() * 60) + 40;
+        let rand2 = Math.floor(Math.random() * 60) + 40;
+        return [rand1, rand2];
+    });
     //const [sliderXPosition, setSliderXPosition] = useState(0);
     const [trackerDatasets, setTrackerDatasets] = useState([]);
     //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
@@ -38,8 +43,6 @@ export const Card = (props) => {
         setDatasets();
     }, [props.tracker, setDatasets]);
 
-    
-
     const displayTop = () => {
         switch (props.tracker.status) {
             case TRACKER_STATUS.INIT: return '';
@@ -50,20 +53,26 @@ export const Card = (props) => {
         }
     }
 
+    function defineWidthLoading(idx){
+        if(props.tracker.status === TRACKER_STATUS.COMPLETE) return '100%'
+        console.log(randomWidth[0])
+        return `${randomWidth[idx]}%`;
+    }
+
     return(
         <div className="card" key={props.tracker.id}>
-            <div className={`card-container ${props.tracker.status}`}>
+            <div className={`card-container ${props.tracker.status.toLowerCase()}`}>
                 <div className="top">
                     <div className="top-container">{displayTop()}</div>
                 </div>
                 <div className="middle">
                     <div className="info">
-                        <div className="container">
+                        <div className="container" style={{width: defineWidthLoading(0)}}>
 
                         </div>
                     </div>
                     <div className="info">
-                        <div className="container">
+                        <div className="container" style={{width: defineWidthLoading(1)}}>
                             
                         </div>
                     </div>

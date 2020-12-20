@@ -13,30 +13,31 @@ module.exports = {
         airfaresByTrackerId: async (_, {trackerId}) => {
             const query = {trackerId};
             let airfares = await Airfare.find(query);
-            //console.log(airfares);
-            let occurrencesMap = new Map();
 
-            let key, existingMap;
-            airfares.forEach(airfare => {
+            let occurenceTermMap = new Map();
+            let airfarePerOccurenceMap = new Map();
+            let key, curTerm;
+            
+            airfares.forEach((airfare) => {
                 key = `${airfare.occurrence.interval}${airfare.occurrence.length}`;
-                if(occurrencesMap.has(key)){
-                    existingMap = occurrencesMap.get(key);
-                    occurrencesMap.set(key, {occurrence: existingMap.occurrence, airfares: [...existingMap.airfares, airfare]})
+                //Determine if the airfare's term
+                if(occurenceTermMap.has(key)){
+                    curTerm = occurenceTermMap.get(key);
                 }else{
-                    occurrencesMap.set(key, {occurrence: airfare.occurrence, airfares: []})
+                    curTerm = determineTerm(airfare.occurrence);
+                    occurenceTermMap.set(key, curTerm);
+                }
+                
+                //Then store with same term airfares
+                if(airfarePerOccurenceMap.has(curTerm)){
+                    airfarePerOccurenceMap.set(curTerm, [...airfarePerOccurenceMap.get(curTerm), airfare]);
+                }else{
+                    airfarePerOccurenceMap.set(curTerm, [airfare]);
                 }
             });
-            //console.log(occurrencesMap)
-            let airfaresByTerms = new Map();
-            occurrencesMap.forEach((value, key) => {
-                let projDate = determineOccLength(value.occurrence);
-                let term = determineTerm(projDate);
-                airfaresByTerms.has(term) ? 
-                airfaresByTerms.set(term, [...airfaresByTerms.get(term), ...value.airfares]) :
-                airfaresByTerms.set(term, value.airfares);
-            })
 
-            let airfaresRes = mergeAirfares(airfaresByTerms);
+            let airfaresRes = mergeAirfares(airfarePerOccurenceMap);
+
             //Determine short - medium - long term, then merge mapsl
             return airfaresRes;
         },
@@ -67,8 +68,7 @@ function mergeAirfares(airfaresByTerms, timeGap = (1000 * 60 * 5)/*In ms*/){
     airfaresByTerms.forEach((_, key) => {
         airfaresMerged = [];
         //Sort by creation date
-        airfaresByTerms.get(key).sort((a, b) => a.createdAt - b.createdAt);
-        let airfaresToMerge = airfaresByTerms.get(key);
+        let airfaresToMerge = airfaresByTerms.get(key).sort((a, b) => a.createdAt - b.createdAt);
         let i, j;
         //Merge record i with following if creation time difference below the time gap
         for(i = 0; i < airfaresToMerge.length; i++){
@@ -147,7 +147,9 @@ function determineOccLength({interval}){
     return computeDate(gapDate, number, unit);
 }
 
-function determineTerm(date){
+function determineTerm(occurence){
+    let date = determineOccLength(occurence);
+
     let sTerm = (new Date()).addMonths(2);
     let mTerm = (new Date()).addMonths(5);
 
