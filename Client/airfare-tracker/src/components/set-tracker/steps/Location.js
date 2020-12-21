@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Autocomplete } from '../../others/Autocomplete';
 import { DataService } from '../../../services/dataService'
 import './Location.scss';

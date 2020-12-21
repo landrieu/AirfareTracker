@@ -20,7 +20,7 @@ export const Form = (props) => {
     const [readOnlyForm, setReadOnlyForm] = useState(false);
 
     const authSequence = ['Location', 'Dates', 'Alert'];
-    const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
+    const unknSequence = ['Dates', 'Email', 'Location', 'Dates', 'Alert'];
 
     const [currentTrackerForm, setCurrentTrackerForm] = useState({});
     

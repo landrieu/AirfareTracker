@@ -10,6 +10,9 @@ import { SetTracker } from './components/set-tracker/SetTracker';
 import { Home } from './components/home/Home';
 import { MyTrackers } from './components/my-trackers/MyTrackers';
 
+//TEST
+import { Dates } from './components/set-tracker/steps/Dates';
+
 import { authService } from './services/authService';
 
 import { TRACKER_STATUS, errorMessages } from './services/appConstant';
@@ -120,6 +123,13 @@ export default function App() {
           <SetTracker />
         </Route>
         <PrivateRoute path='/my-trackers' component={MyTrackers} />
+        <Route path="/test">
+          <Dates 
+          isActive={true} 
+          isVisible={true}
+          buttonLabel={'Next'}
+          />
+        </Route>
         <Route path="/">
           <Home />
         </Route>
