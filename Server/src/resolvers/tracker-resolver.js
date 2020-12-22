@@ -55,7 +55,7 @@ module.exports = {
          */
         createTracker: async (_, tracker, {auth}) => {
             //const user = await VerifyAuthentication(auth);
-
+            console.log(tracker);
             tracker = Object.assign({isActive: true,  type: 'N'}, tracker);
             const { errors, valid } = await validateNewTracker(tracker);
             if (!valid) throw new UserInputError('Error', { errors });

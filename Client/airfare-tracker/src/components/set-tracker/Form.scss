@@ -44,10 +44,53 @@ button{
     display: block;
     cursor: pointer;
     transition: opacity 1s;
+    overflow: hidden;
+    position: relative;
 
     &:hover{
         opacity: 1;
     }
+
+    &.loading{
+        border: none;
+        opacity: 0.99;
+
+        &::before {
+            content: '';
+            position: absolute;
+            z-index: -2;
+            left: -100%;
+            top: -100%;
+            width: 300%;
+            height: 300%;
+            background-color: #399953;
+            background-repeat: no-repeat;
+            background-size: 50% 50%, 50% 50%;
+            background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+            background-image: linear-gradient(white, white), linear-gradient($primary, $primary), linear-gradient(white, white), linear-gradient($primary, $primary);
+            animation: rotate 4s linear infinite;
+        }
+        
+        &::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            left: 3px;
+            top: 3px;
+            width: calc(100% - 6px);
+            height: calc(100% - 6px);
+            background: $primary;
+            border-radius: 5px;
+        }
+    }
+
+    
+}
+
+@keyframes rotate {
+	100% {
+		transform: rotate(1turn);
+	}
 }
 
 #form{

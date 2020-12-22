@@ -12,6 +12,7 @@ export const trackerTypeDefs = gql`
         endDates: [GraphQLDate]
         isActive: Boolean,
         type: String,
+        userEmail: String,
         userId: String,
         isAlertEnabled: Boolean,
         triggerPrice: Int,

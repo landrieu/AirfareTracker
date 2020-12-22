@@ -1,23 +1,53 @@
 import React, { useEffect, useState } from 'react';
-//import 'react-dates/initialize';
-//import 'react-dates/lib/css/_datepicker.css';
-//import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
-//import moment from 'moment';
 import moment from 'moment';
+import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+
+import { useDispatch, useSelector} from 'react-redux';
 
 import { DateRangePicker } from '../../misc/DateRangePicker';
 import './Dates.scss';
 
 export const Dates = (props) => {
 
-    const [startDateDeparture, setStartDateDeparture] = useState();
-    const [endDateDeparture, setEndDateDeparture] = useState();
+    //const [startDateDeparture, setStartDateDeparture] = useState();
+    //const [endDateDeparture, setEndDateDeparture] = useState();
 
-    const [startDateReturn, setStartDateReturn] = useState();
-    const [endDateReturn, setEndDateReturn] = useState();
+    const [startDateDeparture, endDateDeparture] = useSelector(state => state.setTracker.departureDates);
+    const [startDateReturn, endDateReturn] = useSelector(state => state.setTracker.returnDates);
+    const dispatch = useDispatch();
+
+    const [datesError, setDatesError] = useState('');
+
+    function setDepartureDates(startDate, endDate){
+        dispatch(updateForm({departureDates: [startDate, endDate]}));
+    }
+
+    function setReturnDates(startDate, endDate){
+        dispatch(updateForm({returnDates: [startDate, endDate]}));
+    }
 
     function onSubmit() {
-        props.nextStep(1);
+        let {valid, error} = validate();
+        if(valid) props.nextStep(1);
+        else setDatesError(error);
+    }
+
+    function validate(){
+        let errors = [];
+
+        if(!(startDateDeparture && startDateDeparture.isValid() && endDateDeparture
+         && endDateDeparture.isValid() && startDateReturn && startDateReturn.isValid() 
+         && endDateReturn && endDateReturn.isValid())){
+            return { valid: false, error: 'Date not defined'};
+        }
+
+        if(!(endDateReturn.isSameOrAfter(startDateReturn) 
+        && startDateReturn.isSameOrAfter(endDateDeparture)
+        && endDateDeparture.isSameOrAfter(startDateDeparture))){
+            return { valid: false, error: 'Chronology error'};
+        }
+
+        return { valid: true}
     }
 
     function backStep() {
@@ -35,10 +65,10 @@ export const Dates = (props) => {
             <div className="inline-fields">
                 <div>
                     <DateRangePicker
+                    placeHolderStart="Departure"
                         startDate={startDateDeparture}
                         endDate={endDateDeparture}
-                        setStartDate={setStartDateDeparture}
-                        setEndDate={setEndDateDeparture}
+                        setDates={setDepartureDates}
                         startDateId='start_date_01'
                         endDateId='end_date_01'
                         maxDate={startDateReturn ? moment(startDateReturn).add(-1, 'd') : null}
@@ -46,15 +76,18 @@ export const Dates = (props) => {
                 </div>
                 <div>
                 <DateRangePicker
+                placeHolderStart="Return"
                         startDate={startDateReturn}
                         endDate={endDateReturn}
-                        setStartDate={setStartDateReturn}
-                        setEndDate={setEndDateReturn}
+                        setDates={setReturnDates}
                         startDateId='start_date_02'
                         endDateId='end_date_02'
                         minDate={endDateDeparture ? moment(endDateDeparture).add(1, 'd') : null}
                     />
                 </div>
+            </div>
+            <div id="dates-error">
+                {datesError}
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
                     <button>{props.buttonLabel}</button>
@@ -64,8 +97,8 @@ export const Dates = (props) => {
 
     const unactiveDisplay = (
         <div>
-            <div>Departure dates: {startDateDeparture && startDateDeparture.format()} - {endDateDeparture && endDateDeparture.format()}</div>
-            <div>Return dates: {startDateReturn && startDateReturn.format()} - {endDateReturn && endDateReturn.format()}</div>
+            <div>Departure dates: {startDateDeparture && startDateDeparture.format('DD-MM-YYYY')} - {endDateDeparture && endDateDeparture.format()}</div>
+            <div>Return dates: {startDateReturn && startDateReturn.format('dddd DD M YYYY')} - {endDateReturn && endDateReturn.format()}</div>
         </div>
     )
 

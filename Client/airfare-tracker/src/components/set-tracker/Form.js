@@ -9,7 +9,6 @@ import { Dates } from './steps/Dates';
 import { Alert } from './steps/Alert';
 import { DataService } from '../../services/dataService';
 
-import { saveForm } from '../../redux/SetTracker/actions';
 import { useDispatch, useSelector} from 'react-redux';
 
 export const Form = (props) => {
@@ -20,15 +19,12 @@ export const Form = (props) => {
     const [readOnlyForm, setReadOnlyForm] = useState(false);
 
     const authSequence = ['Location', 'Dates', 'Alert'];
-    const unknSequence = ['Dates', 'Email', 'Location', 'Dates', 'Alert'];
+    const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
 
     const [currentTrackerForm, setCurrentTrackerForm] = useState({});
+    const formData = useSelector(state => state.setTracker)
     
     //Email 
-    const [email, setEmail] = useState('lio23@hotmail.fr');
-    const [departureDates, setDepartureDates] = useState('');
-
-    const fromU = useSelector(state => state.setTracker.from);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -89,7 +85,11 @@ export const Form = (props) => {
 
     function submitForm(){
         console.log("DDA");
-        resetForm();
+        
+        DataService.createTracker(formData).then(res => {
+            console.log(res);
+        })
+        //resetForm();
     }
 
     function nextStep(step){
@@ -124,7 +124,6 @@ export const Form = (props) => {
     }
 
     function resetForm(){
-        setEmail('');
 
         //setStepSequence(authSequence);
         setLoading(false);
@@ -160,8 +159,6 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Dates')} 
                         isVisible={isVisible('Dates')}
-                        departureDates={departureDates}
-                        setDepartureDates={setDepartureDates}
                         buttonLabel={stepSequence.indexOf('Dates') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />
                     <Alert 

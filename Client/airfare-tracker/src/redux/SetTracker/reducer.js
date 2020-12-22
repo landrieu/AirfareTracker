@@ -3,10 +3,36 @@ import { SAVE, CLEAR, UPDATE } from './types';
 
 const INITIAL_STATE = {
     email: 'lio23@hotmail.fr',
-    from: '',
-    to: '',
-    departureDates: null,
-    returnDates: null
+    from: {
+      id: '5fc75e5fa8622245c8729229',
+      city: 'Paris',
+      name: 'Paris',
+      iataCode: 'PAR',
+      region: 'FR-J',
+      country: 'FR',
+      isSingleAirport: false,
+      __typename: 'Airport',
+      text: 'Paris, FR (PAR) - All airports'
+    },
+    to: {
+      id: '5fae06e79c4d7728f42b1b49',
+      city: 'Lyon',
+      name: 'Lyon Saint-Exupéry Airport',
+      iataCode: 'LYS',
+      region: 'FR-V',
+      country: 'FR',
+      isSingleAirport: true,
+      __typename: 'Airport',
+      text: 'Lyon Saint-Exupéry Airport - Lyon (LYS)'
+    },
+    departureDates: [
+      null,
+      null
+    ],
+    returnDates: [
+      null,
+      null
+    ]
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
