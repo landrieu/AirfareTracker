@@ -33,7 +33,11 @@ export function TrackerDataService(options) {
             query ($id: String){
               trackers(id: $id) {
                 id
-                sources
+                startDates
+                endDates
+                createdAt
+                isActive
+                isAlertEnabled
                 to{
                   iataCode
                   city
@@ -50,7 +54,33 @@ export function TrackerDataService(options) {
         }
       })
         .then(result => result.data)
-        .then(data => data.trackerById)
+        .then(data => data.trackers[0])
+    },
+
+    getUserTrackers: (userId) => {
+      return options.graphClient.query({
+        query: gql`
+              query ($userId: String){
+                trackersByUser(userId: $userId) {
+                  id
+                  sources
+                  to{
+                    iataCode
+                    city
+                  }
+                  from{
+                    iataCode
+                    city
+                  }  
+                }
+              }
+              `,
+        variables: {
+          userId
+        }
+      })
+        .then(result => result.data)
+        .then(data => data.trackersByUser)
     },
 
     createTracker: async (formData) => {

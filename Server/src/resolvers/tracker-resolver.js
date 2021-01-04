@@ -14,12 +14,15 @@ import { airportSearch } from '../services/data/airport';
 
 module.exports = {
     Query: {
-        trackers: (_, filter) => {
+        trackers: (_, {type, id}) => {
+            let filter = {};
+            if(id) filter = {_id: ObjectID(id)};
+            if(type) filter = {...filter, type};
             return Tracker.find(filter);
         },
-        trackersByUser: (_, {userId}) => {
-            const query = {userId};
-            return Tracker.find(query);
+        trackersByUser: async (_, {userId}, {auth}) => {
+            const user = await VerifyAuthentication(auth);
+            return Tracker.find({$or: [{userId: user ? user.id : userId}, {userEmail: user ? user.email : null}]});
         },
         trackersNumber: (_, {userId}) => {
             if(userId){
@@ -54,16 +57,23 @@ module.exports = {
          *  - Not logged
          */
         createTracker: async (_, tracker, {auth}) => {
-            //const user = await VerifyAuthentication(auth);
-            console.log(tracker);
-            tracker = Object.assign({isActive: true,  type: 'N'}, tracker);
+            let userId, userEmail;
+            try{
+                const user = await VerifyAuthentication(auth);
+                userId = user.id;
+                userEmail = user.email;
+            }catch{
+                //User not logged
+                //If user not logged but registered
+                userId = await User.findOne({email: tracker.userEmail}, {userId: '1'}).userId;
+                userEmail = tracker.userEmail
+            }
+            
+            tracker = Object.assign({isActive: true,  type: 'N', userId, userEmail}, tracker);
             const { errors, valid } = await validateNewTracker(tracker);
             if (!valid) throw new UserInputError('Error', { errors });
 
-            if(!tracker.userId){
-                tracker.userId = await User.findOne({email: tracker.userEmail}, {userId: '1'}).userId;
-            }
-
+            console.log(tracker);
             const newTracker = new Tracker(tracker);
 
             try{

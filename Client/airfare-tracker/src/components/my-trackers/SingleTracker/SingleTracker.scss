@@ -1,0 +1,26 @@
+.single-tracker{
+    width: 100%;
+    margin-top: 10px;
+    border: 1px white solid;
+    overflow: hidden;
+
+    .single-tracker-top{
+        padding-left: 2%;
+        padding-right: 2%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem;
+    }
+
+    .single-tracker-body{
+        height: 0px;
+        transition: height 1s;
+        padding-left: 2%;
+        padding-right: 2%;
+
+        &.active{
+            height: 80px;
+        }
+    }
+}

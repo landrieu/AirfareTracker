@@ -1,0 +1,16 @@
+@import '../../variables.scss';
+
+#my-trackers{
+    min-height: calc(100vh - #{$header-height});
+    background-color: $primary;
+    color: white;
+    padding-top: 1px;
+    margin-top: -1px;
+
+    #my-trackers-content{
+        width: 60%;
+        min-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

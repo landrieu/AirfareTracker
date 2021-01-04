@@ -49,7 +49,7 @@ export const trackerTypeDefs = gql`
     }
 
     extend type Query {
-        trackers(type: String): [Tracker]
+        trackers(type: String, id: String): [Tracker]
         trackersByUser(userId: String): [Tracker]
         trackersNumber(userId: String): Number
         trackersActiveNumber(userId: String): Number
