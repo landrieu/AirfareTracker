@@ -45,7 +45,18 @@ export function TrackerDataService(options) {
                 from{
                   iataCode
                   city
-                }  
+                }
+                airfares{
+                  startDate, 
+                  endDate, 
+                  airfares{
+                    maxPrice, 
+                    createdAt, 
+                    minPrice,
+                    averagePrice,
+                    medianPrice
+                  }
+                }
               }
             }
             `,

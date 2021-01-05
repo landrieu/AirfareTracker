@@ -6,7 +6,7 @@ import { authService } from '../../services/authService';
 import './Header.scss'
 
 export const Header = (props) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
 
     useEffect(() => {
         authService.subscribe(setIsLoggedIn);

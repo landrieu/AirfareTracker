@@ -4,6 +4,10 @@ class AuthService{
         this.token = null;
         this.user = null;
         this.subscribers = [];
+
+        this.loadToken();
+        this.loadUser();
+        console.log(this.token);
     }
 
     storeUserData({token, user}){
@@ -18,7 +22,7 @@ class AuthService{
     }
 
     logout() {
-        this.authToken = null;
+        this.token = null;
         this.user = null;
         localStorage.clear();
 
@@ -34,7 +38,7 @@ class AuthService{
     
     loadToken(){
         const token = localStorage.getItem('id_token');
-        this.authToken = token;
+        this.token = token;
         return token;
     }
     

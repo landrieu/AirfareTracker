@@ -69,7 +69,23 @@ module.exports = {
                 userEmail = tracker.userEmail
             }
             
-            tracker = Object.assign({isActive: true,  type: 'N', userId, userEmail}, tracker);
+            tracker = Object.assign({isActive: true,  type: 'N', userId, userEmail, sources: ["5dc39bba581d45d4af0f7f5fc46701d2"]}, tracker);
+            //departureDates returnDates
+            const formatDates = (dateMin, dateMax) => {
+                let listDates = [dateMin.clone()];
+                let cDate = dateMin, tDate;
+
+                while(cDate < dateMax){
+                    tDate = cDate.addDays(1).clone();
+                    listDates.push(tDate);
+                }
+
+                return listDates;
+            };
+
+            tracker.startDates = formatDates(new Date(tracker.startDates[0]), new Date(tracker.startDates[1]));
+            tracker.endDates = formatDates(new Date(tracker.endDates[0]), new Date(tracker.endDates[1]));
+            
             const { errors, valid } = await validateNewTracker(tracker);
             if (!valid) throw new UserInputError('Error', { errors });
 
@@ -170,12 +186,37 @@ module.exports = {
         async airfares(tracker){
             let airfares = await Airfare.find({"trackerId": tracker._id});
 
+            let airfaresByDates = new Map(), key;
+            //Group by start and end dates
+            airfares.forEach((airfare) => {
+                //key = {startDate: , endDate: airfare.endDate};
+                key = `${airfare.startDate}${airfare.endDate}`;
+                //Determine if the airfare's date
+                if(airfaresByDates.has(key)){
+                    airfaresByDates.set(key, {
+                        ...airfaresByDates.get(key),
+                        airfares: [...airfaresByDates.get(key).airfares, airfare]
+                    });
+                }else{
+                    airfaresByDates.set(key, {
+                        startDate: airfare.startDate,
+                        endDate: airfare.endDate,
+                        airfares: [airfare]
+                    })
+                }
+            });
+
+            let airfaresSorted = [];
+            for (const d of airfaresByDates.values()) {
+                airfaresSorted.push(d);
+            }
+            return airfaresSorted;
             //Create a map containing all the occurences
-            let occurrencesMap = new Map(airfares.map((airfare) => {
+            /*let occurrencesMap = new Map(airfares.map((airfare) => {
                 return [`${airfare.occurrence.interval}${airfare.occurrence.length}`, airfare.occurrence];
             }));
 
-            console.log(occurrencesMap)
+            console.log(occurrencesMap)*/
             //occurrencesMap.
             /*let map = {};
             // id, data, position

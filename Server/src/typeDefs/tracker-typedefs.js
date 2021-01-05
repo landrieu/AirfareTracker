@@ -20,7 +20,7 @@ export const trackerTypeDefs = gql`
         alertEmail: String
         createdAt: GraphQLDate!
         occurrences:  [FrequentT]
-        airfares: [Airfare]
+        airfares: [AirfarePerDate]
     }
 
     type TrackerShort{

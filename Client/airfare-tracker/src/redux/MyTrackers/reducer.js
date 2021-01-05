@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE } from './types';
+import { SAVE, CLEAR, UPDATE, UPDATE_SINGLE } from './types';
 
 const INITIAL_STATE = {
     updatedAt: null,
@@ -11,9 +11,13 @@ const reducer = (state = INITIAL_STATE, action) => {
           return {updatedAt: new Date(), trackers: action.trackers}
         
         case UPDATE: 
-        console.log('FZFZ', action);
           return {updatedAt: new Date(), trackers: action.trackers}
 
+        case UPDATE_SINGLE: 
+          return {
+            ...state, 
+            trackers: state.trackers.map(stateTracker => action.tracker.id === stateTracker.id ? action.tracker : stateTracker)
+          };
         case CLEAR: return {};
 
         default: return state;

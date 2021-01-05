@@ -26,7 +26,23 @@ module.exports = {
         }
     },
     Mutation: {
-        
+        deleteAirfares: async (_, {trackerId}, {auth}) => {
+
+            try{
+                //Remove the airfares
+                //const removedTracker = await Tracker.findOneAndDelete({_id: trackerId, userId: user.id}, {useFindAndModify: false});
+                const removed = await Airfare.deleteMany({trackerId: trackerId}, {useFindAndModify: false});
+                
+                if(!removed){
+                    throw new Error("Airfares have not been removed");
+                }
+                
+                return true;
+            }catch(error){
+                console.log(error);
+                return false;
+            }
+        },
     },
     Airfare: {
         /**

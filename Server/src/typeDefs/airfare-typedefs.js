@@ -19,6 +19,12 @@ export const airfareTypeDefs = gql`
         createdAt: GraphQLDate
     }
 
+    type AirfarePerDate{
+        startDate: GraphQLDate,
+        endDate: GraphQLDate,
+        airfares: [Airfare]
+    }
+
     type AirfareFormatted{
         from: Airport,
         to: Airport,
@@ -51,5 +57,9 @@ export const airfareTypeDefs = gql`
         airfares: [Airfare]
         airfaresByTrackerId(trackerId: String, computeStats: String): AirfaresResult
         airfaresNumber(trackerId: String): Number
+    }
+
+    extend type Mutation {
+        deleteAirfares(trackerId: String): Boolean
     }
 `;

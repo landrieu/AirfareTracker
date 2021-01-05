@@ -96,7 +96,7 @@ const scanTracker = async (tracker) => {
     }else{
         if(!isTrackerDatesInFuture(tracker.startDates)){
             //Disable tracker
-            await disableTracker();
+            await disableTracker(tracker);
             return [];
         }
         dates = listPossibleDates(tracker.startDates, tracker.endDates);

@@ -10,17 +10,31 @@
         height: 40px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         font-size: 1.2rem;
+
+        .sign{
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
     }
 
     .single-tracker-body{
         height: 0px;
-        transition: height 1s;
+        transition: height 0.5s;
         padding-left: 2%;
         padding-right: 2%;
 
-        &.active{
+        &.expand{
             height: 80px;
+        }
+
+        .stats-available{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
         }
     }
 }
