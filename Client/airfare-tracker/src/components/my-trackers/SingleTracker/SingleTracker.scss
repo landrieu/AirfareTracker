@@ -1,8 +1,15 @@
+@import '../../../variables.scss';
+
 .single-tracker{
     width: 100%;
     margin-top: 10px;
     border: 1px white solid;
     overflow: hidden;
+
+    &.disabled .single-tracker-top{
+        opacity: 0.8;
+        pointer-events: none;
+    }
 
     .single-tracker-top{
         padding-left: 2%;
@@ -27,14 +34,46 @@
         padding-right: 2%;
 
         &.expand{
-            height: 80px;
+            height: 600px;
+        }
+
+        &.expand.no-data{
+            height: 190px;
+        }
+
+        .no-data{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 130px;
+
+            .no-data-label{
+                background-color: $base-light-blue;
+                width: 100%;
+                height: 95px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         .stats-available{
             display: flex;
             justify-content: space-around;
             align-items: center;
+            margin: 10px auto;
 
+            .stat{
+                padding: 1px 8px;
+                border-radius: 2px;
+                cursor: pointer;
+
+                &.selected{
+                    background-color: white;
+                    font-weight: bold;
+                    color: $primary;
+                }
+            }
         }
     }
 }

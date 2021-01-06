@@ -122,7 +122,6 @@ export default function App() {
         <Route path="/set-tracker">
           <SetTracker />
         </Route>
-        <PrivateRoute path='/my-trackers' component={MyTrackers} />
         <Route path="/test">
           <Dates 
           isActive={true} 
@@ -130,6 +129,8 @@ export default function App() {
           buttonLabel={'Next'}
           />
         </Route>
+        <PrivateRoute exact path="/my-trackers" component={MyTrackers} />
+       
         <Route path="/">
           <Home />
         </Route>

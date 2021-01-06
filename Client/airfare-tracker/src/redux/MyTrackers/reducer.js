@@ -11,7 +11,7 @@ const reducer = (state = INITIAL_STATE, action) => {
           return {updatedAt: new Date(), trackers: action.trackers}
         
         case UPDATE: 
-          return {updatedAt: new Date(), trackers: action.trackers}
+          return state.trackers.length !== 0 ? state : {updatedAt: new Date(), trackers: action.trackers};
 
         case UPDATE_SINGLE: 
           return {

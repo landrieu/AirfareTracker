@@ -69,6 +69,7 @@ export function TrackerDataService(options) {
     },
 
     getUserTrackers: (userId) => {
+      console.log('GET USER TRACKERS')
       return options.graphClient.query({
         query: gql`
               query ($userId: String){

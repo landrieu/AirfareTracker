@@ -32,11 +32,18 @@ export const LineChart = (props) => {
         }));
     })
 
+    function update(){
+        let tChart = chart;
+        tChart.data.datasets = props.datasets;
+        setChart(tChart);
+        chart.update(500);
+    }
+
     useEffect(() => {
         if(props.datasets.length === 0) return;
         
         if(!chart) initChart();
-        
+        else update();
         
     }, [props.datasets])
 

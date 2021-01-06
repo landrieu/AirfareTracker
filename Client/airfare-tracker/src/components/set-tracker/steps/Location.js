@@ -104,10 +104,10 @@ export const Location = (props) => {
     const unactiveDisplay = (
         <div>
             <div>
-                <span>Departure: {from.text}</span>
+                <span>From {from.text}</span>
             </div> 
             <div>
-                <span>Destination: {to.text}</span>
+                <span>To {to.text}</span>
             </div>
         </div>
     )
