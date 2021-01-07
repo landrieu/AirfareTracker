@@ -32,7 +32,9 @@ const INITIAL_STATE = {
     returnDates: [
       null,
       null
-    ]
+    ],
+    priceTrigger: null,
+    alertEnabled: false
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

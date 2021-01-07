@@ -27,7 +27,9 @@ export const LineChart = (props) => {
                 animation: {
                     duration: 5000,
                     onComplete: () => {}
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: props.maintainAspectRatio
             }
         }));
     })

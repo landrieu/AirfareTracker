@@ -14,54 +14,52 @@ import { useDispatch, useSelector} from 'react-redux';
 export const Form = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
-    const [readOnlyForm, setReadOnlyForm] = useState(false);
 
     const authSequence = ['Location', 'Dates', 'Alert'];
     const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
 
-    const [currentTrackerForm, setCurrentTrackerForm] = useState({});
-    const formData = useSelector(state => state.setTracker)
+    const form = useSelector(state => state.setTracker)
     
-    //Email 
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
 
-    useEffect(() => {
+    useEffect(async() => {
         //Check if the user can create a new tracker
-        //If registered up to 5
-        //Else 2
-        setTimeout(() => {
-            checkTrackerCreation();
-            setStepSequence(unknSequence);
-            setLoading(false);
-            setCanCreateTracker(true);
-            setActiveStep(0);
+  
+        let [canCreate, sequence] = await checkTrackerCreation();
+        setCanCreateTracker(canCreate);
+        setLoading(false);
 
-            //dispatch(saveForm({email: 'LO', from: 'TLS'}));
-        }, 500);
+        if(canCreate){
+            setStepSequence(sequence);
+            setActiveStep(0);
+        }
+
 
         return () => {
-            console.log("ferf")
-            //props.setTracker({email: 'lio'})
-            
-            //saveForm({email: email, from: 'TLS', to: 'PAR'});
+
         }
     }, []);
 
     function checkTrackerCreation(){
-        if(authService.loggedIn()){
-            DataService.canCreateNewTracker().then(res => {
-                console.log(res);
-            })
-        }else{
-            setStepSequence(unknSequence);
-        }
         //Check if auth or not
             //Yes, nb trackers created < 5
                 //Set auth Sequence
             //No, nb tracker < 2
                 //Set unkw sequence
+        return new Promise(resolve => {
+            if(authService.loggedIn()){
+                DataService.canCreateNewTracker().then(res => {
+                    resolve([res.canCreateNewTracker, authSequence]);
+                }).catch((e) => {
+                    resolve([false]);
+                })
+            }else{
+                resolve([true, unknSequence])
+            }
+        });
     }
 
     function isStepActive(stepName){
@@ -84,10 +82,13 @@ export const Form = (props) => {
     }
 
     function submitForm(){
-        console.log("DDA");
-        
-        DataService.createTracker(formData).then(res => {
+        if(submitting) return;
+
+        setSubmitting(true);
+        DataService.createTracker(form).then(res => {
+            setSubmitting(false);
             console.log(res);
+            //Add new tracker to redux 'myTrackers
         })
         //resetForm();
     }
@@ -112,7 +113,7 @@ export const Form = (props) => {
         }else if(canCreateTracker){
             return (formSteps())
         }else{
-            return (<div>Can't create a tracker limit has been reached</div>)
+            return (<div>Can't create a tracker, the limit has been reached</div>)
         }
     }
 
@@ -124,7 +125,6 @@ export const Form = (props) => {
     }
 
     function resetForm(){
-
         //setStepSequence(authSequence);
         setLoading(false);
         //setCanCreateTracker(true);
@@ -174,7 +174,7 @@ export const Form = (props) => {
     }
 
     return(
-        <div id="form">
+        <div id="form" className={`${submitting ? 'submitting' : ''}`}>
             {displayCanCreateTracker()}
         </div>
     )

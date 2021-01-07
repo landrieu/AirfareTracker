@@ -22,12 +22,11 @@ import './App.css';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
-  const nearestAirport = useSelector(state => state.homeInfo.nearestAirport);
-  const nearestTrackers = useSelector(state => state.homeInfo.nearestTrackers);
 
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
+    console.log('APP INIT')
     authService.subscribe(setIsLoggedIn);
 
     retrieveData();

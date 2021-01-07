@@ -35,7 +35,8 @@ const graphClient = new ApolloClient({
 
 const axiosClient = Axios.create({
   baseURL: 'http://localhost:4000'
-})
+});
+
 
 export const DataService = {
   ...IPDataService({graphClient, axiosClient}),

@@ -97,8 +97,8 @@ export const Dates = (props) => {
 
     const unactiveDisplay = (
         <div>
-            <div>Departure dates: {startDateDeparture && startDateDeparture.format('DD-MM-YYYY')} - {endDateDeparture && endDateDeparture.format()}</div>
-            <div>Return dates: {startDateReturn && startDateReturn.format('dddd DD M YYYY')} - {endDateReturn && endDateReturn.format()}</div>
+            <div>Departure dates range: {startDateDeparture && startDateDeparture.format('DD/MM/YYYY')} - {endDateDeparture && endDateDeparture.format('DD/MM/YYYY')}</div>
+            <div>Return dates range: {startDateReturn && startDateReturn.format('dddd DD MMMM YYYY')} - {endDateReturn && endDateReturn.format('DD/MM/YYYY')}</div>
         </div>
     )
 

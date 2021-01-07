@@ -12,8 +12,10 @@
     }
 
     .single-tracker-top{
-        padding-left: 2%;
-        padding-right: 2%;
+        /*padding-left: 2%;
+        padding-right: 2%;*/
+        width: 95%;
+        margin: auto;
         height: 40px;
         display: flex;
         align-items: center;
@@ -30,11 +32,19 @@
     .single-tracker-body{
         height: 0px;
         transition: height 0.5s;
-        padding-left: 2%;
-        padding-right: 2%;
+
+        &>div{
+            width: 95%;
+            margin: auto;
+        }
+
+        .separator{
+            border-bottom: 1px solid white;
+            margin: 15px auto;
+        }
 
         &.expand{
-            height: 600px;
+            height: 420px;
         }
 
         &.expand.no-data{
@@ -57,21 +67,24 @@
             }
         }
 
-        .stats-available{
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: 10px auto;
+        .my-tracker-graph{
 
-            .stat{
-                padding: 1px 8px;
-                border-radius: 2px;
-                cursor: pointer;
-
-                &.selected{
-                    background-color: white;
-                    font-weight: bold;
-                    color: $primary;
+            .stats-available{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin: 10px auto;
+    
+                .stat{
+                    padding: 1px 8px;
+                    border-radius: 2px;
+                    cursor: pointer;
+    
+                    &.selected{
+                        background-color: white;
+                        font-weight: bold;
+                        color: $primary;
+                    }
                 }
             }
         }

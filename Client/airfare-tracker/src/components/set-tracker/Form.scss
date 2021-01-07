@@ -49,11 +49,16 @@ button{
 
     &:hover{
         opacity: 1;
-    }
+    } 
+}
 
-    &.loading{
+#form.submitting{
+    .button button{
         border: none;
         opacity: 0.99;
+        border-radius: 8px;
+        opacity: 0.8;
+        pointer-events: none;
 
         &::before {
             content: '';
@@ -82,9 +87,7 @@ button{
             background: $primary;
             border-radius: 5px;
         }
-    }
-
-    
+    }   
 }
 
 @keyframes rotate {

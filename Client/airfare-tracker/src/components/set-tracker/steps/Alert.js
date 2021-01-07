@@ -1,7 +1,15 @@
 import React from 'react';
 import './Alert.scss';
+import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+
+import { useDispatch, useSelector} from 'react-redux';
+
 
 export const Alert = (props) => {
+    //const [emailError, setEmailError] = useState('');
+    const priceTrigger = useSelector(state => state.setTracker.priceTrigger);
+    const alertEnabled = useSelector(state => state.setTracker.alertEnabled);
+    const dispatch = useDispatch();
 
     function onSubmit(){
         props.nextStep(1);
@@ -13,10 +21,21 @@ export const Alert = (props) => {
         }
     }
 
+    function setPriceTrigger(value){
+        dispatch(updateForm({priceTrigger: value}));
+    }
+
+    function setAlertEnabled(value){
+        dispatch(updateForm({alertEnabled: value}));
+    }
+
     const activeDisplay = (
         <div>
             <div className="inline-fields">
-                <input type="number" placeholder="Price limit"></input>
+                <input type="number" placeholder="Trigger price (€)" value={priceTrigger} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
+            </div>
+            <div>
+                Enable alert<input className="alert-checkbox" type="checkbox" value={alertEnabled} onChange={e => setAlertEnabled(e.currentTarget.checked)}></input>
             </div>
             <div id="alert-button" className="button" onClick={onSubmit}>
                 <button>{props.buttonLabel}</button>

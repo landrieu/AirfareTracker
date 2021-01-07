@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE, UPDATE_SINGLE } from './types';
+import { SAVE, CLEAR, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
 
 export const updateMyTrackers = (trackers) => {
     return {
@@ -8,7 +8,7 @@ export const updateMyTrackers = (trackers) => {
 
 export const updateSingleTracker = (tracker) => {
     return {
-        type: UPDATE_SINGLE, tracker
+        type: UPDATE_MY_SINGLE_TRACKER, tracker
     }
 }
 

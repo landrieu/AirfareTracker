@@ -24,10 +24,10 @@ export const SingleTracker = (props) => {
 
     const dispatch = useDispatch();
     const statsAvailable = [
-        { name: 'Min price', field: 'minPrice' },
-        { name: 'Max price', field: 'maxPrice' },
-        { name: 'Average price', field: 'averagePrice' },
-        { name: 'Median price', field: 'medianPrice' }
+        { name: 'Min prices', field: 'minPrice' },
+        { name: 'Max prices', field: 'maxPrice' },
+        { name: 'Average prices', field: 'averagePrice' },
+        { name: 'Median prices', field: 'medianPrice' }
     ];
 
     function formatAirfares(airfares){  
@@ -80,7 +80,7 @@ export const SingleTracker = (props) => {
     useEffect(() => {
         let mounted = true;
         DataService.trackerById(props.tracker.id).then((tracker) => {
-            
+            console.log('fzgerg')
             if(mounted){
                 //Update single tracker when fetched
                 setIsLoaded(true);
@@ -118,13 +118,13 @@ export const SingleTracker = (props) => {
         }
 
         return (
-            <div>
+            <div className="my-tracker-graph">
                 <div className="stats-available">
                     {statsAvailable.map((stat, index) => 
                     <span onClick={() => selectStat(stat.name)}  className={`stat ${statSelected === stat.name ? 'selected': ''}`} key={index}>{stat.name}</span>)
                     }
                 </div>
-                <LineChart datasets={trackerDatasets} chartID={`frequent-route-${props.index}`}/>
+                <LineChart datasets={trackerDatasets} maintainAspectRatio={false} chartID={`frequent-route-${props.index}`}/>
             </div>
         )
     }
@@ -139,8 +139,15 @@ export const SingleTracker = (props) => {
                 <div>
                     Status: {tracker.isActive ? 'Active': 'Not active'}
                 </div>
-                <div>Info: feui</div>
-                <div>Alert: 100$</div>
+                <div>
+                    Alert enabled: {tracker.isAlertEnabled ? 'Yes' : 'No'}
+                </div>
+                {tracker.triggerPrice && 
+                <div>
+                    Trigger price: {tracker.triggerPrice}
+                </div>
+                }
+                <div className="separator"></div>
                 {displayGraph()}
             </div>
         </div>

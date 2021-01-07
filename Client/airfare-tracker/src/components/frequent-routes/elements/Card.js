@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {LineChart} from '../../charts/line-chart/LineChart';
 
 import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
+import { useSelector} from 'react-redux';
+
 import './Card.scss';
 
 export const Card = (props) => {
@@ -11,6 +13,8 @@ export const Card = (props) => {
         return [rand1, rand2];
     });
 
+    const tracker = useSelector(state => state.homeInfo.nearestTrackers.find(t => t.id === props.trackerId));
+
     const [stats, setStats] = useState(() => {
         return new Array(2).fill({text: '', value: ''});
     });
@@ -19,9 +23,9 @@ export const Card = (props) => {
     //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
 
     const setDatasets = useCallback(() => {
-        if(!props.tracker.airfares) return [];
+        if(!tracker.airfares) return [];
 
-        let airfares = props.tracker.airfares;   
+        let airfares = tracker.airfares;   
         let tempColors = [...GRAPH_COLORS];          
         let datasets = airfares.map((a) => {
             return {
@@ -42,59 +46,62 @@ export const Card = (props) => {
 
         setTrackerDatasets(datasets);
 
-        setStats(props.tracker.stats);
-    }, [props.tracker]);
+        setStats(tracker.stats);
+    }, [tracker]);
 
     useEffect(() => {
-        setDatasets();
-    }, [props.tracker, setDatasets]);
+        if(tracker.status === TRACKER_STATUS.COMPLETE){
+            console.log('HERE')
+        }
+        if(tracker.status === TRACKER_STATUS.COMPLETE && trackerDatasets.length === 0){
+            setDatasets();
+        }
+        
+    }, [tracker, setDatasets]);
 
     const displayTop = () => {
-        switch (props.tracker.status) {
+        switch (tracker.status) {
             case TRACKER_STATUS.INIT: return '';
             case TRACKER_STATUS.LOADING: return '' 
-            case TRACKER_STATUS.FAIL: return props.tracker.error;
-            case TRACKER_STATUS.COMPLETE: return `From ${props.tracker.from.city} to ${props.tracker.to.city}`;        
+            case TRACKER_STATUS.FAIL: return tracker.error;
+            case TRACKER_STATUS.COMPLETE: return `From ${tracker.from.city} to ${tracker.to.city}`;        
             default: return '';
         }
     }
 
-    const displayStat = () => {
-        switch (props.tracker.status) {
+    const displayStat = (stat) => {
+        switch (tracker.status) {
             case TRACKER_STATUS.INIT: return '';
             case TRACKER_STATUS.LOADING: return '' 
             case TRACKER_STATUS.FAIL: return '';
-            case TRACKER_STATUS.COMPLETE: return `${props.tracker.stats ? props.tracker.stats[0].text : ''} ${props.tracker.stats ? props.tracker.stats[0].value : ''}%`;        
+            case TRACKER_STATUS.COMPLETE: return `${stat ? stat.text : ''} ${stat ? stat.value : ''}%`;        
             default: return '';
         }
     }
 
     function defineWidthLoading(idx){
-        if(props.tracker.status === TRACKER_STATUS.COMPLETE) return '100%'
-        console.log(randomWidth[0])
+        if(tracker.status === TRACKER_STATUS.COMPLETE) return '100%'
+        //console.log(randomWidth[0])
         return `${randomWidth[idx]}%`;
     }
 
     return(
-        <div className="card" key={props.tracker.id}>
-            <div className={`card-container ${props.tracker.status.toLowerCase()}`}>
+        <div className="card" key={tracker.id}>
+            <div className={`card-container ${tracker.status.toLowerCase()}`}>
                 <div className="top">
                     <div className="top-container">{displayTop()}</div>
                 </div>
                 <div className="middle">
-                    <div className="info">
-                        <div className="container" style={{width: defineWidthLoading(0)}}>
-
+                    {stats.map((stat, idx) => (
+                        <div className="info" key={idx}>
+                            <div className="container" style={{width: defineWidthLoading(0)}}>
+                            {displayStat(stat)}
+                            </div>
                         </div>
-                    </div>
-                    <div className="info">
-                        <div className="container" style={{width: defineWidthLoading(1)}}>
-                        {displayStat()}
-                        </div>
-                    </div>
+                    ))}
                 </div>
                 <div className="bottom">
-					<LineChart datasets={trackerDatasets} chartID={`frequent-route-${props.index}`}/>
+					<LineChart datasets={trackerDatasets} maintainAspectRatio={true} chartID={`frequent-route-${props.index}`}/>
                 </div>
             </div>
         </div>

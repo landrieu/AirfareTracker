@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE, UPDATE_SINGLE } from './types';
+import { SAVE, CLEAR, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
 
 const INITIAL_STATE = {
     updatedAt: null,
@@ -13,7 +13,7 @@ const reducer = (state = INITIAL_STATE, action) => {
         case UPDATE: 
           return state.trackers.length !== 0 ? state : {updatedAt: new Date(), trackers: action.trackers};
 
-        case UPDATE_SINGLE: 
+        case UPDATE_MY_SINGLE_TRACKER: 
           return {
             ...state, 
             trackers: state.trackers.map(stateTracker => action.tracker.id === stateTracker.id ? action.tracker : stateTracker)

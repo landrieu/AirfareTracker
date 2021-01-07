@@ -20,6 +20,12 @@ const reducer = (state = INITIAL_STATE, action) => {
                 ...state, nearestTrackers
             };
 
+        case UPDATE_SINGLE_TRACKER: 
+        /*return {
+            ...state, 
+            trackers: state.trackers.map(stateTracker => action.tracker.id === stateTracker.id ? action.tracker : stateTracker)
+          };*/
+
         default: return state;
     }
 };

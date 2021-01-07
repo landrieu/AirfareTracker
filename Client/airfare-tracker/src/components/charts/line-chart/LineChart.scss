@@ -1,1 +1,11 @@
 @import '../../../variables.scss';
+
+.line-chart{
+    height: 300px;
+    position: relative;
+    width: 100%;
+
+    canvas{
+        margin: auto;
+    }
+}

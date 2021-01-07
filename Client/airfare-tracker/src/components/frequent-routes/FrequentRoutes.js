@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from './elements/Card';
 
+import { useDispatch, useSelector} from 'react-redux';
+
 import './FrequentRoutes.scss'
 
 export const FrequentRoutes = (props) => {
     const [sliderXPosition, setSliderXPosition] = useState(0);
+    const trackers = useSelector(state => state.homeInfo.nearestTrackers);
     //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
 
     function clickArrow(e, direction){
@@ -15,10 +18,6 @@ export const FrequentRoutes = (props) => {
         setSliderXPosition(sliderXPosition + stepSize);
         //sliderStyle.transform = sliderXPosition + stepSize;
 	}
-	
-	/*useEffect(() =>{
-		console.log('dz', props.trackers)
-	}, [props.trackers]);*/
 
     return(
         <div id="home-frequent">
@@ -30,8 +29,8 @@ export const FrequentRoutes = (props) => {
                 <div id="section-1-right-gradient"></div>
                 <div id="section-2" style={{transform: `translateX(${sliderXPosition}%)`}}>
 				
-                    {props.trackers.map((tracker, index) => {
-						return <Card key={index} index={index} tracker={tracker}/>
+                    {trackers.map((tracker, index) => {
+						return <Card key={index} index={index} tracker={tracker} trackerId={tracker.id}/>
                     })}
                     
                 </div>
