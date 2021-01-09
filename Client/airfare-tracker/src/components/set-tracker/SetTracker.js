@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from 'react';
-
-import { Autocomplete } from '../others/Autocomplete';
 import { Form } from './Form';
 
 import './SetTracker.scss';
 
 export const SetTracker = (props) => {
-    const [canCreateTracker, setCanCreateTracker] = useState(true);
 
     useEffect(() => {
         //Check if the user can create a new tracker
         //If registered up to 5
         //Else 2
-        setTimeout(() => {
-            //setCanCreateTracker(true);
-        }, 5000);
-
-        //setTimeout(() => {
-        //let airports = 
-            //}, 1000)
-        
     }, []);
 
     return(

@@ -47,5 +47,9 @@ a:hover {
 }
 
 a:active {
-  text-decoration: underline;
+  text-decoration: none;
+}
+
+a:focus{
+  outline: none;
 }

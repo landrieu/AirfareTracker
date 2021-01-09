@@ -1,7 +1,7 @@
-@import '../../variables.scss';
+@import "../../variables.scss";
 
-input{
-    font-family: 'Bellota';
+input {
+    font-family: "Bellota";
     width: 100%;
     background-color: unset;
     font-size: 16px;
@@ -12,25 +12,29 @@ input{
     padding: 0;
     transition: border-bottom 1s;
 
-    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    &::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
         color: white;
         opacity: 1; /* Firefox */
     }
-      
-    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-        color: white;
-    }
-      
-    &::-ms-input-placeholder { /* Microsoft Edge */
+
+    &:-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
         color: white;
     }
 
-    &:active, &:focus{
+    &::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: white;
+    }
+
+    &:active,
+    &:focus {
         border-bottom: 1px solid #777;
     }
 }
 
-button{
+button {
     width: 120px;
     height: 45px;
     background-color: #060325;
@@ -38,7 +42,7 @@ button{
     border: 1px solid white;
     border-radius: 1px;
     opacity: 0.6;
-    font-family: 'Bellota';
+    font-family: "Bellota";
     font-size: 18px;
     margin: auto;
     display: block;
@@ -47,118 +51,74 @@ button{
     overflow: hidden;
     position: relative;
 
-    &:hover{
+    &:hover {
         opacity: 1;
-    } 
+    }
 }
 
-#form.submitting{
-    .button button{
-        border: none;
-        opacity: 0.99;
-        border-radius: 8px;
-        opacity: 0.8;
-        pointer-events: none;
 
-        &::before {
-            content: '';
-            position: absolute;
-            z-index: -2;
-            left: -100%;
-            top: -100%;
-            width: 300%;
-            height: 300%;
-            background-color: #399953;
-            background-repeat: no-repeat;
-            background-size: 50% 50%, 50% 50%;
-            background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-            background-image: linear-gradient(white, white), linear-gradient($primary, $primary), linear-gradient(white, white), linear-gradient($primary, $primary);
-            animation: rotate 4s linear infinite;
-        }
-        
-        &::after {
-            content: '';
-            position: absolute;
-            z-index: -1;
-            left: 3px;
-            top: 3px;
-            width: calc(100% - 6px);
-            height: calc(100% - 6px);
-            background: $primary;
-            border-radius: 5px;
-        }
-    }   
-}
-
-@keyframes rotate {
-	100% {
-		transform: rotate(1turn);
-	}
-}
-
-#form{
+#form {
     min-width: 400px;
     max-width: 600px;
     width: 70%;
     margin: 10px auto 0 auto;
 
-    #form-progression{
+    #form-progression {
         margin: 15px auto;
         width: 100%;
         height: 6px;
         background-color: $base-light-blue;
         overflow: hidden;
 
-        #form-progression-bar{
+        #form-progression-bar {
             height: 6px;
             background-color: white;
             transition: width 1s;
         }
     }
 
-    #form-steps{
+    #form-steps {
         min-height: calc(100vh - 80px);
         position: relative;
         background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
         /*overflow: hidden;*/
 
-        #form-steps-container{
+        #form-steps-container {
             position: absolute;
             width: 100%;
             height: 200%;
 
-            .step{
+            .step {
                 position: relative;
                 width: 100%;
                 transform: translateY(800px);
                 transition: transform 1s, background-color 0.5s;
 
-                &.visible{
-
+                &.visible {
                 }
 
-                &.visible:not(.active){
+                &.visible:not(.active) {
                     padding: 10px 4px;
                 }
-                &.visible:not(.active):hover{
+                &.visible:not(.active):hover {
                     background-color: $base-light-blue;
-                    
+
                     cursor: pointer;
                 }
             }
         }
     }
 
-    .button{
+    .button {
         margin-top: 25px;
     }
 
-    .inline-fields{
+    .inline-fields {
         display: inline-flex;
         width: 100%;
         justify-content: space-between;
-    
-        &>div{
+
+        & > div {
             width: 45%;
         }
     }

@@ -8,32 +8,36 @@ export const Login = (props) => {
     const [email, setEmail] = useState('lio23@hotmail.fr');
     const [password, setPassword] = useState('toulouse');
 
+    const [loading, setLoading] = useState(false);
+
     const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     function validateLogin(){
+        let valid = true;
         //Email validation
-        if(email !== '4564'){
-            setEmailError('RRRO')
+        if(email == '4564'){
+            setEmailError('RRRO');
+            valid = false;
         }
         //Password validation
         //if(data.pass)
+        return valid;
     }
 
-    async function onSubmit(e){
-        console.log('SUBMIT');
-        //Validate  
-        validateLogin({})
+    async function onSubmit(){
+        //Validate the form
+        if (!validateLogin()) return;
 
         try{
             //Send request
-            console.log(email, password)
+            setLoading(true);
             let auth = await DataService.loginUser({email, password});
-            /*console.log(auth);
-            console.log(authService);*/
-            console.log(`Is logged in ${authService.loggedIn()}`);
-            console.log(authService.loadToken());
+            setLoading(false);
+
         }catch (error) {
             //Unexpected error
+            setLoading(false);
             console.log(error);
         }
     }
@@ -52,7 +56,7 @@ export const Login = (props) => {
                     </div>
                 </div>
                 <div id="register-button" onClick={(e) => onSubmit(e)}>
-                    <button><div>Submit</div></button>
+                    <button className={`${loading ? 'loading' : ''}`}><div>Submit</div></button>
                 </div>
             </div>
             <div id="register-plane">

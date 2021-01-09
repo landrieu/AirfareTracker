@@ -50,6 +50,7 @@ export const Form = (props) => {
             //No, nb tracker < 2
                 //Set unkw sequence
         return new Promise(resolve => {
+            console.log('IS logged:', authService.loggedIn())
             if(authService.loggedIn()){
                 DataService.canCreateNewTracker().then(res => {
                     resolve([res.canCreateNewTracker, authSequence]);

@@ -1,4 +1,4 @@
-import { UPDATE_AIRPORT, UPDATE_TRACKERS } from './types';
+import { UPDATE_AIRPORT, UPDATE_TRACKERS, UPDATE_SINGLE_TRACKER } from './types';
 import { TRACKER_STATUS } from '../../services/appConstant';
 
 const INITIAL_STATE = {

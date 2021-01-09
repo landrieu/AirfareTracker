@@ -18,7 +18,7 @@ import { authService } from './services/authService';
 import { TRACKER_STATUS, errorMessages } from './services/appConstant';
 import { updateNearestAirport, updateNearestTrackers } from './redux/HomeInfo/actions';
  
-import './App.css';
+import './App.scss';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
