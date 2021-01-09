@@ -19,6 +19,13 @@ export const LineChart = (props) => {
                         distribution: 'linear'
                     }]
                 },
+                legend: {
+                    display: true,
+                    labels:{
+                        /*fontSize: '12'*/
+                        /*fontColor: 'rgb(255, 99, 132)',*/
+                    }
+                },
                 title: {
                     display: false,
                     text: 'Minimum price over time',

@@ -61,7 +61,9 @@ export const Login = (props) => {
                     </div>
                 </div>
                 <div id="register-button" onClick={(e) => onSubmit(e)}>
-                    <button className={`${loading ? 'loading' : ''}`}><div>Submit</div></button>
+                    <button className={`${loading ? 'loading' : ''}`}>
+                        Submit
+                    </button>
                 </div>
             </div>
             <div id="register-plane"></div>

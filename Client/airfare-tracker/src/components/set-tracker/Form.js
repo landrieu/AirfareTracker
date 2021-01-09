@@ -11,10 +11,11 @@ import { DataService } from '../../services/dataService';
 
 import { useDispatch, useSelector} from 'react-redux';
 
-export const Form = (props) => {
+export const Form = () => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
     const [initializing, setInitializing] = useState(true);
     const [loading, setLoading] = useState(false);
+    //const [trackerCreated, setTrackerCreated] = useState(false);
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
 
@@ -89,11 +90,15 @@ export const Form = (props) => {
 
         setLoading(true);
         setTimeout(() => setLoading(false), 5000);
-        /*DataService.createTracker(form).then(res => {
+
+        DataService.createTracker(form)
+        .then(res => {
             setLoading(false);
             console.log(res);
             //Add new tracker to redux 'myTrackers
-        });*/
+        }).catch((e) => {
+            setLoading(false);
+        });
         //resetForm();
     }
 
@@ -103,8 +108,6 @@ export const Form = (props) => {
         let backStep = typeof step === "string";
         step = typeof step === "string" ? stepSequence.indexOf(step) : step;
         if(step < 0) return;
-
-        console.log(backStep, step);
 
         if(backStep) return setActiveStep(step);
         if((activeStep + step) > stepSequence.length - 1) submitForm();

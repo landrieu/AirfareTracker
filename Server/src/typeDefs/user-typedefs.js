@@ -49,6 +49,7 @@ export const userTypeDefs = gql`
 
     type UserInputError{
         success: Boolean
+        type: String
         message: String
         errors: [Error]
     }
@@ -58,10 +59,16 @@ export const userTypeDefs = gql`
         message: String
     }
 
+    type RegisterCreation{
+        success: Boolean,
+        user: User
+    }
+
     union LoginResult = Authentication | AuthenticationError | UserInputError
+    union RegisterResult = RegisterCreation | UserInputError
 
     extend type Mutation {
-        createUser(email: String!, password: String!): User!
+        createUser(email: String!, password: String!): RegisterResult!
         loginUser(email: String!, password: String!): LoginResult!
         updateLastConnection(userId: String!): OperationResult!
         deleteUser(userId: String!): OperationResult!

@@ -1,36 +1,47 @@
-@import '../../variables.scss';
+@import "../../variables.scss";
 
-#register{
+#register {
     color: white;
     background-color: $primary;
     background-position: center;
     background-size: cover;
-    min-height: calc(100vh - 70px);
+    /*min-height: calc(100vh - 70px);*/
+    min-height: calc(100vh - #{$header-height});
     width: 100%;
     display: flex;
     overflow: hidden;
     position: relative;
 
-    #register-form{
+    #register-success {
+        height: calc(100vh - #{$header-height});
+        width: 100%;
+        display: flex;
+        align-items: center;
+        z-index: 2;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    #register-form {
         width: 450px;
         margin: auto;
         z-index: 2;
-    
-        #register-title{
+
+        #register-title {
             border-bottom: 1px solid white;
             font-size: 19px;
             margin-bottom: 20px;
         }
-        #register-fields{
+        #register-fields {
             width: 300px;
             margin: auto;
-    
-            div{
+
+            & > div {
                 margin-top: 10px;
             }
-    
-            input{
-                font-family: 'Bellota';
+
+            input {
+                font-family: "Bellota";
                 width: 100%;
                 background-color: unset;
                 font-size: 16px;
@@ -40,30 +51,49 @@
                 color: white;
                 padding: 0;
                 transition: border-bottom 1s;
-    
-                &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+
+                &::placeholder {
+                    /* Chrome, Firefox, Opera, Safari 10.1+ */
                     color: white;
                     opacity: 1; /* Firefox */
                 }
-                  
-                &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+
+                &:-ms-input-placeholder {
+                    /* Internet Explorer 10-11 */
                     color: white;
                 }
-                  
-                &::-ms-input-placeholder { /* Microsoft Edge */
+
+                &::-ms-input-placeholder {
+                    /* Microsoft Edge */
                     color: white;
                 }
-    
-                &:active, &:focus{
+
+                &:active,
+                &:focus {
                     border-bottom: 1px solid #777;
                 }
             }
+
+            .error-message {
+                height: 25px;
+                color: #ee5e7e;
+                font-size: 0.8rem;
+                display: flex;
+                align-items: center;
+            }
+
+            .form-error {
+                height: 30px;
+                text-align: center;
+                color: #ee5e7e;
+                font-size: 0.8rem;
+            }
         }
-    
-        #register-button{
-            margin-top: 50px;
-    
-            button{
+
+        #register-button {
+            margin-top: 25px;
+
+            button {
                 width: 120px;
                 height: 45px;
                 background-color: #060325;
@@ -71,21 +101,21 @@
                 border: 1px solid white;
                 border-radius: 1px;
                 opacity: 0.6;
-                font-family: 'Bellota';
+                font-family: "Bellota";
                 font-size: 18px;
                 margin: auto;
                 display: block;
                 cursor: pointer;
                 transition: opacity 1s;
-    
-                &:hover{
+
+                &:hover {
                     opacity: 1;
                 }
             }
         }
     }
 
-    #register-plane{
+    #register-plane {
         background-image: url(../../assets/images/plane_1.svg);
         background-size: cover;
         /* min-height: 500px; */
@@ -96,6 +126,7 @@
         background-repeat: no-repeat;
         background-size: contain;
         position: absolute;
-        bottom: 0;z-index: 1;
+        bottom: 0;
+        z-index: 1;
     }
 }

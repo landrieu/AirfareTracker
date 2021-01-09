@@ -6,9 +6,23 @@ export class Error{
     }
 }
 
+export class UserInputError extends Error{
+    constructor(type, errors){
+        super(type, 'Input error');
+        this.errors = errors;
+    }
+}
+
+export class ValidationError extends Error{
+    constructor(type, errors){
+        super(type, 'Validation error');
+        this.errors = errors;
+    }
+}
+
 export class AuthenticationError extends Error{
     constructor(message, errors){
-        super("AUTHENTICATION_ERROR", message)
+        super("AUTHENTICATION_ERROR", message);
         this.errors = errors;
     }
 }
@@ -19,6 +33,13 @@ export class AuthenticationSuccess{
         this.id = id;
         this.user = user;
         this.token = token;
+    }
+}
+
+export class RegisterCreation{
+    constructor(success, user){
+        this.success = success;
+        this.user = user;
     }
 }
 

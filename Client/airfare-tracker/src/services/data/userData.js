@@ -19,16 +19,16 @@ export function UserDataService(options) {
                 }
                 `,
                 variables: {
-                  email: email
+                    email: email
                 }
-              })
+            })
                 .then(result => result.data)
                 .then(data => data.userByEmail)
         },
 
-        loginUser: ({email, password}) => {
-          return options.graphClient.mutate({
-            mutation: gql`
+        loginUser: ({ email, password }) => {
+            return options.graphClient.mutate({
+                mutation: gql`
             mutation ($email: String!, $password: String!){
                 loginUser(email: $email, password: $password){
                     __typename
@@ -55,30 +55,50 @@ export function UserDataService(options) {
                 }
             }
             `,
-            variables: { email,password },
-            options: {
-                context: {
-                    headers:{
-
-                    }
-                }
-            }
-          })
-            .then(result => result.data)
-            .then(data => data ? data.loginUser : null)
-            .then(userData => {
-                if(userData.success){
-                    authService.storeUserData(userData);
-                }
-                
-                return userData;
+                variables: { email, password },
             })
+                .then(result => result.data)
+                .then(data => data ? data.loginUser : null)
+                .then(userData => {
+                    if (userData.success) {
+                        authService.storeUserData(userData);
+                    }
+
+                    return userData;
+                })
+        },
+
+        registerUser: ({ email, password }) => {
+            return options.graphClient.mutate({
+                mutation: gql`
+              mutation ($email: String!, $password: String!){
+                createUser(email: $email, password: $password){
+                      __typename
+                      ... on RegisterCreation{
+                          success
+                          user{
+                              createdAt
+                          }       
+                      }
+                      ... on UserInputError{
+                          type
+                          message
+                          success
+                          errors{target,message}
+                      }
+                  }
+              }
+              `,
+                variables: { email, password },
+            })
+                .then(result => result.data)
+                .then(data => data ? data.createUser : null)
         },
 
         canCreateNewTracker: () => {
             console.log(authService.loadToken());
             return options.graphClient.query({
-              query: gql`
+                query: gql`
               query{
                 numberTrackersCreatable{
                   success
@@ -88,21 +108,22 @@ export function UserDataService(options) {
                 }
               }
               `,
-              options: {
-                  context: {
-                      headers:{
-                        "Authorization": authService.loadToken()
-                      }
-                  }
-              }
+                options: {
+                    context: {
+                        headers: {
+                            "Authorization": authService.loadToken()
+                        }
+                    }
+                }
             })
-              .then(result => result.data)
-              .then(data => data ? data.numberTrackersCreatable : null)
-          }
+                .then(result => result.data)
+                .then(data => data ? data.numberTrackersCreatable : null)
+        }
     }
 }
 
-function setHeaders(h){
+
+/*function setHeaders(h){
     let headers = {};
     for(let k in h){
         headers[k] = h[k];
@@ -110,4 +131,4 @@ function setHeaders(h){
     return {
         context: { headers }
     }
-}
+}*/
