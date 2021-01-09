@@ -11,7 +11,7 @@ import { AUTH_ERRORS } from '../services/constants/errors';
 
 //import { /*UserInputError, AuthenticationError, */ValidationError } from 'apollo-server';
 
-import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, OperationError, OperationSuccess } from '../classes/RequestOperation';
+import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, OperationError, OperationSuccess, OperationResult } from '../classes/RequestOperation';
 
 const roles = {
     admin: "ADMIN",
@@ -20,8 +20,14 @@ const roles = {
 
 module.exports = {
     Query: {
-        users: () => {
-            return User.find();
+        users: async (_, { }, { auth }) => {
+            try {
+                const user = await VerifyAuthentication(auth);
+                if(user.role === roles.admin) return User.find();
+            } catch (error) {
+                //console.log(error);
+                return error;
+            }
         },
         userByEmail: (_, { email }) => {
             return User.findOne({ email });
@@ -102,19 +108,22 @@ module.exports = {
             const token = GenerateToken(user); 
             return new LoginSuccess(user._id, user._doc, `Bearer ${token}`);
         },
-        updateLastConnection: async (_, { userId }) => {
+        updateLastConnection: async (_, {}, {auth}) => {
+            const user = await VerifyAuthentication(auth);
             try {
                 await User.findOneAndUpdate(
-                    { _id: userId },
+                    { _id: user.id },
                     { $set: { lastConnectionAt: new Date() } },
                     { useFindAndModify: false }
                 );
-                return { success: true };
+                return new OperationResult(true, 'User update', null);
             } catch (error) {
-                return { success: false, error };
+                return new OperationResult(false, 'User update', 'Could not update user');
             }
         },
         deleteUser: async (_, { userId }) => {
+            const user = await VerifyAuthentication(auth);
+            //Check if the user is an admin
             try {
                 //Delete the user
                 const user = await User.findOneAndDelete({ _id: userId }, { useFindAndModify: false });

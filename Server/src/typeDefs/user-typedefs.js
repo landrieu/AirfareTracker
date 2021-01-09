@@ -17,6 +17,7 @@ export const userTypeDefs = gql`
     
     type OperationResult {
         success: Boolean!
+        type: String
         error: String
     }
 
@@ -65,7 +66,7 @@ export const userTypeDefs = gql`
     extend type Mutation {
         createUser(email: String!, password: String!): RegisterResult!
         loginUser(email: String!, password: String!): LoginResult!
-        updateLastConnection(userId: String!): OperationResult!
+        updateLastConnection(userId: String): OperationResult!
         deleteUser(userId: String!): OperationResult!
     }
 `;

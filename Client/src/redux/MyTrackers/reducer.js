@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
+import { SAVE, CLEAR_MY_TRACKERS, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
 
 const INITIAL_STATE = {
     updatedAt: null,
@@ -18,7 +18,7 @@ const reducer = (state = INITIAL_STATE, action) => {
             ...state, 
             trackers: state.trackers.map(stateTracker => action.tracker.id === stateTracker.id ? action.tracker : stateTracker)
           };
-        case CLEAR: return {};
+        case CLEAR_MY_TRACKERS: return INITIAL_STATE;
 
         default: return state;
     }

@@ -43,6 +43,14 @@ export class RegisterSuccess{
     }
 }
 
+export class OperationResult{
+    constructor(success, type, error){
+        this.success = success;
+        this.type = type;
+        this.error = error;
+    }
+}
+
 export class OperationError extends Error{
     constructor(message, operationType){
         super("OPERATION_ERROR", message);

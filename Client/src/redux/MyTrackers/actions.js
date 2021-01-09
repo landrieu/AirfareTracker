@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
+import { SAVE, CLEAR_MY_TRACKERS, UPDATE, UPDATE_MY_SINGLE_TRACKER } from './types';
 
 export const updateMyTrackers = (trackers) => {
     return {
@@ -19,8 +19,9 @@ export const saveMyTrackers = (trackers) => {
 };
 
 export const clearMyTrackers = () => {
+    console.log('CLZPF')
     return {
-        type: CLEAR
+        type: CLEAR_MY_TRACKERS
     };
 };
 

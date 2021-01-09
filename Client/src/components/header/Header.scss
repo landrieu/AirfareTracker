@@ -28,6 +28,10 @@
 
         li{
             margin: 0 5px;
+
+            &.active a{
+                color: #5d6a82;
+            }
         }
 
         .left{
