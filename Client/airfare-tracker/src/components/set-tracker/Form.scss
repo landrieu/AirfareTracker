@@ -63,6 +63,11 @@ button {
     width: 70%;
     margin: 10px auto 0 auto;
 
+    &.loading{
+        opacity: 0.8;
+        pointer-events: none;
+    }
+
     #form-progression {
         margin: 15px auto;
         width: 100%;

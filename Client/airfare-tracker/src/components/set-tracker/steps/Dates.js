@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { updateForm } from '../../../redux/SetTracker/actions';
 
 import { useDispatch, useSelector} from 'react-redux';
 
@@ -8,10 +8,6 @@ import { DateRangePicker } from '../../misc/DateRangePicker';
 import './Dates.scss';
 
 export const Dates = (props) => {
-
-    //const [startDateDeparture, setStartDateDeparture] = useState();
-    //const [endDateDeparture, setEndDateDeparture] = useState();
-
     const [startDateDeparture, endDateDeparture] = useSelector(state => state.setTracker.departureDates);
     const [startDateReturn, endDateReturn] = useSelector(state => state.setTracker.returnDates);
     const dispatch = useDispatch();
@@ -56,10 +52,6 @@ export const Dates = (props) => {
         }
     }
 
-    useEffect(() => {
-
-    }, []);
-
     const activeDisplay = (
         <div>
             <div className="inline-fields">
@@ -90,7 +82,9 @@ export const Dates = (props) => {
                 {datesError}
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
-                    <button>{props.buttonLabel}</button>
+                    <button className={`${props.isLoading ? 'loading' : ''}`}>
+                        {props.buttonLabel}
+                    </button>
                 </div>
         </div>
     );

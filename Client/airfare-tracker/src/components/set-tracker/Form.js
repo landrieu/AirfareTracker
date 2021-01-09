@@ -13,8 +13,8 @@ import { useDispatch, useSelector} from 'react-redux';
 
 export const Form = (props) => {
     const [canCreateTracker, setCanCreateTracker] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
+    const [initializing, setInitializing] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
 
@@ -30,7 +30,7 @@ export const Form = (props) => {
   
         let [canCreate, sequence] = await checkTrackerCreation();
         setCanCreateTracker(canCreate);
-        setLoading(false);
+        setInitializing(false);
 
         if(canCreate){
             setStepSequence(sequence);
@@ -43,14 +43,16 @@ export const Form = (props) => {
         }
     }, []);
 
-    function checkTrackerCreation(){
-        //Check if auth or not
+    /**
+     * Check if auth or not
             //Yes, nb trackers created < 5
                 //Set auth Sequence
             //No, nb tracker < 2
                 //Set unkw sequence
+     */
+    function checkTrackerCreation(){
+        //
         return new Promise(resolve => {
-            console.log('IS logged:', authService.loggedIn())
             if(authService.loggedIn()){
                 DataService.canCreateNewTracker().then(res => {
                     resolve([res.canCreateNewTracker, authSequence]);
@@ -58,7 +60,7 @@ export const Form = (props) => {
                     resolve([false]);
                 })
             }else{
-                resolve([true, unknSequence])
+                resolve([true, unknSequence]);
             }
         });
     }
@@ -83,33 +85,34 @@ export const Form = (props) => {
     }
 
     function submitForm(){
-        if(submitting) return;
+        if(loading) return;
 
-        setSubmitting(true);
-        DataService.createTracker(form).then(res => {
-            setSubmitting(false);
+        setLoading(true);
+        setTimeout(() => setLoading(false), 5000);
+        /*DataService.createTracker(form).then(res => {
+            setLoading(false);
             console.log(res);
             //Add new tracker to redux 'myTrackers
-        })
+        });*/
         //resetForm();
     }
 
     function nextStep(step){
-        if(typeof step === "number"){
-            setActiveStep(activeStep + step);
-            if((activeStep + step) > stepSequence.length - 1) submitForm();
-        }
-        if(typeof step === "string"){
-            let stepIndex = stepSequence.indexOf(step);
-            if(stepIndex !== -1){
-                setActiveStep(stepIndex);
-                if(stepIndex > stepSequence.length - 1) submitForm();
-            }
-        }
+        if(loading) return;
+
+        let backStep = typeof step === "string";
+        step = typeof step === "string" ? stepSequence.indexOf(step) : step;
+        if(step < 0) return;
+
+        console.log(backStep, step);
+
+        if(backStep) return setActiveStep(step);
+        if((activeStep + step) > stepSequence.length - 1) submitForm();
+        else setActiveStep(activeStep + step);
     }
 
     function displayCanCreateTracker(){
-        if(loading){
+        if(initializing){
             return (<div>Loading...</div>)
         }else if(canCreateTracker){
             return (formSteps())
@@ -146,6 +149,7 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Email')} 
                         isVisible={isVisible('Email')}
+                        isLoading={loading}
                         buttonLabel={stepSequence.indexOf('Email') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />}
                     <Location 
@@ -153,6 +157,7 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Location')} 
                         isVisible={isVisible('Location')}
+                        isLoading={loading}
                         buttonLabel={stepSequence.indexOf('Location') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />
                     <Dates 
@@ -160,6 +165,7 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Dates')} 
                         isVisible={isVisible('Dates')}
+                        isLoading={loading}
                         buttonLabel={stepSequence.indexOf('Dates') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
                     />
                     <Alert 
@@ -167,6 +173,7 @@ export const Form = (props) => {
                         nextStep={nextStep} 
                         stepStyle={stepStyle('Alert')} 
                         isVisible={isVisible('Alert')}
+                        isLoading={loading}
                         buttonLabel={stepSequence.indexOf('Alert') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
 
                     />
@@ -175,7 +182,7 @@ export const Form = (props) => {
     }
 
     return(
-        <div id="form" className={`${submitting ? 'submitting' : ''}`}>
+        <div id="form" className={`${loading ? 'loading' : ''}`}>
             {displayCanCreateTracker()}
         </div>
     )

@@ -96,7 +96,9 @@ export const Location = (props) => {
                 />
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
-                <button>{props.buttonLabel}</button>
+                <button className={`${props.isLoading ? 'loading' : ''}`}>
+                    {props.buttonLabel}
+                </button>
             </div>
         </div>
     );

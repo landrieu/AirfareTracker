@@ -32,13 +32,13 @@ export const Alert = (props) => {
     const activeDisplay = (
         <div>
             <div className="inline-fields">
-                <input type="number" placeholder="Trigger price (€)" value={priceTrigger} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
+                <input type="number" placeholder="Trigger price (€)" value={priceTrigger || ''} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
             </div>
             <div>
                 Enable alert<input className="alert-checkbox" type="checkbox" value={alertEnabled} onChange={e => setAlertEnabled(e.currentTarget.checked)}></input>
             </div>
             <div id="alert-button" className="button" onClick={onSubmit}>
-                <button>{props.buttonLabel}</button>
+                <button className={`${props.isLoading ? 'loading' : ''}`}>{props.buttonLabel}</button>
             </div>
         </div>
     );

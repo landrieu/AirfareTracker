@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useHistory } from "react-router-dom";
 import { DataService } from '../../services/dataService';
 import './Login.scss';
 
 import { authService } from '../../services/authService';
 
 export const Login = (props) => {
+    const history = useHistory();
     const [email, setEmail] = useState('lio23@hotmail.fr');
     const [password, setPassword] = useState('toulouse');
 
@@ -34,7 +36,10 @@ export const Login = (props) => {
             setLoading(true);
             let auth = await DataService.loginUser({email, password});
             setLoading(false);
-
+            //Redirect to 'my trackers'
+            if(auth.success) return history.push("/my-trackers");
+            //Else display errors
+            
         }catch (error) {
             //Unexpected error
             setLoading(false);
@@ -59,9 +64,7 @@ export const Login = (props) => {
                     <button className={`${loading ? 'loading' : ''}`}><div>Submit</div></button>
                 </div>
             </div>
-            <div id="register-plane">
-
-            </div>
+            <div id="register-plane"></div>
         </div>
     )
 }
