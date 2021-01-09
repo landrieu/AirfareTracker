@@ -14,13 +14,6 @@ export const userTypeDefs = gql`
         ADMIN
         USER
     }
-
-    type Authentication {
-        success: Boolean
-        id: ID!
-        token: String!
-        user: User!
-    }
     
     type OperationResult {
         success: Boolean!
@@ -41,13 +34,8 @@ export const userTypeDefs = gql`
         numberTrackersCreatable: TrackerCreationCheckResult
     }
 
-    type AuthenticationError{
-        success: Boolean
-        message: String
-        errors: [Error]
-    }
 
-    type UserInputError{
+    type ErrorResult{
         success: Boolean
         type: String
         message: String
@@ -59,13 +47,20 @@ export const userTypeDefs = gql`
         message: String
     }
 
-    type RegisterCreation{
+    type RegisterSuccess{
         success: Boolean,
         user: User
     }
 
-    union LoginResult = Authentication | AuthenticationError | UserInputError
-    union RegisterResult = RegisterCreation | UserInputError
+    type LoginSuccess {
+        success: Boolean
+        id: ID!
+        token: String!
+        user: User!
+    }
+
+    union LoginResult = LoginSuccess | ErrorResult
+    union RegisterResult = RegisterSuccess | ErrorResult
 
     extend type Mutation {
         createUser(email: String!, password: String!): RegisterResult!

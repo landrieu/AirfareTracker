@@ -4,6 +4,7 @@ import { DataService } from '../../services/dataService';
 import './Login.scss';
 
 import { authService } from '../../services/authService';
+import { AUTH_ERRORS} from '../../helpers/errors';
 
 export const Login = (props) => {
     const history = useHistory();
@@ -14,20 +15,26 @@ export const Login = (props) => {
 
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [formError, setFormError] = useState('');
 
     function validateLogin(){
-        let valid = true;
-        //Email validation
-        if(email == '4564'){
-            setEmailError('RRRO');
-            valid = false;
-        }
-        //Password validation
-        //if(data.pass)
-        return valid;
+        let errors = [];
+    
+        if(!/\S+@\S+\.\S+/.test(email)) errors.push({target: 'email', message: AUTH_ERRORS.EMAIL_FORMAT_INVALID});
+    
+        if(password.length < 6) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_LENGTH_SHORT});
+        if(password.length > 20) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_LENGTH_LONG});
+        if(!/^[A-Za-z0-9_@./#&+-]*$/.test(password)) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_INVALID_CHAR});
+
+        //Set Errors
+        errors.forEach((err) => setError(err));
+
+        return errors.length === 0;
     }
 
-    async function onSubmit(){
+    async function onSubmit(e){
+        e.preventDefault();
+        
         //Validate the form
         if (!validateLogin()) return;
 
@@ -38,6 +45,9 @@ export const Login = (props) => {
             setLoading(false);
             //Redirect to 'my trackers'
             if(auth.success) return history.push("/my-trackers");
+            
+            //Else display errors
+            auth.errors.forEach((err) => setError(err));
             //Else display errors
             
         }catch (error) {
@@ -47,26 +57,65 @@ export const Login = (props) => {
         }
     }
 
+    function setValue(target, value){
+        setError();
+
+        switch (target) {
+            case 'email':
+                setEmail(value);
+                setError({target});
+                break;
+            
+            case 'password':
+                setPassword(value);
+                setError({target});
+                break;
+        
+            default:
+                break;
+        }
+    }
+
+    function setError({target, message = ''} = {}){
+        switch (target) {
+            case 'email':
+                setEmailError(message);
+                break;
+            
+            case 'password':
+                setPasswordError(message);
+                break;
+        
+            default: 
+                setFormError(message);
+                break;
+        }
+    }
+
     return(
         <div id="login">
-            <div id="register-form">
-                <div id="register-title">Login</div>
-                <div id="register-fields">
-                    <div id="register-email">
-                        <input type="text" placeholder="email" onChange={(e) => setEmail(e.currentTarget.value)} value={email}/>
-                        {emailError && <span className="error-message">{emailError}</span>}
+            <form id="login-form" onSubmit={(e) => onSubmit(e)}>
+                <div id="login-title">Login</div>
+                <div id="login-fields">
+                    <div id="login-email">
+                        <input type="text" placeholder="email" onChange={(e) => setValue('email', e.currentTarget.value)} value={email}/>
+                        <div className="error-message">{emailError}</div>
                     </div>
-                    <div id="register-password">
-                        <input type="password" placeholder="password" onChange={(e) => setPassword(e.currentTarget.value)} value={password}/>
+                    <div id="login-password">
+                        <input type="password" placeholder="password" onChange={(e) => setValue('password', e.currentTarget.value)} value={password}/>
+                        <div className="error-message">{passwordError}</div>
+                    </div>
+                    <div className="form-error">
+                        {formError}
                     </div>
                 </div>
-                <div id="register-button" onClick={(e) => onSubmit(e)}>
-                    <button className={`${loading ? 'loading' : ''}`}>
+                <div id="login-button">
+                    <button className={`${loading ? 'loading' : ''}`} type="submit">
                         Submit
                     </button>
                 </div>
-            </div>
-            <div id="register-plane"></div>
+            </form>
+            <div id="login-plane"></div>
         </div>
     )
 }

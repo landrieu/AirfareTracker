@@ -6,12 +6,12 @@ import { Tracker } from '../database/models/Tracker';
 import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
 import { NB_TRACKERS_PER_USER } from '../services/constants';
 
-import { validateRegister } from '../services/data/user';
-import { REGISTRATION_ERRORS } from '../services/constants/errors';
+import { validateRegister, validateLogin } from '../services/data/user';
+import { AUTH_ERRORS } from '../services/constants/errors';
 
 //import { /*UserInputError, AuthenticationError, */ValidationError } from 'apollo-server';
 
-import { UserInputError, ValidationError, AuthenticationError, AuthenticationSuccess, OperationError, OperationSuccess } from '../classes/RequestOperation';
+import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, OperationError, OperationSuccess } from '../classes/RequestOperation';
 
 const roles = {
     admin: "ADMIN",
@@ -55,7 +55,7 @@ module.exports = {
             if (!valid) return new UserInputError('REGISTRATION_ERROR', errors);
 
             const existingUser = await User.findOne({ email });
-            if (existingUser) return new ValidationError('REGISTRATION_ERROR', [{message: REGISTRATION_ERRORS.USER_ALREADY_EXISTS}]);
+            if (existingUser) return new ValidationError('REGISTRATION_ERROR', [{message: AUTH_ERRORS.USER_ALREADY_EXISTS}]);
 
             password = await bcrypt.hash(password, 10); // hashing the password
 
@@ -76,34 +76,31 @@ module.exports = {
             //Set userID in the tracker records
             await Tracker.updateMany({ userEmail: email }, { $set: { userId: res._id } });
 
-            const token = GenerateToken(res);
-
-            return {
+            //const token = GenerateToken(res);
+            return new RegisterSuccess(true, res._doc);
+            /*return {
                 id: res._id,
                 ...res._doc,
                 token
-            };
+            };*/
         },
         loginUser: async (_, { email, password }) => {
             // validateLogin is a simple func that checks for empty fields
             // and return valid = false if any.
-            const { errors, valid } = { errors: null, valid: true };//validateLogin(username, password);
-            if (!valid) return new UserInputError('Errors', { errors });
+            const { errors, valid } = validateLogin(email, password);
+            if (!valid) return new UserInputError('LOGIN_ERROR', errors);
 
-            // check if that user already exists.
+            // Check if that user already exists
             const user = await User.findOne({ email });
-            if (!user) return new AuthenticationError('User not found!');
+            if (!user) return new AuthenticationError('LOGIN_ERROR', [{target: "email", message: AUTH_ERRORS.USER_NOT_EXISTS}]);
 
+            // Check the password
             const match = await bcrypt.compare(password, user.password);
-            if (!match) return new AuthenticationError('', [{ target: "password", message: "Wrong password" }]);
+            if (!match) return new AuthenticationError('', [{ target: "password", message: AUTH_ERRORS.PASSWORD_INCORRECT }]);
 
-            const token = GenerateToken(user); // generate a token if no erros.
-            return new AuthenticationSuccess(user._id, user._doc, `Bearer ${token}`);
-            return {
-                id: user._id, // set an id
-                user: user._doc, // spread the user info (email, created at, etc)
-                token: `Bearer ${token}`
-            };
+            // Generate a token and return user info
+            const token = GenerateToken(user); 
+            return new LoginSuccess(user._id, user._doc, `Bearer ${token}`);
         },
         updateLastConnection: async (_, { userId }) => {
             try {
@@ -145,20 +142,20 @@ module.exports = {
     LoginResult: {
         __resolveType(obj, context, info) {
             if (obj.token) {
-                return 'Authentication';
+                return 'LoginSuccess';
             }
 
-            return 'AuthenticationError';
+            return 'ErrorResult';
         },
     },
 
     RegisterResult: {
         __resolveType(obj, context, info) {
             if (obj.user) {
-                return 'RegisterCreation';
+                return 'RegisterSuccess';
             }
 
-            return 'UserInputError';
+            return 'ErrorResult';
         },
     }
 }

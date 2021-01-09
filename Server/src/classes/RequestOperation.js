@@ -21,13 +21,13 @@ export class ValidationError extends Error{
 }
 
 export class AuthenticationError extends Error{
-    constructor(message, errors){
-        super("AUTHENTICATION_ERROR", message);
+    constructor(type, errors){
+        super(type, 'Authentication error');
         this.errors = errors;
     }
 }
 
-export class AuthenticationSuccess{
+export class LoginSuccess{
     constructor(id, user, token){
         this.success = true;
         this.id = id;
@@ -36,7 +36,7 @@ export class AuthenticationSuccess{
     }
 }
 
-export class RegisterCreation{
+export class RegisterSuccess{
     constructor(success, user){
         this.success = success;
         this.user = user;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import './Register.scss';
 
 import { DataService } from '../../services/dataService';
-import { REGISTRATION_ERRORS} from '../../helpers/errors';
+import { AUTH_ERRORS} from '../../helpers/errors';
 
 export const Register = (props) => {
 
@@ -22,11 +22,11 @@ export const Register = (props) => {
     function validateRegister(){
         let errors = [];
     
-        if(!/\S+@\S+\.\S+/.test(email)) errors.push({target: 'email', message: REGISTRATION_ERRORS.EMAIL_FORMAT_INVALID});
+        if(!/\S+@\S+\.\S+/.test(email)) errors.push({target: 'email', message: AUTH_ERRORS.EMAIL_FORMAT_INVALID});
     
-        if(password.length < 6) errors.push({target: 'password', message: REGISTRATION_ERRORS.PASSWORD_LENGTH_SHORT});
-        if(password.length > 20) errors.push({target: 'password', message: REGISTRATION_ERRORS.PASSWORD_LENGTH_LONG});
-        if(!/^[A-Za-z0-9_@./#&+-]*$/.test(password)) errors.push({target: 'password', message: REGISTRATION_ERRORS.PASSWORD_INVALID_CHAR});
+        if(password.length < 6) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_LENGTH_SHORT});
+        if(password.length > 20) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_LENGTH_LONG});
+        if(!/^[A-Za-z0-9_@./#&+-]*$/.test(password)) errors.push({target: 'password', message: AUTH_ERRORS.PASSWORD_INVALID_CHAR});
 
         //Set Errors
         errors.forEach((err) => setError(err));
@@ -35,7 +35,6 @@ export const Register = (props) => {
     }
 
     async function onSubmit(e){
-        
         e.preventDefault();
         //Validate the form
         if (!validateRegister()) return;

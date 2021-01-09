@@ -80,7 +80,6 @@ export const SingleTracker = (props) => {
     useEffect(() => {
         let mounted = true;
         DataService.trackerById(props.tracker.id).then((tracker) => {
-            console.log('fzgerg')
             if(mounted){
                 //Update single tracker when fetched
                 setIsLoaded(true);

@@ -32,7 +32,7 @@ export function UserDataService(options) {
             mutation ($email: String!, $password: String!){
                 loginUser(email: $email, password: $password){
                     __typename
-                    ... on Authentication{
+                    ... on LoginSuccess{
                         success
                         token
                         id
@@ -47,7 +47,7 @@ export function UserDataService(options) {
                             }
                         }
                     }
-                    ... on AuthenticationError{
+                    ... on ErrorResult{
                         message
                         success
                         errors{target,message}
@@ -74,13 +74,13 @@ export function UserDataService(options) {
               mutation ($email: String!, $password: String!){
                 createUser(email: $email, password: $password){
                       __typename
-                      ... on RegisterCreation{
+                      ... on RegisterSuccess{
                           success
                           user{
                               createdAt
                           }       
                       }
-                      ... on UserInputError{
+                      ... on ErrorResult{
                           type
                           message
                           success

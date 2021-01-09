@@ -75,7 +75,7 @@
             }
 
             .error-message {
-                height: 25px;
+                min-height: 25px;
                 color: #ee5e7e;
                 font-size: 0.8rem;
                 display: flex;
@@ -83,7 +83,8 @@
             }
 
             .form-error {
-                height: 30px;
+                margin-top: 5px;
+                min-height: 30px;
                 text-align: center;
                 color: #ee5e7e;
                 font-size: 0.8rem;
@@ -91,7 +92,7 @@
         }
 
         #register-button {
-            margin-top: 25px;
+            margin-top: 10px;
 
             button {
                 width: 120px;
