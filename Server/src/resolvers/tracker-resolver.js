@@ -71,7 +71,15 @@ module.exports = {
                 userEmail = tracker.userEmail
             }
             
-            tracker = Object.assign({isActive: true,  type: 'N', userId, userEmail, sources: ["5dc39bba581d45d4af0f7f5fc46701d2"]}, tracker);
+            tracker = {
+                ...tracker,
+                isActive: true,  
+                isAlertActive: !!tracker.triggerPrice, 
+                type: 'N', 
+                userId, 
+                userEmail, 
+                sources: ["5dc39bba581d45d4af0f7f5fc46701d2"], 
+            };
             //departureDates returnDates
             const formatDates = (dateMin, dateMax) => {
                 let listDates = [dateMin.clone()];
@@ -165,6 +173,29 @@ module.exports = {
             }catch(error){
                 //console.log(error.message, error.msg)
                 return new OperationResult(false, 'UPDATE_TRACKER_STATUS', error.message);
+            }
+            
+        },
+
+        updateTrackerAlertStatus: async (_, {trackerId, newStatus}, {auth}) => {
+            //@TODO: Check if the user can enable the tracker, check the limit
+            try{
+                const user = await VerifyAuthentication(auth);
+                const tracker = await Tracker.findOne({_id: ObjectID(trackerId)});
+                if(!tracker) throw new Error("Could not find the tracker");
+
+                if(tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
+
+                let res = await Tracker.updateOne(
+                    {_id: trackerId}, 
+                    {$set: {isAlertActive: newStatus}}, 
+                    {useFindAndModify: false}
+                );
+                if(res.n === 0) throw new Error("No tracker has been updated");
+                return new OperationResult(true, 'UPDATE_TRACKER_ALERT_STATUS');
+            }catch(error){
+                //console.log(error.message, error.msg)
+                return new OperationResult(false, 'UPDATE_TRACKER_ALERT_STATUS', error.message);
             }
             
         }

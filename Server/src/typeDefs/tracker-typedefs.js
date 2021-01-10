@@ -14,7 +14,7 @@ export const trackerTypeDefs = gql`
         type: String,
         userEmail: String,
         userId: String,
-        isAlertEnabled: Boolean,
+        isAlertActive: Boolean,
         triggerPrice: Int,
         sources: [String]
         alertEmail: String
@@ -61,5 +61,6 @@ export const trackerTypeDefs = gql`
         createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence], sources: [String]): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): OperationResult
+        updateTrackerAlertStatus(trackerId: String!, newStatus: Boolean!): OperationResult
     }
 `;
