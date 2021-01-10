@@ -32,7 +32,7 @@ export const userTypeDefs = gql`
         users: [User!]!
         userByEmail(email: String): User
         validAuthentication: Boolean
-        numberTrackersCreatable: TrackerCreationCheckResult
+        numberTrackersCreatable(email: String): TrackerCreationCheckResult
     }
 
 

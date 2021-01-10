@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { updateForm } from '../../../redux/SetTracker/actions';
 
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { DateRangePicker } from '../../misc/DateRangePicker';
 import './Dates.scss';
@@ -12,38 +12,61 @@ export const Dates = (props) => {
     const [startDateReturn, endDateReturn] = useSelector(state => state.setTracker.returnDates);
     const dispatch = useDispatch();
 
-    const [datesError, setDatesError] = useState('');
+    const [departureDatesError, setDepartureDatesError] = useState('');
+    const [returnDatesError, setReturnDatesError] = useState('');
+    const [formError, setFormError] = useState('');
 
-    function setDepartureDates(startDate, endDate){
-        dispatch(updateForm({departureDates: [startDate, endDate]}));
+    function setDepartureDates(startDate, endDate) {
+        setDepartureDatesError('');
+        dispatch(updateForm({ departureDates: [startDate, endDate] }));
     }
 
-    function setReturnDates(startDate, endDate){
-        dispatch(updateForm({returnDates: [startDate, endDate]}));
+    function setReturnDates(startDate, endDate) {
+        setReturnDatesError('');
+        dispatch(updateForm({ returnDates: [startDate, endDate] }));
     }
 
     function onSubmit() {
-        let {valid, error} = validate();
-        if(valid) props.nextStep(1);
-        else setDatesError(error);
+        let { valid, errors } = validate();
+        if (valid) return props.nextStep(1);
+
+        errors.forEach(err => setError(err));
     }
 
-    function validate(){
+    function setError({target, message = ''} = {}){
+        switch (target) {
+            case 'departureDates':
+                setDepartureDatesError(message);
+                break;
+            
+            case 'returnDates':
+                setReturnDatesError(message);
+                break;
+        
+            default: 
+                setFormError(message);
+                break;
+        }
+    }
+
+    function validate() {
         let errors = [];
 
-        if(!(startDateDeparture && startDateDeparture.isValid() && endDateDeparture
-         && endDateDeparture.isValid() && startDateReturn && startDateReturn.isValid() 
-         && endDateReturn && endDateReturn.isValid())){
-            return { valid: false, error: 'Date not defined'};
+        if(!(startDateDeparture && startDateDeparture.isValid() && endDateDeparture && endDateDeparture.isValid())){
+            errors.push({target: 'departureDates', message: 'Dates not defined'});
         }
 
-        if(!(endDateReturn.isSameOrAfter(startDateReturn) 
-        && startDateReturn.isSameOrAfter(endDateDeparture)
-        && endDateDeparture.isSameOrAfter(startDateDeparture))){
-            return { valid: false, error: 'Chronology error'};
+        if (!(startDateReturn && startDateReturn.isValid() && endDateReturn && endDateReturn.isValid())) {
+            errors.push({target: 'returnDates', message: 'Dates not defined'});
         }
 
-        return { valid: true}
+        if (errors.length === 0 && !(endDateReturn.isSameOrAfter(startDateReturn)
+            && startDateReturn.isSameOrAfter(endDateDeparture)
+            && endDateDeparture.isSameOrAfter(startDateDeparture))) {
+            errors.push({message: 'Chronology error'});
+        }
+
+        return { valid: errors.length === 0, errors };
     }
 
     function backStep() {
@@ -54,10 +77,13 @@ export const Dates = (props) => {
 
     const activeDisplay = (
         <div>
+            <div className="tip">
+                You can select a range for your departure and return dates.
+            </div>
             <div className="inline-fields">
                 <div>
                     <DateRangePicker
-                    placeHolderStart="Departure"
+                        placeHolderStart="Departure"
                         startDate={startDateDeparture}
                         endDate={endDateDeparture}
                         setDates={setDepartureDates}
@@ -65,10 +91,13 @@ export const Dates = (props) => {
                         endDateId='end_date_01'
                         maxDate={startDateReturn ? moment(startDateReturn).add(-1, 'd') : null}
                     />
+                    <div id="dates-error" className="error-message">
+                        {departureDatesError}
+                    </div>
                 </div>
                 <div>
-                <DateRangePicker
-                placeHolderStart="Return"
+                    <DateRangePicker
+                        placeHolderStart="Return"
                         startDate={startDateReturn}
                         endDate={endDateReturn}
                         setDates={setReturnDates}
@@ -76,23 +105,34 @@ export const Dates = (props) => {
                         endDateId='end_date_02'
                         minDate={endDateDeparture ? moment(endDateDeparture).add(1, 'd') : null}
                     />
+                    <div id="dates-error" className="error-message">
+                        {returnDatesError}
+                    </div>
                 </div>
             </div>
-            <div id="dates-error">
-                {datesError}
+            <div className="form-error">
+                {formError}
             </div>
+
             <div id="location-button" className="button" onClick={onSubmit}>
-                    <button className={`${props.isLoading ? 'loading' : ''}`}>
-                        {props.buttonLabel}
-                    </button>
-                </div>
+                <button className={`${props.isLoading ? 'loading' : ''}`}>
+                    {props.buttonLabel}
+                </button>
+            </div>
         </div>
     );
 
     const unactiveDisplay = (
         <div>
-            <div>Departure dates range: {startDateDeparture && startDateDeparture.format('DD/MM/YYYY')} - {endDateDeparture && endDateDeparture.format('DD/MM/YYYY')}</div>
-            <div>Return dates range: {startDateReturn && startDateReturn.format('dddd DD MMMM YYYY')} - {endDateReturn && endDateReturn.format('DD/MM/YYYY')}</div>
+            {/*'DD/MM/YYYY'*/}
+            <div>
+                <span className="set-tracker-label">Departure dates range: </span>
+                {startDateDeparture && startDateDeparture.format('dddd DD MMMM YYYY')} - {endDateDeparture && endDateDeparture.format('dddd DD MMMM YYYY')}
+            </div>
+            <div>
+                <span className="set-tracker-label">Return dates range: </span> 
+                {startDateReturn && startDateReturn.format('dddd DD MMMM YYYY')} - {endDateReturn && endDateReturn.format('dddd DD MMMM YYYY')}
+            </div>
         </div>
     )
 

@@ -13,10 +13,10 @@ export const AirportTableCase = (props) => {
     const [letterSpinnerStyle, setLetterSpinnerStyle] = useState();
     
     useEffect(() => {
-        if(!props.nearestAirport) return;
+        if(!props.nearestAirport.updatedAt) return;
 
-        let airport = props.nearestAirport.city.toUpperCase();
-        let letter = airport.charAt(props.n);
+        let text = props.nearestAirport.airport ? props.nearestAirport.airport.city.toUpperCase() : '';
+        let letter = text.charAt(props.n);
 
         setTimeout(() => {
             setLetterSpinnerStyle({

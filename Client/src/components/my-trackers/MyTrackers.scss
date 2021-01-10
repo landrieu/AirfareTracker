@@ -7,6 +7,14 @@
     padding-top: 1px;
     margin-top: -1px;
 
+    #my-trackers-error{
+        min-height: calc(100vh - #{$header-height});
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     #my-trackers-loader{
         width: 100%;
         text-align: center;

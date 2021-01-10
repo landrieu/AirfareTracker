@@ -16,7 +16,7 @@ export const SingleTracker = (props) => {
     const tracker = useSelector(state => state.myTrackers.trackers.find(t => t.id === props.tracker.id));
     //console.log(tracker.id, props.tracker.id);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [statSelected, setStatSelected] = useState('Min price');
+    const [statSelected, setStatSelected] = useState('Min prices');
     const [noData, setNoData] = useState(true);
 
     const [expand, setExpand] = useState(false);

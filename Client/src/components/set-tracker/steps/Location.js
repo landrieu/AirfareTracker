@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Autocomplete } from '../../others/Autocomplete';
 import { DataService } from '../../../services/dataService'
 import './Location.scss';
 
-import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { updateForm } from '../../../redux/SetTracker/actions';
 import { useDispatch, useSelector} from 'react-redux';
 
 export const Location = (props) => {
@@ -47,10 +47,12 @@ export const Location = (props) => {
     }
 
     function setFrom(value){
+        setFromError('');
         dispatch(updateForm({from: value}));
     }
 
     function setTo(value){
+        setToError('');
         dispatch(updateForm({to: value}));
     }
 
@@ -69,6 +71,7 @@ export const Location = (props) => {
         }).catch(err => {
             //Failed to fetch new suggestions
             console.log(err);
+            setAirportSuggestions([]);
         });
     }
 
@@ -106,10 +109,10 @@ export const Location = (props) => {
     const unactiveDisplay = (
         <div>
             <div>
-                <span>From {from.text}</span>
+                <span className="set-tracker-label">From: </span>{from.text}
             </div> 
             <div>
-                <span>To {to.text}</span>
+                <span className="set-tracker-label">To: </span>{to.text}
             </div>
         </div>
     )

@@ -23,7 +23,6 @@ export const Autocomplete = (props) => {
     
 
     function onKeyUp(){
-        console.log('KEY UP')
         props.onChangeSearchTerm(props.userInput);
     }
 
@@ -64,13 +63,13 @@ export const Autocomplete = (props) => {
                 onKeyUp={(e) => onKeyUp(e)}
                 value={typeof props.userInput === 'string' ? props.userInput : props.userInput.text}
             />
-            {props.errorMessage && <div>{props.errorMessage}</div>}
             {showSuggestions && props.userInput && 
             <SuggestionList 
                 suggestions={props.suggestions} 
                 activeSuggestion={activeSuggestion} 
                 onClick={onClick}
             />}
+            <div className="error-message">{props.errorMessage}</div>
         </div>       
     )
 }

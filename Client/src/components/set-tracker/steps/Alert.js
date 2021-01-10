@@ -1,14 +1,12 @@
 import React from 'react';
 import './Alert.scss';
-import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { updateForm } from '../../../redux/SetTracker/actions';
 
 import { useDispatch, useSelector} from 'react-redux';
 
-
 export const Alert = (props) => {
-    //const [emailError, setEmailError] = useState('');
     const priceTrigger = useSelector(state => state.setTracker.priceTrigger);
-    const alertEnabled = useSelector(state => state.setTracker.alertEnabled);
+    const email = useSelector(state => state.setTracker.email);
     const dispatch = useDispatch();
 
     function onSubmit(){
@@ -25,17 +23,13 @@ export const Alert = (props) => {
         dispatch(updateForm({priceTrigger: value}));
     }
 
-    function setAlertEnabled(value){
-        dispatch(updateForm({alertEnabled: value}));
-    }
-
     const activeDisplay = (
         <div>
-            <div className="inline-fields">
-                <input type="number" placeholder="Trigger price (€)" value={priceTrigger || ''} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
+            <div className="tip">
+                You can set a trigger price. If an airfare is below that price, an email will be sent to {email}.
             </div>
-            <div>
-                Enable alert<input className="alert-checkbox" type="checkbox" value={alertEnabled} onChange={e => setAlertEnabled(e.currentTarget.checked)}></input>
+            <div className="inline-fields trigger-price">
+                <input type="number" placeholder="Trigger price (€)" value={priceTrigger || ''} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
             </div>
             <div id="alert-button" className="button" onClick={onSubmit}>
                 <button className={`${props.isLoading ? 'loading' : ''}`}>{props.buttonLabel}</button>
@@ -66,3 +60,11 @@ export const Alert = (props) => {
         </div>
     )
 }
+
+/*const alertEnabled = useSelector(state => state.setTracker.alertEnabled);
+function setAlertEnabled(value){
+    dispatch(updateForm({alertEnabled: value}));
+}
+<div>
+Enable alert<input className="alert-checkbox" type="checkbox" value={alertEnabled} onChange={e => setAlertEnabled(e.currentTarget.checked)}></input>
+</div>*/

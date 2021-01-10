@@ -58,7 +58,7 @@ class AuthService {
     }
 
     loadUser() {
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
         this.user = user;
         return user;
     }

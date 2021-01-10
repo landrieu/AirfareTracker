@@ -14,6 +14,7 @@ export const MyTrackers = (props) => {
     //console.log('FUZVUY')
     const myTrackers = useSelector(state => state.myTrackers.trackers);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const dispatch = useDispatch();
     const GET_TRACKERS = gql`
     query ($userId: String){
@@ -42,16 +43,18 @@ export const MyTrackers = (props) => {
         let mounted = true;
         setIsLoading(true);
         DataService.getUserTrackers().then(trackers => {
-            //console.log(trackers);
             if (mounted) {
                 setIsLoading(false);
+                setError('');
                 dispatch(updateMyTrackers(trackers));
             }
+        }).catch((e) => {
+            console.log(e);
+            if(mounted){
+                setIsLoading(false);
+                setError('Could not fetch your trackers');
+            }
         });
-        /*if(trackers){
-            setIsLoading(false);
-            dispatch(updateMyTrackers(trackers));
-        }*/
 
         return () => {
             mounted = false;
@@ -68,14 +71,28 @@ export const MyTrackers = (props) => {
         )
     }
 
+    function displayMyTrackers() {
+        if (error) {
+            return (
+                <div id="my-trackers-error">
+                    {error}
+                </div>
+            );
+        } else {
+            return (
+                <div id="my-trackers-content">
+                    {myTrackers.map((tracker, index) => {
+                        return <SingleTracker key={index} index={index} tracker={tracker} />
+                    })}
+                </div>
+            );
+        }
+    }
+
     return (
         <div id="my-trackers">
             {loadingWheel()}
-            <div id="my-trackers-content">
-                {myTrackers.map((tracker, index) => {
-                    return <SingleTracker key={index} index={index} tracker={tracker} />
-                })}
-            </div>
+            {displayMyTrackers()}
         </div>
     )
 }

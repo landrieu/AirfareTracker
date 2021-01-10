@@ -41,18 +41,24 @@ module.exports = {
                 return false;
             }
         },
-        numberTrackersCreatable: async (_, { }, { auth }) => {
+        numberTrackersCreatable: async (_, { email }, { auth }) => {
+            let user, userEmail, userId;
             try {
-                console.log(auth);
-                const user = await VerifyAuthentication(auth);
-                let nbTrackersCreated = await Tracker.countDocuments({ $or: [{ userId: user.id }, { userEmail: user.email }] });
-                let nbTrackersCreatable = NB_TRACKERS_PER_USER.REGISTERED - nbTrackersCreated;
-                console.log(nbTrackersCreated, nbTrackersCreatable, NB_TRACKERS_PER_USER.REGISTERED);
-                return { success: true, canCreateNewTracker: nbTrackersCreatable > 0, nbTrackersCreated };
+                //User logged
+                user = await VerifyAuthentication(auth);
+                if(user.role === roles.admin) return { success: true, canCreateNewTracker: true };
+                userId = user.id;
+                userEmail = user.email;
             } catch {
-                //console.log(error.message, error.name)
-                return { success: false, error: 'The authentication is incorrect' };
+                //User not logged
+                if(!email) return {success: false, error: 'Must be logged'};
+                userEmail = email;
             }
+
+            let query = userId ? { $or: [{ userId }, { userEmail }] } : { userEmail };
+            let nbTrackersCreated = await Tracker.countDocuments(query);
+            let nbTrackersCreatable = (user ? NB_TRACKERS_PER_USER.REGISTERED : NB_TRACKERS_PER_USER.VISITOR) - nbTrackersCreated;
+            return { success: true, canCreateNewTracker: nbTrackersCreatable > 0, nbTrackersCreated };
         }
     },
     Mutation: {

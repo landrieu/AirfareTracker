@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
@@ -10,134 +10,133 @@ import { SetTracker } from './components/set-tracker/SetTracker';
 import { Home } from './components/home/Home';
 import { MyTrackers } from './components/my-trackers/MyTrackers';
 
-//TEST
-import { Dates } from './components/set-tracker/steps/Dates';
-
 import { authService } from './services/authService';
 
 import { TRACKER_STATUS, errorMessages } from './services/appConstant';
-import { updateNearestAirport, updateNearestTrackers } from './redux/HomeInfo/actions';
- 
+import { updateNearestAirport, updateNearestTrackers, updateNearestTrackersStatus, updateSingleNearestTracker } from './redux/HomeInfo/actions';
+
 import './App.scss';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
+    const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
 
-  const dispatch = useDispatch();
-  
-  useEffect(() => {
-    console.log('APP INIT')
-    authService.subscribe(setIsLoggedIn);
+    const dispatch = useDispatch();
 
-    retrieveData();
-  }, []);
+    useEffect(() => {
+        console.log('APP INIT')
+        authService.subscribe(setIsLoggedIn);
 
-  const retrieveData = useCallback(() => {
+        retrieveData();
+    }, []);
 
-    DataService.getClosestTrackers().then(trackers => {
-        if(trackers){
-            dispatch(updateNearestTrackers(
-                {
-                    updateType: TRACKER_STATUS.INIT, 
+    const retrieveData = useCallback(() => {
+
+        DataService.getClosestTrackers().then(trackers => {
+            if (!trackers) {
+                dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+                return;
+            }
+            dispatch(updateNearestTrackers(trackers, TRACKER_STATUS.INIT));
+                /*{
+                    updateType: ,
                     data: trackers
                 }
-            ));
+            ));*/
             fetchTrackers(trackers);
-        }
-    }).catch(err => {
-        //Failed to fetch IP info
-        console.log(err);
-        dispatch(updateNearestTrackers(
-            {
-                updateType: 'status', 
-                data: {
-                    status: TRACKER_STATUS.FAIL, 
-                    error: errorMessages.connectionIssue
-                }
-            }
-        ))
-    });
-  
-    DataService.getClosestAirport().then(nearestAirport => {
-        dispatch(updateNearestAirport(nearestAirport));
-    });
-  });
 
-  function fetchTrackers(trackers){
-    trackers.forEach((t) => {
-        dispatch(updateNearestTrackers(
-            {
-                updateType: 'status', 
-                data: {status: TRACKER_STATUS.LOADING}
-            }
-        ));
-
-        DataService.airfaresByTrackerId(t.id).then(({trackerId, data}) => {
-            //Update single tracker when fetched
-            dispatch(updateNearestTrackers(
-                {
-                    updateType: TRACKER_STATUS.COMPLETE, 
-                    trackerId, 
-                    data: data
-                }
-            ));
         }).catch(err => {
-            //Failed to fetch specific tracker
+            //Failed to fetch IP info
             console.log(err);
-            dispatch(updateNearestTrackers(
+            dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+            /*dispatch(updateNearestTrackers(
                 {
-                    updateType: 'status', 
-                    trackerId: t.id, 
+                    updateType: 'status',
                     data: {
-                        status: TRACKER_STATUS.FAIL, 
+                        status: TRACKER_STATUS.FAIL,
                         error: errorMessages.connectionIssue
                     }
                 }
-            ));
+            ));*/
         });
+
+        DataService.getClosestAirport().then(nearestAirport => {
+            dispatch(updateNearestAirport(nearestAirport));
+        }).catch((e) => {
+            console.log(e);
+            dispatch(updateNearestAirport(null));
+        })
     });
-  }
 
-  const PrivateRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={(props) => (
-      isLoggedIn
-        ? <Component {...props} />
-        : <Redirect to='/login' />
-    )} />
-  )
+    function fetchTrackers(trackers) {
+        trackers.forEach((t) => {
+            dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.LOADING, null));
+            /*dispatch(updateNearestTrackers(
+                {
+                    updateType: 'status',
+                    data: { status: TRACKER_STATUS.LOADING }
+                }
+            ));*/
 
-  return (
-    <Router>
-    <div>
-      <Header />
+            DataService.airfaresByTrackerId(t.id).then(({ trackerId, tracker }) => {
+                //Update single tracker when fetched
+                dispatch(updateSingleNearestTracker(trackerId, tracker, TRACKER_STATUS.COMPLETE));
+                /*dispatch(updateNearestTrackers(
+                    {
+                        updateType: TRACKER_STATUS.COMPLETE,
+                        trackerId,
+                        data: data
+                    }
+                ));*/
+            }).catch(err => {
+                //Failed to fetch specific tracker
+                console.log(err);
+                dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+                /*dispatch(updateNearestTrackers(
+                    {
+                        updateType: 'status',
+                        trackerId: t.id,
+                        data: {
+                            status: TRACKER_STATUS.FAIL,
+                            error: errorMessages.connectionIssue
+                        }
+                    }
+                ));*/
+            });
+        });
+    }
 
-      <Switch>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/set-tracker">
-          <SetTracker />
-        </Route>
-        <Route path="/test">
-          <Dates 
-          isActive={true} 
-          isVisible={true}
-          buttonLabel={'Next'}
-          />
-        </Route>
-        <PrivateRoute exact path="/my-trackers" component={MyTrackers} />
-       
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </div>
-  </Router>
-    
-  );
+    const PrivateRoute = ({ component: Component, ...rest }) => (
+        <Route {...rest} render={(props) => (
+            isLoggedIn
+                ? <Component {...props} />
+                : <Redirect to='/login' />
+        )} />
+    )
+
+    return (
+        <Router>
+            <div>
+                <Header />
+
+                <Switch>
+                    <Route path="/register">
+                        <Register />
+                    </Route>
+                    <Route path="/login">
+                        <Login />
+                    </Route>
+                    <Route path="/set-tracker">
+                        <SetTracker />
+                    </Route>
+                    <PrivateRoute exact path="/my-trackers" component={MyTrackers} />
+                    <Route path="/">
+                        <Home />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+
+    );
 }
 
 

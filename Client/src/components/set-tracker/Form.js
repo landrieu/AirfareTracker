@@ -9,35 +9,46 @@ import { Dates } from './steps/Dates';
 import { Alert } from './steps/Alert';
 import { DataService } from '../../services/dataService';
 
-import { useDispatch, useSelector} from 'react-redux';
+import { LDSRing } from '../misc/Loaders';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { clearForm, updateForm } from '../../redux/SetTracker/actions';
+
 
 export const Form = () => {
+    const dispatch = useDispatch();
+
     const [canCreateTracker, setCanCreateTracker] = useState(false);
     const [initializing, setInitializing] = useState(true);
     const [loading, setLoading] = useState(false);
-    //const [trackerCreated, setTrackerCreated] = useState(false);
+    const [trackerCreated, setTrackerCreated] = useState(null);
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
+    const [error, setError] = useState('');
+
+    const form = useSelector(state => state.setTracker);
 
     const authSequence = ['Location', 'Dates', 'Alert'];
     const unknSequence = ['Email', 'Location', 'Dates', 'Alert'];
 
-    const form = useSelector(state => state.setTracker)
-    
-    //const dispatch = useDispatch();
-
-    useEffect(async() => {
-        //Check if the user can create a new tracker
-  
-        let [canCreate, sequence] = await checkTrackerCreation();
+    async function initializeForm(){
+        let [canCreate, sequence, error] = await checkTrackerCreation();
         setCanCreateTracker(canCreate);
+        setError('');
         setInitializing(false);
 
         if(canCreate){
             setStepSequence(sequence);
             setActiveStep(0);
+        }else{
+            //"Can't create a tracker, the limit has been reached"
+            setError(error);
         }
+    }
 
+    useEffect(async() => {
+        //Check if the user can create a new tracker
+        initializeForm();
 
         return () => {
 
@@ -46,19 +57,19 @@ export const Form = () => {
 
     /**
      * Check if auth or not
-            //Yes, nb trackers created < 5
-                //Set auth Sequence
-            //No, nb tracker < 2
-                //Set unkw sequence
+     * Yes, nb trackers created < 5 => Set auth Sequence
+     * No, nb tracker < 2 => Set unkw sequence
      */
     function checkTrackerCreation(){
         //
         return new Promise(resolve => {
             if(authService.loggedIn()){
                 DataService.canCreateNewTracker().then(res => {
-                    resolve([res.canCreateNewTracker, authSequence]);
+                    let user = authService.loadUser();
+                    dispatch(updateForm({email: user.email}));
+                    resolve([res.canCreateNewTracker, authSequence, res.canCreateNewTracker ? '' : "You can't create a tracker, the limit has been reached"]);
                 }).catch((e) => {
-                    resolve([false]);
+                    resolve([false, null, "Network issue, check your connection"]);
                 })
             }else{
                 resolve([true, unknSequence]);
@@ -71,9 +82,6 @@ export const Form = () => {
     }
 
     function isVisible(stepName){
-        if(stepName === 'Email'){
-            console.log(stepSequence.indexOf(stepName) <= activeStep, stepSequence.indexOf(stepName), activeStep)
-        }
         return (stepSequence.length > 0) 
         && stepSequence.indexOf(stepName) !== -1 
         && stepSequence.indexOf(stepName) <= activeStep;
@@ -89,17 +97,20 @@ export const Form = () => {
         if(loading) return;
 
         setLoading(true);
-        setTimeout(() => setLoading(false), 5000);
-
-        DataService.createTracker(form)
-        .then(res => {
+        /*setTimeout(() => {
             setLoading(false);
+            setTrackerCreated(true);
+        }, 5000);*/
+
+        DataService.createTracker(form).then(res => {
+            setLoading(false);
+            setTrackerCreated(res.tracker);
             console.log(res);
             //Add new tracker to redux 'myTrackers
         }).catch((e) => {
             setLoading(false);
+            //Set the errors
         });
-        //resetForm();
     }
 
     function nextStep(step){
@@ -116,11 +127,19 @@ export const Form = () => {
 
     function displayCanCreateTracker(){
         if(initializing){
-            return (<div>Loading...</div>)
+            return (
+                <div id="set-tracker-loader">
+                    <LDSRing />
+                </div>
+            );
+        }else if(trackerCreated){
+            return (displayEndForm());
         }else if(canCreateTracker){
-            return (formSteps())
+            return (formSteps());
+        }else if(error){
+            return (<div id='set-tracker-error'>{error}</div>);
         }else{
-            return (<div>Can't create a tracker, the limit has been reached</div>)
+            return (<div id='set-tracker-unexpected-error'>Unexpected error</div>)
         }
     }
 
@@ -132,15 +151,36 @@ export const Form = () => {
     }
 
     function resetForm(){
-        //setStepSequence(authSequence);
-        setLoading(false);
-        //setCanCreateTracker(true);
-        setActiveStep(0);
+        //Clear redux form
+        dispatch(clearForm());
+
+        //Set hooks to their initial states
+        setCanCreateTracker(false);
+        setInitializing(true);
+        setActiveStep(-1);
+        setError('');
+        setTrackerCreated(null);
+
+        //Re-initialize the form
+        initializeForm(); 
+    }
+
+    function displayEndForm(){
+        return(
+        <div id="tracker-created">
+            <div id="tracker-created-details">
+                <div><span>Your tracker has been successfully created.</span></div>
+                <div><span>Here is the id:</span></div>
+                <div><span>You will receive an email containing all the details!</span></div>
+            </div>
+            <div id="tracker-created-button">
+                <button onClick={resetForm}>Create a new tracker</button>
+            </div>
+        </div>);
     }
 
     function formSteps(){
         return (
-            
             <div id="form-steps">
                 <div id="form-progression">
                     <div id="form-progression-bar" style={progressionBarStyle()}></div>

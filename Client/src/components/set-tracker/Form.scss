@@ -1,69 +1,12 @@
 @import "../../variables.scss";
 
-input {
-    font-family: "Bellota";
-    width: 100%;
-    background-color: unset;
-    font-size: 16px;
-    height: 32px;
-    border: 0;
-    border-bottom: 1px solid white;
-    color: white;
-    padding: 0;
-    transition: border-bottom 1s;
-
-    &::placeholder {
-        /* Chrome, Firefox, Opera, Safari 10.1+ */
-        color: white;
-        opacity: 1; /* Firefox */
-    }
-
-    &:-ms-input-placeholder {
-        /* Internet Explorer 10-11 */
-        color: white;
-    }
-
-    &::-ms-input-placeholder {
-        /* Microsoft Edge */
-        color: white;
-    }
-
-    &:active,
-    &:focus {
-        border-bottom: 1px solid #777;
-    }
-}
-
-button {
-    width: 120px;
-    height: 45px;
-    background-color: #060325;
-    color: white;
-    border: 1px solid white;
-    border-radius: 1px;
-    opacity: 0.6;
-    font-family: "Bellota";
-    font-size: 18px;
-    margin: auto;
-    display: block;
-    cursor: pointer;
-    transition: opacity 1s;
-    overflow: hidden;
-    position: relative;
-
-    &:hover {
-        opacity: 1;
-    }
-}
-
-
 #form {
     min-width: 400px;
     max-width: 600px;
     width: 70%;
     margin: 10px auto 0 auto;
 
-    &.loading{
+    &.loading {
         opacity: 0.8;
         pointer-events: none;
     }
@@ -83,7 +26,7 @@ button {
     }
 
     #form-steps {
-        min-height: calc(100vh - 80px);
+        min-height: calc(100vh - #{$header-height});
         position: relative;
         background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
         /*overflow: hidden;*/
@@ -99,8 +42,6 @@ button {
                 transform: translateY(800px);
                 transition: transform 1s, background-color 0.5s;
 
-                &.visible {
-                }
 
                 &.visible:not(.active) {
                     padding: 10px 4px;
@@ -127,4 +68,69 @@ button {
             width: 45%;
         }
     }
+
+    #set-tracker-loader {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 10px - #{$header-height});
+    }
+
+    #set-tracker-error, #set-tracker-unexpected-error {
+        height: 150px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #tracker-created {
+        min-height: calc(100vh - 10px - #{$header-height});
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        #tracker-created-details {
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        #tracker-created-button button{
+            width: 210px;
+        }
+    }
+}
+
+.error-message {
+    min-height: 25px;
+    color: #ee5e7e;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-error {
+    margin-top: 5px;
+    min-height: 30px;
+    text-align: center;
+    color: #ee5e7e;
+    font-size: 0.8rem;
+}
+
+.tip {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #687b9a /*#76a05b*/;
+}
+
+.set-tracker-label {
+    color: #687b9a;
 }

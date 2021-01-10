@@ -19,7 +19,7 @@ export const DateRangePicker = (props) => {
         (props.maxDate && day.isAfter(props.maxDate)) || 
         (day.isBefore(moment().add(1, 'd'))) ||
         (focusField === 'endDate' && 
-        day.isAfter(moment(props.startDate).add(3, 'd')) || day.isBefore(moment(props.startDate).add(-1, 'd'))));
+        day.isAfter(moment(props.startDate).add(2, 'd')) || day.isBefore(moment(props.startDate).add(-1, 'd'))));
     }
 
     return (

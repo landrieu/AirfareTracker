@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
 import './Email.scss';
 
-import { saveForm, updateForm } from '../../../redux/SetTracker/actions';
+import { updateForm } from '../../../redux/SetTracker/actions';
+import { DataService } from '../../../services/dataService';
+
 import { useDispatch, useSelector} from 'react-redux';
 
 export const Email = (props) => {
     const [emailError, setEmailError] = useState('');
+    const [checkingEmail, setCheckingEmail] = useState(false);
     const email = useSelector(state => state.setTracker.email);
     const dispatch = useDispatch();
 
-    function onSubmit(){
+    async function onSubmit(){
         let {valid, error} = validate();
-        if(valid) props.nextStep(1);
-        else setEmailError(error);
+        if(!valid) return setEmailError(error);
+        //@TODO: Check if email can create trackers, 
+        setCheckingEmail(true);
+        let canCreate = await checkEmailAddress();
+        setCheckingEmail(false);
+
+        if(canCreate) props.nextStep(1);
+        else setEmailError('The limit of tracker creation has been reached');
+    }
+
+    function checkEmailAddress(){
+        return new Promise(resolve => {
+            DataService.canCreateNewTracker(email).then(res => {
+                resolve(res.canCreateNewTracker);
+            }).catch(() => {
+                resolve(false);
+            });
+        });
     }
 
     function setEmail(value){
@@ -32,14 +51,19 @@ export const Email = (props) => {
         return isEmailValid ? {valid: true} : {valid: false, error: "Email format is incorrect"};
     }
 
+    function onChange(e){
+        setEmail(e.currentTarget.value);
+        setEmailError('');
+    }
+
     const activeDisplay = (
         <div>
             <div className="inline-fields">
-                <input type="text" placeholder="Email" value={email} onChange={e => setEmail(e.currentTarget.value)}></input>
-                <span>{emailError}</span>
+                <input type="text" placeholder="Email" value={email} onChange={onChange}></input>
             </div>
+            <div className="error-message">{emailError}</div>
             <div id="email-button" className="button" onClick={onSubmit}>
-                <button className={`${props.isLoading ? 'loading' : ''}`}>
+                <button className={`${(props.isLoading || checkingEmail) ? 'loading' : ''}`}>
                     {props.buttonLabel}
                 </button>
             </div>
@@ -48,7 +72,7 @@ export const Email = (props) => {
 
     const unactiveDisplay = (
         <div>
-            {email && <span>Email: {email}</span>}
+            {email && <span><span className="set-tracker-label">Email: </span>{email}</span>}
         </div>
     )
 

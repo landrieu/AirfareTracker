@@ -8,7 +8,7 @@ import { Info } from './info/Info';
 import { useDispatch, useSelector } from 'react-redux';
 
 export const Home = (props) => {
-    const nearestAirport = useSelector(state => state.homeInfo.nearestAirport);
+    //const nearestAirport = useSelector(state => state.homeInfo.nearestAirport);
     const nearestTrackers = useSelector(state => state.homeInfo.nearestTrackers);
 
     const dispatch = useDispatch();
@@ -37,7 +37,6 @@ export const Home = (props) => {
     
     useEffect(() => {
         // Fetch
-        //console.log('HELLO');
         //changeCardSize();
         //window.addEventListener('resize', changeCardSize.bind(this));
         
@@ -51,7 +50,7 @@ export const Home = (props) => {
         <div id="home">
             <div id="home-frequent-routes">
                 <FrequentRoutes trackers={nearestTrackers}/>
-                <AirportTable nearestAirport={nearestAirport}/>
+                <AirportTable/>
             </div>
             <Info />
         </div>

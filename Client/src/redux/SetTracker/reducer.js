@@ -1,5 +1,4 @@
-import { updateForm } from './actions';
-import { SAVE, CLEAR, UPDATE } from './types';
+import { SAVE, CLEAR_FORM, UPDATE } from './types';
 
 const INITIAL_STATE = {
     email: 'lio23@hotmail.fr',
@@ -55,7 +54,7 @@ const reducer = (state = INITIAL_STATE, action) => {
             console.log(updatedForm)
             return {...state, ...updatedForm}
 
-        case CLEAR: return {};
+        case CLEAR_FORM: return INITIAL_STATE;
 
         default: return state;
     }

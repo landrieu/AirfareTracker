@@ -1,4 +1,4 @@
-import { SAVE, CLEAR, UPDATE } from './types';
+import { SAVE, CLEAR_FORM, UPDATE } from './types';
 
 export const updateForm = (form) => {
     return {
@@ -14,7 +14,7 @@ export const saveForm = ({email, from, to}) => {
 
 export const clearForm = () => {
     return {
-        type: CLEAR
+        type: CLEAR_FORM
     };
 };
 
