@@ -8,16 +8,17 @@ import { formatRangeDates } from '../../../helpers/date';
 
 import { LineChart } from '../../charts/line-chart/LineChart';
 import { LDSSpinner, LDSRing } from '../../misc/Loaders';
+import { Toggle } from '../../misc/Toggle';
 
 import './SingleTracker.scss';
 
 export const SingleTracker = (props) => {
     
     const tracker = useSelector(state => state.myTrackers.trackers.find(t => t.id === props.tracker.id));
-    //console.log(tracker.id, props.tracker.id);
     const [isLoaded, setIsLoaded] = useState(false);
     const [statSelected, setStatSelected] = useState('Min prices');
     const [noData, setNoData] = useState(true);
+    const [updatingTrackerStatus, setUpdatingTrackerStatus] = useState(false)
 
     const [expand, setExpand] = useState(false);
     const [trackerDatasets, setTrackerDatasets] = useState([]);
@@ -73,7 +74,6 @@ export const SingleTracker = (props) => {
             }
         });
 
-        console.log(datasets)
         setTrackerDatasets(datasets);
     }
 
@@ -93,6 +93,23 @@ export const SingleTracker = (props) => {
             mounted = false;
         }
     }, []);
+
+    function toggleTrackerStatus(){
+        let newStatus = !tracker.isActive;
+        setUpdatingTrackerStatus(true);
+        dispatch(updateSingleTracker({...tracker, isActive: newStatus}));
+        
+        DataService.updateTrackerStatus(tracker.id, newStatus).then((res) => {
+            console.log(res);
+        }).catch((e) => {
+            console.log(e);
+            dispatch(updateSingleTracker({...tracker, isActive: !newStatus}));
+        }).finally(() => {
+            setUpdatingTrackerStatus(false);
+        })
+
+
+    }
 
     function displayExpand(){
         if(!isLoaded) return <span><LDSSpinner width='25px' height='25px'/></span>
@@ -135,11 +152,12 @@ export const SingleTracker = (props) => {
                 {displayExpand()}
             </div>
             <div className={`single-tracker-body ${expand ? 'expand': ''} ${noData ? 'no-data' : ''}`}>
-                <div>
-                    Status: {tracker.isActive ? 'Active': 'Not active'}
+                <div className="single-tracker-status">
+                    <span className="single-tracker-label">Status: </span>
+                    <Toggle isActive={tracker.isActive} isLoading={updatingTrackerStatus} loaderSize={'small'} onClick={toggleTrackerStatus}/>
                 </div>
                 <div>
-                    Alert enabled: {tracker.isAlertEnabled ? 'Yes' : 'No'}
+                    <span className="single-tracker-label">Alert enabled:</span> {tracker.isAlertEnabled ? 'Yes' : 'No'}
                 </div>
                 {tracker.triggerPrice && 
                 <div>

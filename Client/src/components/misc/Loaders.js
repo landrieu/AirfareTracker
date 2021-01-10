@@ -38,8 +38,8 @@ export const LDSSpinner = (props) => {
 
     return(
         <div className="lds-ripple" style={style}>
-            <div></div>
-            <div></div>
+            <div className={`${props.size ? props.size : ''}`}></div>
+            <div className={`${props.size ? props.size : ''}`}></div>
         </div>    
     )
 }

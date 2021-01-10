@@ -9,7 +9,7 @@ export const GenerateToken = ({ id, email, role = 'USER' }) => {
 }
 
 export const VerifyAuthentication = async auth => {
-  if (!auth) throw new AUError('AUTH', 'Tou must be logged in!');
+  //if (!auth) throw new AUError('AUTH', 'Tou must be logged in!');
   if (!auth) throw new AuthenticationError('You must be logged in!');
 
   const token = auth.split('Bearer ')[1];

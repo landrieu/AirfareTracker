@@ -1,17 +1,17 @@
-@import '../../../variables.scss';
+@import "../../../variables.scss";
 
-.single-tracker{
+.single-tracker {
     width: 100%;
     margin-top: 10px;
     border: 1px white solid;
     overflow: hidden;
 
-    &.disabled .single-tracker-top{
+    &.disabled .single-tracker-top {
         opacity: 0.8;
         pointer-events: none;
     }
 
-    .single-tracker-top{
+    .single-tracker-top {
         /*padding-left: 2%;
         padding-right: 2%;*/
         width: 95%;
@@ -22,42 +22,49 @@
         justify-content: space-between;
         font-size: 1.2rem;
 
-        .sign{
+        .sign {
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
         }
     }
 
-    .single-tracker-body{
+    .single-tracker-body {
         height: 0px;
         transition: height 0.5s;
+        width: 95%;
+        margin: auto;
 
-        &>div{
-            width: 95%;
-            margin: auto;
-        }
-
-        .separator{
+        .separator {
             border-bottom: 1px solid white;
             margin: 15px auto;
         }
 
-        &.expand{
+        &.expand {
             height: 420px;
         }
 
-        &.expand.no-data{
+        &.expand.no-data {
             height: 190px;
         }
 
-        .no-data{
+        .single-tracker-status{
+            display: flex;
+            margin: 5px auto;
+            justify-content: flex-start;
+        }
+
+        .single-tracker-label{
+            margin-right: 12px;
+        }
+
+        .no-data {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 130px;
 
-            .no-data-label{
+            .no-data-label {
                 background-color: $base-light-blue;
                 width: 100%;
                 height: 95px;
@@ -67,20 +74,19 @@
             }
         }
 
-        .my-tracker-graph{
-
-            .stats-available{
+        .my-tracker-graph {
+            .stats-available {
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
                 margin: 10px auto;
-    
-                .stat{
+
+                .stat {
                     padding: 1px 8px;
                     border-radius: 2px;
                     cursor: pointer;
-    
-                    &.selected{
+
+                    &.selected {
                         background-color: white;
                         font-weight: bold;
                         color: $primary;

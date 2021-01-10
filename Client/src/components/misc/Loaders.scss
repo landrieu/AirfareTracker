@@ -8,6 +8,10 @@
     opacity: 1;
     border-radius: 50%;
     animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+
+    &.small {
+        animation: lds-ripple-small 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
 }
 .lds-ripple div:nth-child(2) {
     animation-delay: -0.5s;
@@ -25,6 +29,23 @@
         left: 0px;
         width: 24px;
         height: 24px;
+        opacity: 0;
+    }
+}
+
+@keyframes lds-ripple-small {
+    0% {
+        top: 6px;
+        left: 6px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        top: 0px;
+        left: 0px;
+        width: 12px;
+        height: 12px;
         opacity: 0;
     }
 }

@@ -6,11 +6,13 @@ import { Airport } from '../database/models/Airport';
 import { Airfare } from '../database/models/Airfare';
 import { User } from '../database/models/User';
 
+import { OperationResult} from '../classes/RequestOperation';
 import { validateNewTracker } from '../services/form-validation/tracker';
 import { UserInputError, AuthenticationError, ValidationError} from 'apollo-server';
 import {FrequentTrackerOccurrences} from '../services/constants';
 
 import { airportSearch } from '../services/data/airport';
+import { Error } from 'mongoose';
 
 module.exports = {
     Query: {
@@ -144,16 +146,25 @@ module.exports = {
                 return {success: false};
             }
         },
-        updateTrackerStatus: async (_, {trackerId, newStatus}) => {
+        updateTrackerStatus: async (_, {trackerId, newStatus}, {auth}) => {
+            //@TODO: Check if the user can enable the tracker, check the limit
             try{
-                await Tracker.findOneAndUpdate(
+                const user = await VerifyAuthentication(auth);
+                const tracker = await Tracker.findOne({_id: ObjectID(trackerId)});
+                if(!tracker) throw new Error("Could not find the tracker");
+
+                if(tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
+
+                let res = await Tracker.updateOne(
                     {_id: trackerId}, 
                     {$set: {isActive: newStatus}}, 
                     {useFindAndModify: false}
                 );
-                return {success: true};
+                if(res.n === 0) throw new Error("No tracker has been updated");
+                return new OperationResult(true, 'UPDATE_TRACKER_STATUS');
             }catch(error){
-                return {success: false, error};
+                //console.log(error.message, error.msg)
+                return new OperationResult(false, 'UPDATE_TRACKER_STATUS', error.message);
             }
             
         }

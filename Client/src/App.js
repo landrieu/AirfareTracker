@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import { DataService } from './services/dataService';
@@ -37,26 +37,12 @@ export default function App() {
                 return;
             }
             dispatch(updateNearestTrackers(trackers, TRACKER_STATUS.INIT));
-                /*{
-                    updateType: ,
-                    data: trackers
-                }
-            ));*/
             fetchTrackers(trackers);
 
         }).catch(err => {
             //Failed to fetch IP info
             console.log(err);
             dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
-            /*dispatch(updateNearestTrackers(
-                {
-                    updateType: 'status',
-                    data: {
-                        status: TRACKER_STATUS.FAIL,
-                        error: errorMessages.connectionIssue
-                    }
-                }
-            ));*/
         });
 
         DataService.getClosestAirport().then(nearestAirport => {
@@ -70,37 +56,14 @@ export default function App() {
     function fetchTrackers(trackers) {
         trackers.forEach((t) => {
             dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.LOADING, null));
-            /*dispatch(updateNearestTrackers(
-                {
-                    updateType: 'status',
-                    data: { status: TRACKER_STATUS.LOADING }
-                }
-            ));*/
 
             DataService.airfaresByTrackerId(t.id).then(({ trackerId, tracker }) => {
                 //Update single tracker when fetched
                 dispatch(updateSingleNearestTracker(trackerId, tracker, TRACKER_STATUS.COMPLETE));
-                /*dispatch(updateNearestTrackers(
-                    {
-                        updateType: TRACKER_STATUS.COMPLETE,
-                        trackerId,
-                        data: data
-                    }
-                ));*/
             }).catch(err => {
                 //Failed to fetch specific tracker
                 console.log(err);
                 dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
-                /*dispatch(updateNearestTrackers(
-                    {
-                        updateType: 'status',
-                        trackerId: t.id,
-                        data: {
-                            status: TRACKER_STATUS.FAIL,
-                            error: errorMessages.connectionIssue
-                        }
-                    }
-                ));*/
             });
         });
     }
