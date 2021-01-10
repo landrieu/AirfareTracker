@@ -5,6 +5,8 @@ import { typeDefs } from './typeDefs';
 import { mongo } from './database/index';
 import _ from './services/helpers/date';
 
+import { Email } from './services/email';
+
 const bodyParser = require('body-parser')
 const app = express();
 

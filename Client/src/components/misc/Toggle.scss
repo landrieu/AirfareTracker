@@ -8,28 +8,34 @@
     .toggle {
         width: 65px;
         height: 14px;
-        border: 2px solid white;
+        border: 1px solid $base-light-blue;
         padding: 1px;
         display: flex;
         align-items: center;
         cursor: pointer;
         position: relative;
-        background-color: $base-light-blue;
+        /*background-color: $base-light-blue;*/
+        background-color: $base-green;
 
         &.loading{
             opacity: 0.6;
             pointer-events: none;
         }
 
-        &.off .toggle-slider {
-            transform: translateX(32px);
-        }
+        &.off{
+            background-color: $base-pink;
+            .toggle-slider {
+                transform: translateX(32px);
+                color: $base-pink;
+            }
+        } 
 
         .toggle-slider {
-            background-color: white;
-            height: 12px;
+            background-color: $base-light-blue;
+            font-family: sans-serif;
+            height: 14px;
             width: 30px;
-            color: $base-light-blue;
+            color: $base-green;
             font-size: 0.8rem;
             text-align: center;
             font-weight: bold;

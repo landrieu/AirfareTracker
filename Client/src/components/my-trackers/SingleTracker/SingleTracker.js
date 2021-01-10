@@ -164,9 +164,11 @@ export const SingleTracker = (props) => {
 
     return (
         <div key={props.index} className={`single-tracker ${isLoaded ? '' : 'disabled'}`}>
-            <div className="single-tracker-top">
-                <span>{tracker.from ? tracker.from.city : ''} - {tracker.to ? tracker.to.city : ''}</span>
-                {displayExpand()}
+            <div className="single-tracker-top-container">
+                <div className="single-tracker-top">
+                    <span>{tracker.from ? tracker.from.city : ''} - {tracker.to ? tracker.to.city : ''}</span>
+                    {displayExpand()}
+                </div>
             </div>
             <div className={`single-tracker-body ${expand ? 'expand' : ''} ${noData ? 'no-data' : ''}`}>
                 <div className="single-tracker-status">
@@ -182,7 +184,7 @@ export const SingleTracker = (props) => {
                     <Toggle isActive={tracker.isActive} isLoading={updatingTrackerStatus} loaderSize={'small'} onClick={toggleTrackerStatus} />
                 </div>
                 <div className="single-tracker-alert-status">
-                    <span className="single-tracker-label">Alert enabled:</span>
+                    <span className="single-tracker-label">Alert:</span>
                     <Toggle isActive={tracker.isAlertActive} isLoading={updatingTrackerAlertStatus} loaderSize={'small'} onClick={toggleTrackerAlertStatus} />
                 </div>
                 {tracker.triggerPrice &&

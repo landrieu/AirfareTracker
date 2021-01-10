@@ -8,10 +8,11 @@ import { NB_TRACKERS_PER_USER } from '../services/constants';
 
 import { validateRegister, validateLogin } from '../services/data/user';
 import { AUTH_ERRORS } from '../services/constants/errors';
+import { Email } from '../services/email';
 
 //import { /*UserInputError, AuthenticationError, */ValidationError } from 'apollo-server';
 
-import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, OperationError, OperationSuccess, OperationResult } from '../classes/RequestOperation';
+import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, TrackerCreationCheck, OperationError, OperationSuccess, OperationResult } from '../classes/RequestOperation';
 
 const roles = {
     admin: "ADMIN",
@@ -23,7 +24,7 @@ module.exports = {
         users: async (_, { }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
-                if(user.role === roles.admin) return User.find();
+                if (user.role === roles.admin) return User.find();
             } catch (error) {
                 //console.log(error);
                 return error;
@@ -46,19 +47,19 @@ module.exports = {
             try {
                 //User logged
                 user = await VerifyAuthentication(auth);
-                if(user.role === roles.admin) return { success: true, canCreateNewTracker: true };
+                if (user.role === roles.admin) return new TrackerCreationCheck(true, true, null, null);
                 userId = user.id;
                 userEmail = user.email;
             } catch {
                 //User not logged
-                if(!email) return {success: false, error: 'Must be logged'};
+                if (!email) return new TrackerCreationCheck(false, false, null, 'Must be logged');
                 userEmail = email;
             }
 
             let query = userId ? { $or: [{ userId }, { userEmail }] } : { userEmail };
             let nbTrackersCreated = await Tracker.countDocuments(query);
             let nbTrackersCreatable = (user ? NB_TRACKERS_PER_USER.REGISTERED : NB_TRACKERS_PER_USER.VISITOR) - nbTrackersCreated;
-            return { success: true, canCreateNewTracker: nbTrackersCreatable > 0, nbTrackersCreated };
+            return new TrackerCreationCheck(true, nbTrackersCreatable > 0, nbTrackersCreated, null);
         }
     },
     Mutation: {
@@ -67,7 +68,7 @@ module.exports = {
             if (!valid) return new UserInputError('REGISTRATION_ERROR', errors);
 
             const existingUser = await User.findOne({ email });
-            if (existingUser) return new ValidationError('REGISTRATION_ERROR', [{message: AUTH_ERRORS.USER_ALREADY_EXISTS}]);
+            if (existingUser) return new ValidationError('REGISTRATION_ERROR', [{ message: AUTH_ERRORS.USER_ALREADY_EXISTS }]);
 
             password = await bcrypt.hash(password, 10); // hashing the password
 
@@ -84,6 +85,15 @@ module.exports = {
             });
 
             const res = await newUser.save();
+            if (res === 0) return;
+
+            //Send email
+            let content = {
+                activationLink: `http://localhost:3000/activation/${res._id}`,
+            };
+            let activationEmail = new Email(email, 'Airfare tracker - Registration', content, 'template_registration');
+            let resEmail = await activationEmail.send();
+            console.log(resEmail);
 
             //Set userID in the tracker records
             await Tracker.updateMany({ userEmail: email }, { $set: { userId: res._id } });
@@ -104,17 +114,17 @@ module.exports = {
 
             // Check if that user already exists
             const user = await User.findOne({ email });
-            if (!user) return new AuthenticationError('LOGIN_ERROR', [{target: "email", message: AUTH_ERRORS.USER_NOT_EXISTS}]);
+            if (!user) return new AuthenticationError('LOGIN_ERROR', [{ target: "email", message: AUTH_ERRORS.USER_NOT_EXISTS }]);
 
             // Check the password
             const match = await bcrypt.compare(password, user.password);
             if (!match) return new AuthenticationError('', [{ target: "password", message: AUTH_ERRORS.PASSWORD_INCORRECT }]);
 
             // Generate a token and return user info
-            const token = GenerateToken(user); 
+            const token = GenerateToken(user);
             return new LoginSuccess(user._id, user._doc, `Bearer ${token}`);
         },
-        updateLastConnection: async (_, {}, {auth}) => {
+        updateLastConnection: async (_, { }, { auth }) => {
             const user = await VerifyAuthentication(auth);
             try {
                 await User.findOneAndUpdate(

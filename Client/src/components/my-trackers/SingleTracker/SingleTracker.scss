@@ -3,7 +3,7 @@
 .single-tracker {
     width: 100%;
     margin-top: 10px;
-    border: 1px white solid;
+    border: 1px $base-dark-gray solid;
     overflow: hidden;
 
     &.disabled .single-tracker-top {
@@ -11,21 +11,24 @@
         pointer-events: none;
     }
 
-    .single-tracker-top {
-        /*padding-left: 2%;
-        padding-right: 2%;*/
-        width: 95%;
-        margin: auto;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 1.2rem;
+    .single-tracker-top-container {
+        background-color: $base-light-blue;
+        .single-tracker-top {
+            /*padding-left: 2%;
+            padding-right: 2%;*/
+            width: 95%;
+            margin: auto;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.2rem;
 
-        .sign {
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
+            .sign {
+                font-size: 1.5rem;
+                font-weight: bold;
+                cursor: pointer;
+            }
         }
     }
 
@@ -34,9 +37,11 @@
         transition: height 0.5s;
         width: 95%;
         margin: auto;
+        overflow: hidden;
+        color: $base-gray;
 
         .separator {
-            border-bottom: 1px solid white;
+            border-bottom: 1px solid $base-gray;
             margin: 15px auto;
         }
 
@@ -48,13 +53,14 @@
             height: 190px;
         }
 
-        .single-tracker-status, .single-tracker-alert-status{
+        .single-tracker-status,
+        .single-tracker-alert-status {
             display: flex;
             margin: 5px auto;
             justify-content: flex-start;
         }
 
-        .single-tracker-label{
+        .single-tracker-label {
             margin-right: 12px;
             width: 150px;
         }
@@ -88,7 +94,7 @@
                     cursor: pointer;
                     transition: background-color 0.5s;
 
-                    &:hover{
+                    &:hover {
                         background-color: $base-light-blue;
                     }
 

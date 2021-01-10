@@ -76,7 +76,7 @@
 
             .error-message {
                 min-height: 25px;
-                color: #ee5e7e;
+                color: $base-light-pink;
                 font-size: 0.8rem;
                 display: flex;
                 align-items: center;
@@ -86,7 +86,7 @@
                 margin-top: 5px;
                 min-height: 30px;
                 text-align: center;
-                color: #ee5e7e;
+                color: $base-light-pink;
                 font-size: 0.8rem;
             }
         }

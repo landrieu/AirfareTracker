@@ -51,6 +51,15 @@ export class OperationResult{
     }
 }
 
+export class TrackerCreationCheck {
+    constructor(success, canCreateNewTracker, nbTrackersCreated, error){
+        this.success = success;
+        this.canCreateNewTracker = canCreateNewTracker;
+        this.nbTrackersCreated = nbTrackersCreated;
+        this.error = error;
+    }
+}
+
 export class OperationError extends Error{
     constructor(message, operationType){
         super("OPERATION_ERROR", message);
