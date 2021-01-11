@@ -1,0 +1,10 @@
+@import '../../variables.scss';
+
+#account-activation{
+    min-height: calc(100vh - #{$header-height});
+    background-color: $primary;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

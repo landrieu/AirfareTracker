@@ -36,7 +36,6 @@ const reducer = (state = INITIAL_STATE, action) => {
             return { ...state, nearestTrackers: trackers };
 
         case UPDATE_HOME_SINGLE_TRACKER:
-            console.log(action.tracker);
             return {
                 ...state,
                 nearestTrackers: state.nearestTrackers.map(t => (t.id === action.trackerId) ? {...t, airfares: action.tracker.airfares, stats: action.tracker.stats, status: action.status } : t)

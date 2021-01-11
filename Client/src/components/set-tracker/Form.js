@@ -46,7 +46,7 @@ export const Form = () => {
         }
     }
 
-    useEffect(async() => {
+    useEffect(() => {
         //Check if the user can create a new tracker
         initializeForm();
 

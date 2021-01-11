@@ -9,6 +9,7 @@ import { Register } from './components/register/Register';
 import { SetTracker } from './components/set-tracker/SetTracker';
 import { Home } from './components/home/Home';
 import { MyTrackers } from './components/my-trackers/MyTrackers';
+import { AccountActivation } from './components/account-activation/AccountActivation';
 
 import { authService } from './services/authService';
 
@@ -53,7 +54,7 @@ export default function App() {
             console.log(e);
             dispatch(updateNearestAirport(null));
         })
-    });
+    }, []);
 
     function fetchTrackers(trackers) {
         trackers.forEach((t) => {
@@ -94,9 +95,10 @@ export default function App() {
                         <SetTracker />
                     </Route>
                     <PrivateRoute exact path="/my-trackers" component={MyTrackers} />
+                    <Route path="/activation/:id" component={AccountActivation} />
                     <Route path="/">
-                        <Home />
-                    </Route>
+                            <Home />
+                        </Route>
                 </Switch>
             </div>
         </Router>

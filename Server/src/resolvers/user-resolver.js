@@ -79,6 +79,7 @@ module.exports = {
                 email,
                 password,
                 role: roles.user,
+                isActive: false,
                 trackers: userTrackers || [],
                 registrationDate: new Date().toISOString(),
                 lastConnectionAt: null
@@ -118,7 +119,9 @@ module.exports = {
 
             // Check the password
             const match = await bcrypt.compare(password, user.password);
-            if (!match) return new AuthenticationError('', [{ target: "password", message: AUTH_ERRORS.PASSWORD_INCORRECT }]);
+            if (!match) return new AuthenticationError('LOGIN_ERROR', [{ target: "password", message: AUTH_ERRORS.PASSWORD_INCORRECT }]);
+
+            if(!user.isActive) return new AuthenticationError('LOGIN_ERROR', [{message: 'Your account has not been validated yet, please open the link receive on your mailbox.'}]);
 
             // Generate a token and return user info
             const token = GenerateToken(user);
@@ -151,6 +154,27 @@ module.exports = {
                 return { success: true };
             } catch (error) {
                 return { success: false, error };
+            }
+        },
+
+        activeAccount: async (_, { userId }) => {
+            try {
+                let user = await User.findById(userId);
+                if (!user) return new OperationResult(false, 'ACCOUNT_ACTIVATION', 'No existing account');
+
+                if (user.isActive) return new OperationResult(false, 'ACCOUNT_ACTIVATION', 'Account is already active!');
+
+                let res = await User.updateOne(
+                    { _id: user.id },
+                    { $set: { isActive: true } },
+                    { useFindAndModify: false }
+                );
+                if (res.n === 0) return new OperationResult(false, 'ACCOUNT_ACTIVATION', 'An error occurred');
+
+                return new OperationResult(true, 'ACCOUNT_ACTIVATION');
+            } catch (error) {
+                //console.log(error.message);
+                return new OperationResult(false, 'ACCOUNT_ACTIVATION', 'An error occurred, your account has not been activated');
             }
         }
     },

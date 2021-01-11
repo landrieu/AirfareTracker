@@ -68,5 +68,6 @@ export const userTypeDefs = gql`
         loginUser(email: String!, password: String!): LoginResult!
         updateLastConnection(userId: String): OperationResult!
         deleteUser(userId: String!): OperationResult!
+        activeAccount(userId: String!): OperationResult
     }
 `;

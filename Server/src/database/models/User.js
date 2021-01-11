@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
         required: true
     },
     role: String,
+    isActive: Boolean,
     registrationDate: Date,
     lastConnectionAt: Date,
     trackers: Array

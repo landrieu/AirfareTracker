@@ -55,10 +55,11 @@ export const Login = (props) => {
             auth.errors.forEach((err) => setError(err));
             //Else display errors
 
-        } catch (error) {
+        } catch ({message}) {
             //Unexpected error
             setLoading(false);
-            console.log(error);
+            setError({message});
+            console.log(message);
         }
     }
 

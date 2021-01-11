@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import React from 'react';
 import './Info.scss'
 
 export const Info = (props) => {
@@ -7,7 +7,7 @@ export const Info = (props) => {
             <div id="home-info-container">
                 <div className="home-info-card">
                     <div className="top">
-                        <img src="./images/bell.svg"></img>
+                        <img src="./images/bell.svg" alt='Bell'></img>
                     </div>
                     <div className="bottom">
                         Visualize the evolution of the airfare along the time, we scan the market 3 times a day to allow you to find the best price.
@@ -15,7 +15,7 @@ export const Info = (props) => {
                 </div>
                 <div className="home-info-card">
                     <div className="top">
-                        <img src="./images/line-graph.svg"></img>
+                        <img src="./images/line-graph.svg" alt='Graph'></img>
                     </div>
                     <div className="bottom">
                         Set a tracker among XXX airports select departure, arrival airport and a departure arrival range date
@@ -23,7 +23,7 @@ export const Info = (props) => {
                 </div>
                 <div className="home-info-card">
                     <div className="top">
-                        <img src="./images/target.svg"></img>
+                        <img src="./images/target.svg" alt='Target'></img>
                     </div>
                     <div className="bottom">
                         Set a tracker among XXX airports select departure, arrival airport and a departure arrival range date

@@ -43,6 +43,7 @@ export const Register = (props) => {
             //Send request
             setLoading(true);
             let registration = await DataService.registerUser({email, password});
+            console.log(registration);
             setLoading(false);
 
             //Redirect to 'my trackers'
@@ -52,12 +53,13 @@ export const Register = (props) => {
                 return;
             }
             //Else display errors
-            registration.errors.forEach((err) => setError(err));
+            registration.errors.forEach((err) => setError(err)); 
             
-        }catch (error) {
+        }catch ({message}) {
             //Unexpected error
             setLoading(false);
-            console.log(error);
+            setError({message});
+            console.log(message);
         }
     }
 

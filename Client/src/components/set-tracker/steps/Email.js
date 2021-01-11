@@ -17,19 +17,20 @@ export const Email = (props) => {
         if(!valid) return setEmailError(error);
         //@TODO: Check if email can create trackers, 
         setCheckingEmail(true);
-        let canCreate = await checkEmailAddress();
+        let [canCreate, reason] = await checkEmailAddress();
         setCheckingEmail(false);
 
         if(canCreate) props.nextStep(1);
-        else setEmailError('The limit of tracker creation has been reached');
+        else if(!canCreate && !reason) setEmailError('The limit of tracker creation has been reached');
+        else setEmailError(reason);
     }
 
     function checkEmailAddress(){
         return new Promise(resolve => {
             DataService.canCreateNewTracker(email).then(res => {
-                resolve(res.canCreateNewTracker);
-            }).catch(() => {
-                resolve(false);
+                resolve([res.canCreateNewTracker, null]);
+            }).catch((e) => {
+                resolve([false, e.message]);
             });
         });
     }
