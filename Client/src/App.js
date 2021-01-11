@@ -18,8 +18,6 @@ import { updateNearestAirport, updateNearestTrackers, updateNearestTrackersStatu
 
 import './App.scss';
 
-//@TODO: Create activation page
-
 export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(authService.loggedIn());
 

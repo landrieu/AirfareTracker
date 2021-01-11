@@ -33,6 +33,7 @@ export const SingleTracker = (props) => {
         { name: 'Average prices', field: 'averagePrice' },
         { name: 'Median prices', field: 'medianPrice' }
     ];
+    
 
     function formatAirfares(airfares) {
         setNoData(airfares && airfares.length === 0);

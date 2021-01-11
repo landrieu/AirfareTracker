@@ -15,7 +15,7 @@
         cursor: pointer;
         position: relative;
         /*background-color: $base-light-blue;*/
-        background-color: $base-green;
+        background-color: #92df23; /*$base-green*/;
 
         &.loading{
             opacity: 0.6;
@@ -35,7 +35,7 @@
             font-family: sans-serif;
             height: 14px;
             width: 30px;
-            color: $base-green;
+            color: #92df23; /*$base-green;*/
             font-size: 0.8rem;
             text-align: center;
             font-weight: bold;
