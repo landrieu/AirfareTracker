@@ -7,8 +7,7 @@ export const mongo = {
             console.log('Connection to the Db');
             resolve('OK');
         });*/
-
-        return mongoose.connect(config.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+        return mongoose.connect(config.uri, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true  });
     },
     disconnect: () => {
         return mongoose.disconnect();

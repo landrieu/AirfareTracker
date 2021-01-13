@@ -22,6 +22,73 @@ export const breakDownDate = (date) => {
     return {year, month, day, hour, min, sec}
 }
 
+export const areDatesInFuture = (dates) => {
+    for(let i = 0; i < dates.length; i++){
+        if(new Date() > new Date(dates[i])){
+            return true;
+        }
+    }
+    return false;
+};
+
+
+/**
+ * [{
+ *     interval: 'nL' // 1y depart in 1 year
+ *     length: 'nL' // 1w return in 1 year and 1 week
+ *  }
+ * 
+ * ]
+ * nL => n is a number, and L a unit of time (w => week, m => month, y => year)
+ * @param {*} occurences 
+ */
+export const defineDatesFrequentTracker = (occurences) => {
+    let dates = [];
+    let today = new Date();
+    let startDelay, lengthTrip;
+
+    const getNumber = (d) => {
+        let n = d.match(/^\d+/g); 
+        return n.length > 0 ? n[0] : null;
+    };
+
+    const getUnit = (d) => {
+        return d[d.length - 1];
+    };
+
+    const computeDate = (d, n, u) => {
+        let date = new Date(d);
+        if(u === 'y'){
+            return date.addYears(n);
+        }else if (u === 'm'){
+            return date.addMonths(n);
+        }else if (u === 'w'){
+            return date.addWeeks(n);
+        }else console.log(`Unit not recognized: ${u}`);
+
+        return null;
+    };
+
+    const defineDate = (d, dateUnit) => {
+        const n = getNumber(dateUnit); //Number
+        const u = getUnit(dateUnit); //Unit of time
+        return computeDate(d, n, u);
+    };
+
+    for(let occurrence of occurences){
+        startDelay = occurrence.interval;
+        lengthTrip = occurrence.length;
+
+        let startDate = formatDate(defineDate(today, startDelay), 'YYYYMMDD');
+        let endDate = formatDate(defineDate(startDate, lengthTrip), 'YYYYMMDD');
+
+        if(!startDate || !endDate) continue;
+        dates.push({startDate, endDate, occurrence});
+    }
+
+    return dates;
+};
+
 /**
  * Check if the date is similar
  * @param {Date} startDate 

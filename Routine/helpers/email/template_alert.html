@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        @font-face {
+            font-family: 'Bellota';
+            src: local('Bellota'), url(./fonts/Bellota/Bellota-Regular.ttf) format('truetype');
+        }
+
+        body {
+            background-color: #fff;
+            margin: 0;
+            font-family: 'Bellota', "nunito", Calibri, Cambria, Arial, Helvetica, sans-serif;
+            color: #4a4a4a;
+            min-height: 380px;
+        }
+
+        #container {
+            width: 70%;
+            margin: 10px auto;
+        }
+
+        header {
+            color: white;
+            background-color: #060325;
+            text-align: center;
+            padding: 5px;
+        }
+
+        footer {
+            height: 20px;
+            background-color: #060325;
+            text-align: center;
+            padding: 5px;
+        }
+
+        h3 {
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #060325;
+            font-weight: bold;
+        }
+
+        .details {
+
+            text-align: justify;
+            text-justify: inter-word;
+
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h3>Airfare Tracker</h3>
+    </header>
+    <div id="container">
+        <div>
+            <p>
+                A price under the limit you fixed has been detected.
+            </p>
+            <p>
+                For the following flight {{from}} - {{{to}}}. The trigger price was {{triggerPrice}}.
+            </p>
+        </div>
+        <div class="details">
+            <span>Details</span>
+            <ul>{{{details}}}</ul>
+        </div>
+        <div>
+            <p>
+                Your tracker has been disabled. If you still want to scan, you can undo this action.
+            </p>
+        </div>
+        <hr />
+    </div>
+    <footer>
+        <h6></h6>
+    </footer>
+</body>
+
+</html>

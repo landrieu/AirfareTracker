@@ -11,11 +11,17 @@
         border: 1px solid $base-light-blue;
         padding: 1px;
         display: flex;
+        opacity: 0.7;
+        transition: 0.8s opacity;
         align-items: center;
         cursor: pointer;
         position: relative;
         /*background-color: $base-light-blue;*/
         background-color: #92df23; /*$base-green*/;
+
+        &:hover{
+            opacity: 1;
+        }
 
         &.loading{
             opacity: 0.6;

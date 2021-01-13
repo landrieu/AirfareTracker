@@ -103,13 +103,13 @@ export const Form = () => {
         }, 5000);*/
 
         DataService.createTracker(form).then(res => {
-            setLoading(false);
             setTrackerCreated(res.tracker);
             console.log(res);
             //Add new tracker to redux 'myTrackers
         }).catch((e) => {
-            setLoading(false);
             //Set the errors
+        }).finally(() => {
+            setLoading(false);
         });
     }
 
