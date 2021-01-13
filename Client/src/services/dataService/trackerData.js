@@ -63,7 +63,8 @@ export function TrackerDataService(options) {
             `,
                 variables: {
                     id: trackerId
-                }
+                },
+                fetchPolicy: 'no-cache'
             })
                 .then(result => result.data)
                 .then(data => data.trackers[0])

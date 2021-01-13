@@ -33,16 +33,18 @@ export const SingleTracker = (props) => {
         { name: 'Average prices', field: 'averagePrice' },
         { name: 'Median prices', field: 'medianPrice' }
     ];
-    
 
-    function formatAirfares(airfares) {
+    useEffect(() => {
+        let airfares = tracker.airfares;
+
         setNoData(airfares && airfares.length === 0);
+
         if (!airfares) return;
         let tempColors = [...GRAPH_COLORS];
         let datasets = airfares.map((a) => {
             return {
                 label: formatRangeDates(a.startDate, a.endDate),
-                data: a.airfares.map((r) => ({ t: r.createdAt, y: r.minPrice })),
+                data: a.airfares.map((r) => ({ t: r.createdAt, y: r[statsAvailable.find((s) => s.name === statSelected).field] })),
                 borderColor: function () {
                     let random = Math.floor(Math.random() * tempColors.length);
                     return tempColors.splice(random, 1)[0];
@@ -56,30 +58,7 @@ export const SingleTracker = (props) => {
         });
 
         setTrackerDatasets(datasets);
-    }
-
-    function reformatDataset(statName) {
-        let airfares = tracker.airfares;
-        //console.log(tracker)
-        let tempColors = [...GRAPH_COLORS];
-        let datasets = airfares.map((a) => {
-            return {
-                label: formatRangeDates(a.startDate, a.endDate),
-                data: a.airfares.map((r) => ({ t: r.createdAt, y: r[statsAvailable.find((s) => s.name === statName).field] })),
-                borderColor: function () {
-                    let random = Math.floor(Math.random() * tempColors.length);
-                    return tempColors.splice(random, 1)[0];
-                }(),
-                pointRadius: 1,
-                pointHoverRadius: 2,
-                borderWidth: 2,
-                cubicInterpolationMode: 'monotone', //'default',
-                fill: false
-            }
-        });
-
-        setTrackerDatasets(datasets);
-    }
+    }, [tracker, statSelected]);
 
     useEffect(() => {
         let mounted = true;
@@ -89,7 +68,6 @@ export const SingleTracker = (props) => {
                 //Update single tracker when fetched
                 setIsLoaded(true);
                 dispatch(updateSingleTracker(tracker));
-                formatAirfares(tracker.airfares);
             }
         });
 
@@ -137,11 +115,6 @@ export const SingleTracker = (props) => {
         )
     }
 
-    function selectStat(statName) {
-        setStatSelected(statName);
-        reformatDataset(statName);
-    }
-
     function displayGraph() {
         if (noData) {
             return (
@@ -155,7 +128,7 @@ export const SingleTracker = (props) => {
             <div className="my-tracker-graph">
                 <div className="stats-available">
                     {statsAvailable.map((stat, index) =>
-                        <span onClick={() => selectStat(stat.name)} className={`stat ${statSelected === stat.name ? 'selected' : ''}`} key={index}>{stat.name}</span>)
+                        <span onClick={() => setStatSelected(stat.name)} className={`stat ${statSelected === stat.name ? 'selected' : ''}`} key={index}>{stat.name}</span>)
                     }
                 </div>
                 <LineChart datasets={trackerDatasets} maintainAspectRatio={false} chartID={`frequent-route-${props.index}`} />
