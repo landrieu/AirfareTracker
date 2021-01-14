@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import moment from 'moment';
 
 import { DataService } from '../../../services/dataService';
 import { useDispatch } from 'react-redux';
@@ -9,7 +10,7 @@ import { LDSSpinner } from '../../misc/Loaders';
 
 import './TrackerControls.scss';
 
-export const TrackerControls = ({tracker}) => {
+export const TrackerControls = ({ tracker }) => {
     const [updatingTrackerStatus, setUpdatingTrackerStatus] = useState(false);
     const [updatingTrackerAlertStatus, setUpdatingTrackerAlertStatus] = useState(false);
     const [updatingTrackerTriggerPrice, setUpdatingTrackerTriggerPrice] = useState(false);
@@ -23,12 +24,12 @@ export const TrackerControls = ({tracker}) => {
         DataService.updateTracker(tracker.id, null, null, Number(triggerPrice)).then((res) => {
             //Update previous trigger price
             setOldTrigerPrice(triggerPrice);
-            dispatch(updateSingleTracker({ ...tracker, triggerPrice}));
+            dispatch(updateSingleTracker({ ...tracker, triggerPrice }));
 
         }).catch((e) => {
             //Fail, reset trigger price
             setTriggerPrice(oldTriggerPrice);
-            
+
         }).finally(() => {
             setUpdatingTrackerTriggerPrice(false);
         });
@@ -66,6 +67,14 @@ export const TrackerControls = ({tracker}) => {
 
     return (
         <div className={`single-tracker-controls`}>
+            <div className="single-tracker-status">
+                <span className="single-tracker-label">Departure dates: </span>
+                <span>{tracker.startDates && moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - {tracker.startDates && moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
+            </div>
+            <div className="single-tracker-status">
+                <span className="single-tracker-label">Return dates: </span>
+                <span>{tracker.endDates && moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - {tracker.endDates && moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
+            </div>
             <div className="single-tracker-status">
                 <span className="single-tracker-label">Status: </span>
                 <Toggle isActive={tracker.isActive} isLoading={updatingTrackerStatus} loaderSize={'small'} onClick={toggleTrackerStatus} />
