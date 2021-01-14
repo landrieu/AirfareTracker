@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
 
 import { updateSingleTracker } from '../../../redux/MyTrackers/actions';
-import { formatRangeDates } from '../../../helpers/date';
+import { formatRangeDates, breakDownDate } from '../../../helpers/date';
 
 import { LineChart } from '../../charts/line-chart/LineChart';
 import { LDSSpinner, LDSRing } from '../../misc/Loaders';
@@ -31,20 +31,19 @@ export const SingleTracker = (props) => {
         { name: 'Min prices', field: 'minPrice' },
         { name: 'Max prices', field: 'maxPrice' },
         { name: 'Average prices', field: 'averagePrice' },
-        { name: 'Median prices', field: 'medianPrice' }
+        { name: 'Median prices', field: 'medianPrice' },
+        { name: 'Converged' }
     ];
 
-    useEffect(() => {
-        let airfares = tracker.airfares;
-
-        setNoData(airfares && airfares.length === 0);
-
-        if (!airfares) return;
+    function formatDataset(airfares){
         let tempColors = [...GRAPH_COLORS];
-        let datasets = airfares.map((a) => {
+        return airfares.map(({startDate, endDate, airfares}) => {
             return {
-                label: formatRangeDates(a.startDate, a.endDate),
-                data: a.airfares.map((r) => ({ t: r.createdAt, y: r[statsAvailable.find((s) => s.name === statSelected).field] })),
+                label: formatRangeDates(startDate, endDate),
+                data: airfares.map((r) => ({ 
+                    t: r.createdAt, 
+                    y: r[statsAvailable.find((s) => s.name === statSelected).field] 
+                })),
                 borderColor: function () {
                     let random = Math.floor(Math.random() * tempColors.length);
                     return tempColors.splice(random, 1)[0];
@@ -56,23 +55,96 @@ export const SingleTracker = (props) => {
                 fill: false
             }
         });
+    }
+
+    function formatDatasetAdditional(stats){
+
+        let tempColors = [...GRAPH_COLORS];
+        return stats.map(({name, data}) => {
+            return {
+                label: name,
+                data: data.map(({date, value}) => ({ 
+                    t:  moment(date).format('dddd DD MMMM YYYY'), 
+                    y: value
+                })),
+                borderColor: function () {
+                    let random = Math.floor(Math.random() * tempColors.length);
+                    return tempColors.splice(random, 1)[0];
+                }(),
+                pointRadius: 1,
+                pointHoverRadius: 2,
+                borderWidth: 2,
+                cubicInterpolationMode: 'monotone', //'default',
+                fill: false
+            }
+        });
+    }
+
+    useEffect(() => {
+        let airfares = tracker.airfares;
+
+        setNoData(airfares && airfares.length === 0);
+
+        if (!airfares) return;
+
+        let datasets = [];
+        switch (statSelected) {
+            case 'Min prices':
+            case 'Max prices':
+            case 'Average prices':
+            case 'Median prices':
+                datasets = formatDataset(airfares);
+                break;
+
+            case 'Converged':
+                datasets = formatDatasetAdditional(tracker.additionnalStats);
+                break;
+            default:
+                break;
+        }
 
         setTrackerDatasets(datasets);
     }, [tracker, statSelected]);
 
+    function computeMergedStats(airfares){
+        let allAirfares = airfares.map(a => a.airfares).flat();
+        let minPrices = new Map(), maxPrices = new Map(), averagePrices = new Map();
+
+        for(let airfare of allAirfares){
+            let {year, month, day} = breakDownDate(airfare.createdAt);
+            let key = `${year}-${month}-${day}`;
+
+            let {minPrice, maxPrice, averagePrice} = airfare;
+            minPrices.set(key, minPrices.has(key) ? Math.min(minPrices.get(key), minPrice) : minPrice);
+            maxPrices.set(key, maxPrices.has(key) ? Math.max(maxPrices.get(key), maxPrice) : maxPrice);
+            averagePrices.set(key, averagePrices.has(key) ? [...averagePrices.get(key), averagePrice] : [averagePrice]);
+        }
+
+        for(let [key, value] of averagePrices.entries()){
+            averagePrices.set(key, value.reduce((acc, val, _, arr) => (acc + (val / arr.length)), 0).rounding(2))
+        }
+        
+        return [
+            {name: 'Min prices', data: [...minPrices].map(([date, value]) => ({ date, value }))},
+            {name: 'Max prices', data: [...maxPrices].map(([date, value]) => ({ date, value }))},
+            {name: 'Average prices', data: [...averagePrices].map(([date, value]) => ({ date, value }))},
+        ];
+    }
+
     useEffect(() => {
         let mounted = true;
-        //@TODO: Merge stats to get min, max, avg and mdn on time
         DataService.trackerById(props.tracker.id).then((tracker) => {
+            
             if (mounted) {
                 //Update single tracker when fetched
                 setIsLoaded(true);
+                let convergedStats = computeMergedStats(tracker.airfares);
+                tracker.additionnalStats = convergedStats;
                 dispatch(updateSingleTracker(tracker));
             }
         });
 
         return () => {
-            console.log('UNMOUNTED')
             mounted = false;
         }
     }, []);
@@ -176,3 +248,30 @@ export const SingleTracker = (props) => {
 /**
  *
  */
+
+ /*let map = new Map();
+        for(let airfare of allAirfares){
+            
+            let {year, month, day} = breakDownDate(airfare.createdAt);
+            let key = `${year}-${month}-${day}`;
+            map.set(key, map.has(key) ? [...map.get(key), airfare] : [airfare]);
+        }
+
+        let stats = [];
+        const initStat = {
+            minPrice: Infinity,
+            maxPrice: -Infinity,
+            averagePrice: 0
+        };
+        for (const [key, value] of map.entries()) {
+            stats.push({
+                date: key,
+                data: value.reduce((acc, val, _, arr) => ({
+                    minPrice: Math.min(val.minPrice, acc.minPrice),
+                    maxPrice: Math.max(val.maxPrice, acc.maxPrice),
+                    averagePrice: acc.averagePrice + (val.averagePrice / arr.length),
+                }), initStat)
+            })
+        }
+
+        return stats*/

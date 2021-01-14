@@ -2,7 +2,7 @@
  * Break down a date, to get an object containing the year, month, day, hour and minute
  * @param {Date} date 
  */
-const breakDownDate = (date) => {
+export const breakDownDate = (date) => {
     date = new Date(date)
   
     let year = date.getFullYear()
