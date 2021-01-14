@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Email.scss';
 
 import { updateForm } from '../../../redux/SetTracker/actions';
-import { DataService } from '../../../services/dataService';
+import { DataService } from '../../../services/dataService/';
 
 import { useDispatch, useSelector} from 'react-redux';
 

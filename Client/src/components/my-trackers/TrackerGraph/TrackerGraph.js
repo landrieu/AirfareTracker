@@ -1,32 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 
-import { GRAPH_COLORS } from '../../../services/appConstant';
+import { GRAPH_COLORS, GRAPH_STATS_AVAILABLE, DEFAULT_GRAPH_STAT, ERRORS } from '../../../services/constants';
 import { formatRangeDates } from '../../../helpers/date';
 import { LineChart } from '../../charts/line-chart/LineChart';
 
 import './TrackerGraph.scss';
 
-export const TrackerGraph = ({tracker, index, noData}) => {
+export const TrackerGraph = ({ tracker, index, noData, localChange, setLocalChange }) => {
 
-    const [statSelected, setStatSelected] = useState('Min prices');
+    const [statSelected, setStatSelected] = useState(DEFAULT_GRAPH_STAT);
     const [graphColors, setGraphColors] = useState([]);
 
     const [trackerDatasets, setTrackerDatasets] = useState([]);
 
-    const statsAvailable = [
-        { name: 'Min prices', field: 'minPrice' },
-        { name: 'Max prices', field: 'maxPrice' },
-        { name: 'Average prices', field: 'averagePrice' },
-        { name: 'Median prices', field: 'medianPrice' },
-        { name: 'Converged' }
-    ];
-
-    function sortRandomColors(){
+    function sortRandomColors() {
         let tempColors = [...GRAPH_COLORS];
         let randColors = [], random;
-        
-        while(tempColors.length > 0){
+
+        while (tempColors.length > 0) {
             random = Math.floor(Math.random() * tempColors.length);
             randColors.push(tempColors.splice(random, 1)[0]);
         }
@@ -34,13 +26,13 @@ export const TrackerGraph = ({tracker, index, noData}) => {
         setGraphColors(randColors);
     }
 
-    function formatDataset(airfares){
-        return airfares.map(({startDate, endDate, airfares}, idx) => {
+    function formatDataset(airfares) {
+        return airfares.map(({ startDate, endDate, airfares }, idx) => {
             return {
                 label: formatRangeDates(startDate, endDate),
-                data: airfares.map((r) => ({ 
-                    t: r.createdAt, 
-                    y: r[statsAvailable.find((s) => s.name === statSelected).field] 
+                data: airfares.map((r) => ({
+                    t: r.createdAt,
+                    y: r[Object.values(GRAPH_STATS_AVAILABLE).find((s) => s.name === statSelected).field]
                 })),
                 borderColor: graphColors[idx],
                 pointRadius: 1,
@@ -52,12 +44,12 @@ export const TrackerGraph = ({tracker, index, noData}) => {
         });
     }
 
-    function formatDatasetAdditional(stats){
-        return stats.map(({name, data}, idx) => {
+    function formatDatasetAdditional(stats) {
+        return stats.map(({ name, data }, idx) => {
             return {
                 label: name,
-                data: data.map(({date, value}) => ({ 
-                    t:  moment(new Date(date)).format('dddd DD MMMM YYYY'), 
+                data: data.map(({ date, value }) => ({
+                    t: moment(new Date(date)).format('dddd DD MMMM YYYY'),
                     y: value
                 })),
                 borderColor: graphColors[idx],
@@ -75,19 +67,22 @@ export const TrackerGraph = ({tracker, index, noData}) => {
     }, [])
 
     useEffect(() => {
-        let airfares = tracker.airfares;
+        //Tracker has been updated locally, do not re-render the graph
+        if (localChange) return setLocalChange(false);
+
+        let { airfares } = tracker;
         if (!airfares) return;
 
         let datasets = [];
         switch (statSelected) {
-            case 'Min prices':
-            case 'Max prices':
-            case 'Average prices':
-            case 'Median prices':
+            case GRAPH_STATS_AVAILABLE.MIN_PRICES.name:
+            case GRAPH_STATS_AVAILABLE.MAX_PRICES.name:
+            case GRAPH_STATS_AVAILABLE.AVERAGE_PRICES.name:
+            case GRAPH_STATS_AVAILABLE.MEDIAN_PRICES.name:
                 datasets = formatDataset(airfares);
                 break;
 
-            case 'Converged':
+            case GRAPH_STATS_AVAILABLE.CONVERGED.name:
                 datasets = formatDatasetAdditional(tracker.additionnalStats);
                 break;
             default:
@@ -101,7 +96,7 @@ export const TrackerGraph = ({tracker, index, noData}) => {
         if (noData) {
             return (
                 <div className="no-data">
-                    <span className="no-data-label">No data available</span>
+                    <span className="no-data-label">{ERRORS.GRAPH_NO_DATA}</span>
                 </div>
             )
         }
@@ -109,7 +104,7 @@ export const TrackerGraph = ({tracker, index, noData}) => {
         return (
             <div className="my-tracker-graph">
                 <div className="stats-available">
-                    {statsAvailable.map((stat, index) =>
+                    {Object.values(GRAPH_STATS_AVAILABLE).map((stat, index) =>
                         <span onClick={() => setStatSelected(stat.name)} className={`stat ${statSelected === stat.name ? 'selected' : ''}`} key={index}>{stat.name}</span>)
                     }
                 </div>

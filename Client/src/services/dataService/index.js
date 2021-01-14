@@ -2,12 +2,12 @@ import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
 
 import Axios from 'axios';
 
-import { AirportDataService } from './dataService/airportData';
-import { AirfareDataService } from './dataService/airfareData';
-import { UserDataService } from './dataService/userData';
-import { TrackerDataService } from './dataService/trackerData';
-import { IPDataService } from './dataService/ipData';
-import { authService } from './authService';
+import { AirportDataService } from './airportData';
+import { AirfareDataService } from './airfareData';
+import { UserDataService } from './userData';
+import { TrackerDataService } from './trackerData';
+import { IPDataService } from './ipData';
+import { authService } from '../authService';
 
 const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 

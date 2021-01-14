@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { DataService } from '../../services/dataService';
+import { DataService } from '../../services/dataService/';
 import './Login.scss';
 
-import { authService } from '../../services/authService';
 import { AUTH_ERRORS } from '../../helpers/errors';
 
-export const Login = (props) => {
+export const Login = () => {
     const history = useHistory();
     const [email, setEmail] = useState('lio23@hotmail.fr');
     const [password, setPassword] = useState('toulouse');

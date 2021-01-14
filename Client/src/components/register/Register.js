@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-//import { useHistory } from "react-router-dom";
 import './Register.scss';
 
-import { DataService } from '../../services/dataService';
+import { DataService } from '../../services/dataService/';
 import { AUTH_ERRORS} from '../../helpers/errors';
 
 export const Register = (props) => {

@@ -3,7 +3,6 @@ import './Home.scss'
 import {AirportTable} from '../airport-table/AirportTable';
 import {FrequentRoutes} from '../frequent-routes/FrequentRoutes';
 import { Info } from './info/Info';
-//import {DataService} from '../../services/dataService';
 
 import { useDispatch, useSelector } from 'react-redux';
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AccountActivation.scss';
 
-import { DataService } from '../../services/dataService';
+import { DataService } from '../../services/dataService/';
 import { LDSRing } from '../misc/Loaders';
 
 export const AccountActivation = ({match}) => {

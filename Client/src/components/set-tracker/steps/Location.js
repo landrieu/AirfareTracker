@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Autocomplete } from '../../others/Autocomplete';
-import { DataService } from '../../../services/dataService'
+import { DataService } from '../../../services/dataService/'
 import './Location.scss';
 
 import { updateForm } from '../../../redux/SetTracker/actions';

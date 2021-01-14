@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { DataService } from '../../services/dataService';
+import { DataService } from '../../services/dataService/';
 import { SingleTracker } from './SingleTracker/SingleTracker';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateMyTrackers } from '../../redux/MyTrackers/actions';
 
-import { useQuery, gql } from "@apollo/client";
+import { gql } from "@apollo/client";
 
-import { LDSSpinner, LDSRing } from '../misc/Loaders';
+import { LDSRing } from '../misc/Loaders';
 
 import './MyTrackers.scss';
 
-export const MyTrackers = (props) => {
-    //console.log('FUZVUY')
+export const MyTrackers = () => {
     const myTrackers = useSelector(state => state.myTrackers.trackers);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');

@@ -1,4 +1,4 @@
-@import '../../variables.scss';
+@import "../../variables.scss";
 
 #set-tracker{
     width: 100%;
@@ -97,4 +97,140 @@
             }
         }
     }
+}
+
+
+#form {
+    min-width: 400px;
+    max-width: 600px;
+    width: 70%;
+    margin: 10px auto 0 auto;
+
+    &.loading {
+        opacity: 0.8;
+        pointer-events: none;
+    }
+
+    #form-progression {
+        margin: 15px auto;
+        width: 100%;
+        height: 6px;
+        background-color: $base-light-blue;
+        overflow: hidden;
+
+        #form-progression-bar {
+            height: 6px;
+            background-color: white;
+            transition: width 1s;
+        }
+    }
+
+    #form-steps {
+        min-height: calc(100vh - #{$header-height});
+        position: relative;
+        background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
+        /*overflow: hidden;*/
+
+        #form-steps-container {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+
+            .step {
+                position: relative;
+                width: 100%;
+                transform: translateY(800px);
+                transition: transform 1s, background-color 0.5s;
+
+
+                &.visible:not(.active) {
+                    padding: 10px 4px;
+                }
+                &.visible:not(.active):hover {
+                    background-color: $base-light-blue;
+
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .button {
+        margin-top: 25px;
+    }
+
+    .inline-fields {
+        display: inline-flex;
+        width: 100%;
+        justify-content: space-between;
+
+        & > div {
+            width: 45%;
+        }
+    }
+
+    #set-tracker-loader {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 10px - #{$header-height});
+    }
+
+    #set-tracker-error, #set-tracker-unexpected-error {
+        height: 150px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #tracker-created {
+        min-height: calc(100vh - 10px - #{$header-height});
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        #tracker-created-details {
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        #tracker-created-button button{
+            width: 210px;
+        }
+    }
+}
+
+.error-message {
+    min-height: 25px;
+    color: $base-light-pink;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-error {
+    margin-top: 5px;
+    min-height: 30px;
+    text-align: center;
+    color: $base-light-pink;
+    font-size: 0.8rem;
+}
+
+.tip {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: #687b9a /*#76a05b*/;
+}
+
+.set-tracker-label {
+    color: #687b9a;
 }

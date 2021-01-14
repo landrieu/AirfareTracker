@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
-import { DataService } from './services/dataService';
+import { DataService } from './services/dataService/';
 import { Header } from './components/header/Header';
 import { Login } from './components/login/Login';
 import { Register } from './components/register/Register';
@@ -13,7 +13,7 @@ import { AccountActivation } from './components/account-activation/AccountActiva
 
 import { authService } from './services/authService';
 
-import { TRACKER_STATUS, errorMessages } from './services/appConstant';
+import { TRACKER_STATUS, ERRORS } from './services/constants';
 import { updateNearestAirport, updateNearestTrackers, updateNearestTrackersStatus, updateSingleNearestTracker } from './redux/HomeInfo/actions';
 
 import './App.scss';
@@ -34,7 +34,7 @@ export default function App() {
 
         DataService.getClosestTrackers().then(trackers => {
             if (!trackers) {
-                dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+                dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, ERRORS.CONNECTION_ISSUE));
                 return;
             }
             dispatch(updateNearestTrackers(trackers, TRACKER_STATUS.INIT));
@@ -43,7 +43,7 @@ export default function App() {
         }).catch(err => {
             //Failed to fetch IP info
             console.log(err);
-            dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+            dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, ERRORS.CONNECTION_ISSUE));
         });
 
         DataService.getClosestAirport().then(nearestAirport => {
@@ -64,7 +64,7 @@ export default function App() {
             }).catch(err => {
                 //Failed to fetch specific tracker
                 console.log(err);
-                dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.FAIL, errorMessages.connectionIssue));
+                dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.FAIL, ERRORS.CONNECTION_ISSUE));
             });
         });
     }

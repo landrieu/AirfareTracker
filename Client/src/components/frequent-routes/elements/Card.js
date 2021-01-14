@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {LineChart} from '../../charts/line-chart/LineChart';
 
-import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
+import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/constants';
 import { useSelector} from 'react-redux';
 
 import './Card.scss';
