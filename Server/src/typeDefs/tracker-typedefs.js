@@ -62,5 +62,6 @@ export const trackerTypeDefs = gql`
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): OperationResult
         updateTrackerAlertStatus(trackerId: String!, newStatus: Boolean!): OperationResult
+        updateTracker(trackerId: String!, trackerStatus: Boolean, trackerAlertStatus: Boolean, trackerTriggerPrice: Int): OperationResult!
     }
 `;

@@ -198,7 +198,34 @@ module.exports = {
                 return new OperationResult(false, 'UPDATE_TRACKER_ALERT_STATUS', error.message);
             }
             
-        }
+        },
+
+        updateTracker: async (_, {trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice}, {auth}) => {
+            try{
+                const user = await VerifyAuthentication(auth);
+                const tracker = await Tracker.findOne({_id: ObjectID(trackerId)});
+                if(!tracker) throw new Error("Could not find the tracker");
+
+                if(tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
+
+                let query = {};
+                if(trackerStatus) query.isActive = trackerStatus;
+                if(trackerAlertStatus) query.isAlertActive = trackerAlertStatus;
+                if(trackerTriggerPrice) query.triggerPrice = trackerTriggerPrice;
+                
+                let res = await Tracker.updateOne(
+                    {_id: trackerId}, 
+                    {$set: query}, 
+                    {useFindAndModify: false}
+                );
+                if(res.n === 0) throw new Error("No tracker has been updated");
+                return new OperationResult(true, 'UPDATE_TRACKER');
+            }catch(error){
+                //console.log(error.message, error.msg)
+                return new OperationResult(false, 'UPDATE_TRACKER', error.message);
+            }
+            
+        },
     },
     TrackerShort: {
         from(tracker) {

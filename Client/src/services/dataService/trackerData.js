@@ -39,6 +39,7 @@ export function TrackerDataService(options) {
                 createdAt
                 isActive
                 isAlertActive
+                triggerPrice
                 to{
                   iataCode
                   city
@@ -129,6 +130,23 @@ export function TrackerDataService(options) {
             })
                 .then(result => result.data)
                 .then(data => data.updateTrackerAlertStatus)
+        },
+
+        updateTracker: async (trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice) => {
+            return options.graphClient.mutate({
+                mutation: gql`
+                mutation($trackerId: String!, $trackerStatus: Boolean, $trackerAlertStatus: Boolean, $trackerTriggerPrice: Int){
+                    updateTracker(trackerId: $trackerId, trackerStatus: $trackerStatus, trackerAlertStatus: $trackerAlertStatus, trackerTriggerPrice: $trackerTriggerPrice){
+                      success
+                      error
+                    }
+                }
+                `,
+                variables: { trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice },
+                fetchPolicy: 'no-cache'
+            })
+                .then(result => result.data)
+                .then(data => data.updateTracker)
         },
 
 

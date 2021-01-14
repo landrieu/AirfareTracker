@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 
 import { DataService } from '../../../services/dataService';
 import { useDispatch, useSelector } from 'react-redux';
-import { NICE_NAMES, GRAPH_COLORS, TRACKER_STATUS } from '../../../services/appConstant';
+import { GRAPH_COLORS } from '../../../services/appConstant';
 
 import { updateSingleTracker } from '../../../redux/MyTrackers/actions';
 import { formatRangeDates, breakDownDate } from '../../../helpers/date';
 
+import { TrackerControls } from '../TrackerControls/TrackerControls';
 import { LineChart } from '../../charts/line-chart/LineChart';
-import { LDSSpinner, LDSRing } from '../../misc/Loaders';
-import { Toggle } from '../../misc/Toggle';
+import { LDSSpinner } from '../../misc/Loaders';
 
 import './SingleTracker.scss';
 
@@ -20,8 +20,7 @@ export const SingleTracker = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [statSelected, setStatSelected] = useState('Min prices');
     const [noData, setNoData] = useState(true);
-    const [updatingTrackerStatus, setUpdatingTrackerStatus] = useState(false);
-    const [updatingTrackerAlertStatus, setUpdatingTrackerAlertStatus] = useState(false);
+    const [graphColors, setGraphColors] = useState([]);
 
     const [expand, setExpand] = useState(false);
     const [trackerDatasets, setTrackerDatasets] = useState([]);
@@ -36,18 +35,14 @@ export const SingleTracker = (props) => {
     ];
 
     function formatDataset(airfares){
-        let tempColors = [...GRAPH_COLORS];
-        return airfares.map(({startDate, endDate, airfares}) => {
+        return airfares.map(({startDate, endDate, airfares}, idx) => {
             return {
                 label: formatRangeDates(startDate, endDate),
                 data: airfares.map((r) => ({ 
                     t: r.createdAt, 
                     y: r[statsAvailable.find((s) => s.name === statSelected).field] 
                 })),
-                borderColor: function () {
-                    let random = Math.floor(Math.random() * tempColors.length);
-                    return tempColors.splice(random, 1)[0];
-                }(),
+                borderColor: graphColors[idx],
                 pointRadius: 1,
                 pointHoverRadius: 2,
                 borderWidth: 2,
@@ -58,19 +53,14 @@ export const SingleTracker = (props) => {
     }
 
     function formatDatasetAdditional(stats){
-
-        let tempColors = [...GRAPH_COLORS];
-        return stats.map(({name, data}) => {
+        return stats.map(({name, data}, idx) => {
             return {
                 label: name,
                 data: data.map(({date, value}) => ({ 
-                    t:  moment(date).format('dddd DD MMMM YYYY'), 
+                    t:  moment(new Date(date)).format('dddd DD MMMM YYYY'), 
                     y: value
                 })),
-                borderColor: function () {
-                    let random = Math.floor(Math.random() * tempColors.length);
-                    return tempColors.splice(random, 1)[0];
-                }(),
+                borderColor: graphColors[idx],
                 pointRadius: 1,
                 pointHoverRadius: 2,
                 borderWidth: 2,
@@ -131,8 +121,23 @@ export const SingleTracker = (props) => {
         ];
     }
 
+    function sortRandomColors(){
+        let tempColors = [...GRAPH_COLORS];
+        let randColors = [], random;
+        
+        while(tempColors.length > 0){
+            random = Math.floor(Math.random() * tempColors.length);
+            randColors.push(tempColors.splice(random, 1)[0]);
+        }
+
+        setGraphColors(randColors);
+    }
+
     useEffect(() => {
         let mounted = true;
+
+        sortRandomColors();
+
         DataService.trackerById(props.tracker.id).then((tracker) => {
             
             if (mounted) {
@@ -142,6 +147,9 @@ export const SingleTracker = (props) => {
                 tracker.additionnalStats = convergedStats;
                 dispatch(updateSingleTracker(tracker));
             }
+        }).catch((e) => {
+            console.log(e.message);
+            //dispatch(updateSingleTracker({}))
         });
 
         return () => {
@@ -149,35 +157,6 @@ export const SingleTracker = (props) => {
         }
     }, []);
 
-    function toggleTrackerStatus() {
-        let newStatus = !tracker.isActive;
-        setUpdatingTrackerStatus(true);
-        dispatch(updateSingleTracker({ ...tracker, isActive: newStatus }));
-
-        DataService.updateTrackerStatus(tracker.id, newStatus).then((res) => {
-            console.log(res);
-        }).catch((e) => {
-            console.log(e);
-            dispatch(updateSingleTracker({ ...tracker, isActive: !newStatus }));
-        }).finally(() => {
-            setUpdatingTrackerStatus(false);
-        });
-    }
-
-    function toggleTrackerAlertStatus() {
-        let newStatus = !tracker.isAlertActive;
-        setUpdatingTrackerAlertStatus(true);
-        dispatch(updateSingleTracker({ ...tracker, isAlertActive: newStatus }));
-
-        DataService.updateTrackerAlertStatus(tracker.id, newStatus).then((res) => {
-            console.log(res);
-        }).catch((e) => {
-            console.log(e);
-            dispatch(updateSingleTracker({ ...tracker, isAlertActive: !newStatus }));
-        }).finally(() => {
-            setUpdatingTrackerAlertStatus(false);
-        });
-    }
 
     function displayExpand() {
         if (!isLoaded) return <span><LDSSpinner width='25px' height='25px' /></span>
@@ -225,25 +204,15 @@ export const SingleTracker = (props) => {
                     <span className="single-tracker-label">Return dates: </span>
                     <span>{tracker.endDates && moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - {tracker.endDates && moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
                 </div>
-                <div className="single-tracker-status">
-                    <span className="single-tracker-label">Status: </span>
-                    <Toggle isActive={tracker.isActive} isLoading={updatingTrackerStatus} loaderSize={'small'} onClick={toggleTrackerStatus} />
-                </div>
-                <div className="single-tracker-alert-status">
-                    <span className="single-tracker-label">Alert:</span>
-                    <Toggle isActive={tracker.isAlertActive} isLoading={updatingTrackerAlertStatus} loaderSize={'small'} onClick={toggleTrackerAlertStatus} />
-                </div>
-                {tracker.triggerPrice &&
-                    <div>
-                        Trigger price: {tracker.triggerPrice}
-                    </div>
-                }
+                
+                {tracker && <TrackerControls tracker={tracker}/>} 
                 <div className="separator"></div>
                 {displayGraph()}
             </div>
         </div>
     )
 }
+
 
 /**
  *

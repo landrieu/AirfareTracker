@@ -19,7 +19,6 @@ export const saveMyTrackers = (trackers) => {
 };
 
 export const clearMyTrackers = () => {
-    console.log('CLZPF')
     return {
         type: CLEAR_MY_TRACKERS
     };

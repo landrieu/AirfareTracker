@@ -46,7 +46,7 @@
         }
 
         &.expand {
-            height: 470px;
+            height: 500px;
         }
 
         &.expand.no-data {
@@ -54,10 +54,18 @@
         }
 
         .single-tracker-status,
-        .single-tracker-alert-status {
+        .single-tracker-alert-status,
+        .single-tracker-trigger-price {
             display: flex;
             margin: 5px auto;
             justify-content: flex-start;
+        }
+
+        .single-tracker-trigger-price{
+            input{
+                width: 100px;
+                height: 19px;
+            }
         }
 
         .single-tracker-label {
