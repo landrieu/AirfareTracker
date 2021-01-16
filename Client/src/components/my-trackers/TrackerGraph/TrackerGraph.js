@@ -7,7 +7,7 @@ import { LineChart } from '../../charts/line-chart/LineChart';
 
 import './TrackerGraph.scss';
 
-export const TrackerGraph = ({ tracker, index, noData, localChange, setLocalChange }) => {
+export const TrackerGraph = ({ tracker, index, noData }) => {
 
     const [statSelected, setStatSelected] = useState(DEFAULT_GRAPH_STAT);
     const [graphColors, setGraphColors] = useState([]);
@@ -68,7 +68,6 @@ export const TrackerGraph = ({ tracker, index, noData, localChange, setLocalChan
 
     useEffect(() => {
         //Tracker has been updated locally, do not re-render the graph
-        if (localChange) return setLocalChange(false);
 
         let { airfares } = tracker;
         if (!airfares) return;
@@ -90,7 +89,7 @@ export const TrackerGraph = ({ tracker, index, noData, localChange, setLocalChan
         }
 
         setTrackerDatasets(datasets);
-    }, [tracker, statSelected]);
+    }, [tracker.airfares, statSelected]);
 
     function render() {
         if (noData) {

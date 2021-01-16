@@ -18,7 +18,6 @@ export const SingleTracker = (props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [noData, setNoData] = useState(true);
     const [expand, setExpand] = useState(false);
-    const [localChange, setLocalChange] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -90,9 +89,9 @@ export const SingleTracker = (props) => {
                 </div>
             </div>
             <div className={`single-tracker-body ${expand ? 'expand' : ''} ${noData ? 'no-data' : ''}`}>
-                {tracker && <TrackerControls tracker={tracker} setLocalChange={setLocalChange}/>} 
+                {tracker && <TrackerControls tracker={tracker}/>} 
                 <div className="separator"></div>
-                {tracker && <TrackerGraph index={props.index} tracker={tracker} noData={noData} setLocalChange={setLocalChange} localChange={localChange}/>}
+                {tracker && <TrackerGraph index={props.index} tracker={tracker} noData={noData}/>}
             </div>
         </div>
     )

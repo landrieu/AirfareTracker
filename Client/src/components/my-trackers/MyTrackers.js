@@ -48,7 +48,7 @@ export const MyTrackers = () => {
                 dispatch(updateMyTrackers(trackers));
             }
         }).catch((e) => {
-            console.log(e);
+            console.log(e.message);
             if(mounted){
                 setIsLoading(false);
                 setError('Could not fetch your trackers');

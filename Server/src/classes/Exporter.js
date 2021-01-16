@@ -81,7 +81,7 @@ export class Exporter{
         try {
             fs.writeFile(fullPath, data, 'utf8', callback);
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
         
     }

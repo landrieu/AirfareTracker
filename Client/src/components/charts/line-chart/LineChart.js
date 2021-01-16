@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Chart from 'chart.js';
 
 import './LineChart.scss'
@@ -11,7 +11,7 @@ export const LineChart = (props) => {
 
         setChart(new Chart(ctx, {
             type: 'line',
-            data: {datasets: props.datasets},
+            data: { datasets: props.datasets },
             options: {
                 scales: {
                     xAxes: [{
@@ -21,7 +21,7 @@ export const LineChart = (props) => {
                 },
                 legend: {
                     display: true,
-                    labels:{
+                    labels: {
                         /*fontSize: '12'*/
                         /*fontColor: 'rgb(255, 99, 132)',*/
                     }
@@ -33,15 +33,29 @@ export const LineChart = (props) => {
                 },
                 animation: {
                     duration: 5000,
-                    onComplete: () => {}
+                    onComplete: () => { }
                 },
                 responsive: true,
-                maintainAspectRatio: props.maintainAspectRatio
+                maintainAspectRatio: props.maintainAspectRatio,
+                annotation: {
+                    annotations: [{
+                        type: 'line',
+                        mode: 'horizontal',
+                        scaleID: 'y-axis-0',
+                        value: 5,
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 4,
+                        label: {
+                            enabled: false,
+                            content: 'Test label'
+                        }
+                    }]
+                }
             }
         }));
     })
 
-    function update(){
+    function update() {
         let tChart = chart;
         tChart.data.datasets = props.datasets;
         setChart(tChart);
@@ -49,14 +63,14 @@ export const LineChart = (props) => {
     }
 
     useEffect(() => {
-        if(props.datasets.length === 0) return;
-        
-        if(!chart) initChart();
+        if (props.datasets.length === 0) return;
+
+        if (!chart) initChart();
         else update();
-        
+
     }, [props.datasets])
 
-    return(
+    return (
         <div className="line-chart">
             <canvas id={props.chartID} width="250" height="150"></canvas>
         </div>

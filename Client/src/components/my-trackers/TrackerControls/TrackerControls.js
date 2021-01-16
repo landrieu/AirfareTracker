@@ -11,7 +11,7 @@ import { LDSSpinner } from '../../misc/Loaders';
 
 import './TrackerControls.scss';
 
-export const TrackerControls = ({ tracker, setLocalChange }) => {
+export const TrackerControls = ({ tracker }) => {
     const [updatingTrackerStatus, setUpdatingTrackerStatus] = useState(false);
     const [updatingTrackerAlertStatus, setUpdatingTrackerAlertStatus] = useState(false);
     const [updatingTrackerTriggerPrice, setUpdatingTrackerTriggerPrice] = useState(false);
@@ -25,7 +25,6 @@ export const TrackerControls = ({ tracker, setLocalChange }) => {
         DataService.updateTracker(tracker.id, null, null, Number(triggerPrice)).then((res) => {
             //Update previous trigger price
             setOldTrigerPrice(triggerPrice);
-            setLocalChange(true);
             dispatch(updateSingleTracker({ ...tracker, triggerPrice }));
 
         }).catch((e) => {
@@ -40,13 +39,12 @@ export const TrackerControls = ({ tracker, setLocalChange }) => {
     function toggleTrackerStatus() {
         let newStatus = !tracker.isActive;
         setUpdatingTrackerStatus(true);
-        setLocalChange(true);
         dispatch(updateSingleTracker({ ...tracker, isActive: newStatus }));
 
         DataService.updateTrackerStatus(tracker.id, newStatus).then((res) => {
             console.log(res);
         }).catch((e) => {
-            console.log(e);
+            console.log(e.message);
             
             dispatch(updateSingleTracker({ ...tracker, isActive: !newStatus }));
         }).finally(() => {
@@ -59,8 +57,7 @@ export const TrackerControls = ({ tracker, setLocalChange }) => {
 
         //Display the loading animation
         setUpdatingTrackerAlertStatus(true);
-        //Local change, so the graph doesnot re-render
-        setLocalChange(true);
+
         //Dispatch the change
         dispatch(updateSingleTracker({ ...tracker, isAlertActive: newStatus }));
 
@@ -68,7 +65,7 @@ export const TrackerControls = ({ tracker, setLocalChange }) => {
         DataService.updateTrackerAlertStatus(tracker.id, newStatus).then((res) => {
             console.log(res);
         }).catch((e) => {
-            console.log(e);
+            console.log(e.message);
             dispatch(updateSingleTracker({ ...tracker, isAlertActive: !newStatus }));
         }).finally(() => {
             setUpdatingTrackerAlertStatus(false);

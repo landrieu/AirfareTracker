@@ -70,7 +70,7 @@ export const Location = (props) => {
             })));
         }).catch(err => {
             //Failed to fetch new suggestions
-            console.log(err);
+            console.log(err.message);
             setAirportSuggestions([]);
         });
     }

@@ -113,7 +113,7 @@ module.exports = {
                 
                 return savedTracker;
             }catch(error){
-                console.log(error);
+                console.log(error.message);
             }
         },
         async createFrequentTracker(_, tracker){
@@ -129,7 +129,7 @@ module.exports = {
                 //Save tracker
                 return newTracker.save();                
             }catch(error){
-                console.log(error);
+                console.log(error.message);
             }
         },
         deleteTracker: async (_, {trackerId}, {auth}) => {
@@ -150,7 +150,7 @@ module.exports = {
                 
                 return {success: true};
             }catch(error){
-                console.log(error);
+                console.log(error.message);
                 return {success: false};
             }
         },

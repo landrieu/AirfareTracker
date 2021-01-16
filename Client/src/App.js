@@ -2,6 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
+//Polyfill
+import './helpers/polyfills';
+
 import { DataService } from './services/dataService/';
 import { Header } from './components/header/Header';
 import { Login } from './components/login/Login';
@@ -42,14 +45,14 @@ export default function App() {
 
         }).catch(err => {
             //Failed to fetch IP info
-            console.log(err);
+            console.log(err.message);
             dispatch(updateNearestTrackersStatus(null, TRACKER_STATUS.FAIL, ERRORS.CONNECTION_ISSUE));
         });
 
         DataService.getClosestAirport().then(nearestAirport => {
             dispatch(updateNearestAirport(nearestAirport));
         }).catch((e) => {
-            console.log(e);
+            console.log(e.message);
             dispatch(updateNearestAirport(null));
         })
     }, []);
@@ -63,7 +66,7 @@ export default function App() {
                 dispatch(updateSingleNearestTracker(trackerId, tracker, TRACKER_STATUS.COMPLETE));
             }).catch(err => {
                 //Failed to fetch specific tracker
-                console.log(err);
+                console.log(err.message);
                 dispatch(updateNearestTrackersStatus(t.id, TRACKER_STATUS.FAIL, ERRORS.CONNECTION_ISSUE));
             });
         });
