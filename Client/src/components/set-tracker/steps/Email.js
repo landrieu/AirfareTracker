@@ -6,7 +6,7 @@ import { DataService } from '../../../services/dataService/';
 
 import { useDispatch, useSelector} from 'react-redux';
 
-export const Email = (props) => {
+export const Email = ({properties}) => {
     const [emailError, setEmailError] = useState('');
     const [checkingEmail, setCheckingEmail] = useState(false);
     const email = useSelector(state => state.setTracker.email);
@@ -15,12 +15,12 @@ export const Email = (props) => {
     async function onSubmit(){
         let {valid, error} = validate();
         if(!valid) return setEmailError(error);
-        //@TODO: Check if email can create trackers, 
+         
         setCheckingEmail(true);
         let [canCreate, reason] = await checkEmailAddress();
         setCheckingEmail(false);
 
-        if(canCreate) props.nextStep(1);
+        if(canCreate) properties.nextStep(1);
         else if(!canCreate && !reason) setEmailError('The limit of tracker creation has been reached');
         else setEmailError(reason);
     }
@@ -40,8 +40,8 @@ export const Email = (props) => {
     }
 
     function backStep(){
-        if(!props.isActive){
-            props.nextStep('Email');
+        if(!properties.isActive){
+            properties.nextStep('Email');
         }
     }
 
@@ -64,8 +64,8 @@ export const Email = (props) => {
             </div>
             <div className="error-message">{emailError}</div>
             <div id="email-button" className="button" onClick={onSubmit}>
-                <button className={`${(props.isLoading || checkingEmail) ? 'loading' : ''}`}>
-                    {props.buttonLabel}
+                <button className={`${(properties.isLoading || checkingEmail) ? 'loading' : ''}`}>
+                    {properties.buttonLabel}
                 </button>
             </div>
         </div>
@@ -78,18 +78,18 @@ export const Email = (props) => {
     )
 
     function selectDisplay(){
-        return props.isActive ? activeDisplay : unactiveDisplay;
+        return properties.isActive ? activeDisplay : unactiveDisplay;
     }
 
     function setClassNames(){
         let classNames = "step";
-        if(props.isActive) classNames += " active";
-        if(props.isVisible) classNames += " visible";
+        if(properties.isActive) classNames += " active";
+        if(properties.isVisible) classNames += " visible";
         return classNames;
     }
 
     return (
-        <div id="step-email" className={setClassNames()} style={props.stepStyle} onClick={backStep}>
+        <div id="step-email" className={setClassNames()} style={properties.stepStyle} onClick={backStep}>
             {selectDisplay()}
         </div>
     )

@@ -13,6 +13,7 @@ import { SetTracker } from './components/set-tracker/SetTracker';
 import { Home } from './components/home/Home';
 import { MyTrackers } from './components/my-trackers/MyTrackers';
 import { AccountActivation } from './components/account-activation/AccountActivation';
+import { Footer } from './components/footer/Footer';
 
 import { authService } from './services/authService';
 
@@ -99,8 +100,10 @@ export default function App() {
                     <Route path="/activation/:id" component={AccountActivation} />
                     <Route path="/">
                             <Home />
-                        </Route>
+                    </Route>
                 </Switch>
+
+                <Footer />
             </div>
         </Router>
 

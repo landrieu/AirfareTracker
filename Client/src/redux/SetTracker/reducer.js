@@ -1,6 +1,6 @@
 import { SAVE, CLEAR_FORM, UPDATE } from './types';
 
-const INITIAL_STATE = {
+/*const INITIAL_STATE = {
     email: 'lio23@hotmail.fr',
     from: {
       id: '5fc75e5fa8622245c8729229',
@@ -34,6 +34,16 @@ const INITIAL_STATE = {
     ],
     triggerPrice: null,
     alertEnabled: false
+};*/
+
+const INITIAL_STATE = {
+  email: '',
+  from: '',
+  to: '',
+  departureDates: [],
+  returnDates: [],
+  triggerPrice: '',
+  alertEnabled: undefined
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

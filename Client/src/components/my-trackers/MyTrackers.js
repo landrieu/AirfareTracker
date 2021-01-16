@@ -4,8 +4,6 @@ import { SingleTracker } from './SingleTracker/SingleTracker';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateMyTrackers, clearMyTrackers } from '../../redux/MyTrackers/actions';
 
-import { gql } from "@apollo/client";
-
 import { LDSRing } from '../misc/Loaders';
 
 import './MyTrackers.scss';
@@ -15,45 +13,22 @@ export const MyTrackers = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    const GET_TRACKERS = gql`
-    query ($userId: String){
-      trackersByUser(userId: $userId) {
-        id
-        sources
-        to{
-          iataCode
-          city
-        }
-        from{
-          iataCode
-          city
-        }  
-      }
-    }
-    `;
-
-    /*const { loading, error, trackers } = useQuery(GET_TRACKERS, {
-        fetchPolicy: "no-cache"
-    });*/
-
-
+    
     useEffect(() => {
         //Fetch user trackers
         let mounted = true;
         setIsLoading(true);
         DataService.getUserTrackers().then(trackers => {
             if (mounted) {
-                setIsLoading(false);
                 setError('');
                 dispatch(updateMyTrackers(trackers));
             }
         }).catch((e) => {
             console.log(e.message);
-            if(mounted){
-                setIsLoading(false);
-                setError('Could not fetch your trackers');
-            }
-        });
+            if(mounted) setError('Could not fetch your trackers');
+        }).finally(() => {
+            if(mounted) setIsLoading(false);
+        })
 
         return () => {
             mounted = false;
@@ -96,7 +71,3 @@ export const MyTrackers = () => {
         </div>
     )
 }
-
-/**
- *
- */

@@ -76,8 +76,8 @@ module.exports = {
             tracker = formatNormalTracker(tracker, userId, userEmail);
 
             const { errors, valid } = await validateNewTracker(tracker);
-            if (!valid) return new UserInputError('TRACKER_CREATION_ERROR', { errors });
-            return new UserInputError('TRACKER_CREATION_ERROR', [new InputError(null, 'Test 1'), new InputError(null, 'Test 2')]);
+            if (!valid) return new UserInputError('TRACKER_CREATION_ERROR', errors );
+            //new UserInputError('TRACKER_CREATION_ERROR', [new InputError(null, 'Test 1'), new InputError(null, 'Test 2')]);
 
             const newTracker = new Tracker(tracker);
 

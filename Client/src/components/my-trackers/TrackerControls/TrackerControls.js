@@ -88,11 +88,11 @@ export const TrackerControls = ({ tracker }) => {
         <div className={`single-tracker-controls`}>
             <div className="single-tracker-status">
                 <span className="single-tracker-label">{LABELS.DEPARTURE_DATES} </span>
-                <span>{tracker.startDates && moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - {tracker.startDates && moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
+                <span className="single-tracker-info">{tracker.startDates && moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - {tracker.startDates && moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
             </div>
             <div className="single-tracker-status">
                 <span className="single-tracker-label">{LABELS.RETURN_DATES}</span>
-                <span>{tracker.endDates && moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - {tracker.endDates && moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
+                <span className="single-tracker-info">{tracker.endDates && moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - {tracker.endDates && moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}</span>
             </div>
             <div className="single-tracker-status">
                 <span className="single-tracker-label">{LABELS.STATUS}</span>

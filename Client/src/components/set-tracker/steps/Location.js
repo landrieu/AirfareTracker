@@ -6,7 +6,7 @@ import './Location.scss';
 import { updateForm } from '../../../redux/SetTracker/actions';
 import { useDispatch, useSelector} from 'react-redux';
 
-export const Location = (props) => {
+export const Location = ({properties}) => {
     const [fromError, setFromError] = useState('');
     const [toError, setToError] = useState('');
 
@@ -18,7 +18,7 @@ export const Location = (props) => {
 
     function onSubmit(){
         let errors = validate();
-        if(errors.length === 0) props.nextStep(1);
+        if(errors.length === 0) properties.nextStep(1);
         else {
             errors.forEach(err => {
                 err.trigger(err.message);
@@ -35,8 +35,8 @@ export const Location = (props) => {
     }
 
     function backStep(){
-        if(!props.isActive){
-            props.nextStep('Location');
+        if(!properties.isActive){
+            properties.nextStep('Location');
         }
     }
 
@@ -99,8 +99,8 @@ export const Location = (props) => {
                 />
             </div>
             <div id="location-button" className="button" onClick={onSubmit}>
-                <button className={`${props.isLoading ? 'loading' : ''}`}>
-                    {props.buttonLabel}
+                <button className={`${properties.isLoading ? 'loading' : ''}`}>
+                    {properties.buttonLabel}
                 </button>
             </div>
         </div>
@@ -109,27 +109,30 @@ export const Location = (props) => {
     const unactiveDisplay = (
         <div>
             <div>
-                <span className="set-tracker-label">From: </span>{from.text}
+                <span className="set-tracker-label">From: </span>{from ? from.text : ''}
             </div> 
             <div>
-                <span className="set-tracker-label">To: </span>{to.text}
+                <span className="set-tracker-label">To: </span>{to ? to.text : ''}
             </div>
         </div>
     )
 
     function selectDisplay(){
-        return props.isActive ? activeDisplay : unactiveDisplay;
+        if(!properties.isVisible) return '';
+        else if(properties.isActive) return activeDisplay;
+        else return unactiveDisplay;
+        //return properties.isActive ? activeDisplay : unactiveDisplay;
     }
 
     function setClassNames(){
         let classNames = "step";
-        if(props.isActive) classNames += " active";
-        if(props.isVisible) classNames += " visible";
+        if(properties.isActive) classNames += " active";
+        if(properties.isVisible) classNames += " visible";
         return classNames;
     }
 
     return (
-        <div id="step-location" className={setClassNames()} style={props.stepStyle} onClick={backStep}>
+        <div id="step-location" className={setClassNames()} style={properties.stepStyle} onClick={backStep}>
             {selectDisplay()}
         </div>
     )

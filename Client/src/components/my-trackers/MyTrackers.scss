@@ -1,14 +1,13 @@
 @import '../../variables.scss';
 
 #my-trackers{
-    min-height: calc(100vh - #{$header-height});
+    min-height: calc(100vh - #{$header-height} - #{$footer-height} - 20px);
     background-color: $primary;
     color: white;
-    padding-top: 1px;
-    margin-top: -1px;
+    padding: 10px 0;
 
     #my-trackers-error{
-        min-height: calc(100vh - #{$header-height});
+        min-height: calc(100vh - #{$header-height} - #{$footer-height}  - 20px);
         width: 100%;
         display: flex;
         align-items: center;
@@ -21,7 +20,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: calc(100vh - #{$header-height});
+        height: calc(100vh - #{$header-height} - #{$footer-height} - 20px);
     }
 
     #my-trackers-content{

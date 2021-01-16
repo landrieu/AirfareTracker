@@ -2,6 +2,7 @@
 import { Airport } from '../../database/models/Airport';
 
 import { FormValidator } from '../../classes/FormValidator';
+import { InputError } from '../../classes/RequestOperation';
 
 const NTrackerValidators = () => {
     const requiredFields = {
@@ -50,7 +51,7 @@ export const validateNewTracker = async (tracker) => {
     }else if (tracker.type ==="F"){
         [requiredFields, valueFields, additionnalValidators] = FTrackerValidators();
     }else{
-        return {valid: false, errors: ["Tracker type unknow"]};
+        return {valid: false, errors: [new InputError(null, "Tracker type unknow")]};
     }
     
     let trackerValidator = new FormValidator(tracker, {requiredFields, valueFields}, ...additionnalValidators);
@@ -67,17 +68,17 @@ export const validateNewTracker = async (tracker) => {
 
 const airportsExist = async (tracker, errors) => {
     let fromAirport = await Airport.findOne({iataCode: tracker.from});
-    if(!fromAirport) errors.push(`The airport: ${tracker.from} does not exist.`);
+    if(!fromAirport) errors.push(new InputError(null, `The airport: ${tracker.from} does not exist.`));
 
     let toAirport = await Airport.findOne({iataCode: tracker.to});
-    if(!toAirport) errors.push(`The airport: ${tracker.to} does not exist.`);
+    if(!toAirport) errors.push(new InputError(null, `The airport: ${tracker.to} does not exist.`));
 };
 
 const validateDates = (tracker, errors) => {
     const checkDatesAreInFuture = (dates) => {
         for(let date of dates){
             if(new Date(date) < new Date()){
-                errors.push(`Dates must be in the future`);
+                errors.push(new InputError(null, `Dates must be in the future`));
                 break;
             }
         }
@@ -93,7 +94,7 @@ const endDatesAreAfterStartDates = (tracker, errors) => {
     for(let i = 0; i < tracker.startDates.length; i++){
         for(let j = 0; j < tracker.endDates.length; j++){
             if(tracker.startDates[i] > tracker.endDates[j]){
-                errors.push(`The return dates must be prior to the departure dates`);
+                errors.push(new InputError(null, `The return dates must be prior to the departure dates`));
                 return;
             }
         }

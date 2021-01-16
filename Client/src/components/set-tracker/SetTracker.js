@@ -10,7 +10,7 @@ import { Alert } from './steps/Alert';
 import { DataService } from '../../services/dataService/';
 
 import { LDSRing } from '../misc/Loaders';
- 
+
 import { useDispatch, useSelector } from 'react-redux';
 import { clearForm, updateForm } from '../../redux/SetTracker/actions';
 
@@ -104,7 +104,7 @@ export const SetTracker = () => {
         }, 5000);*/
 
         DataService.createTracker(form).then(res => {
-            if(res.success) return setTrackerCreated(res.tracker);
+            if (res.success) return setTrackerCreated(res.tracker);
             else setFormError(res.errors);
             //Add new tracker to redux 'myTrackers
         }).catch((e) => {
@@ -118,6 +118,9 @@ export const SetTracker = () => {
     function nextStep(step) {
         if (loading) return;
 
+        //Clear form errors
+        setFormError([]);
+
         let backStep = typeof step === "string";
         step = typeof step === "string" ? stepSequence.indexOf(step) : step;
         if (step < 0) return;
@@ -125,6 +128,23 @@ export const SetTracker = () => {
         if (backStep) return setActiveStep(step);
         if ((activeStep + step) > stepSequence.length - 1) submitForm();
         else setActiveStep(activeStep + step);
+    }
+
+    function isLastStep() { return (activeStep === stepSequence.length - 1) }
+
+    function renderSubmitButton() {
+        return (
+            <div>
+                <div id="form-button" className={`button ${isLastStep() ? 'visible' : ''}`} onClick={() => nextStep(1)}>
+                    <button className={`${loading ? 'loading' : ''}`}>Submit</button>
+                </div>
+                {isLastStep() && formError.map(({ _, message }, key) => {
+                    return (
+                        <div className="form-error-message error-message" key={key}>{message}</div>
+                    )
+                })}
+            </div>
+        );
     }
 
     function displayCanCreateTracker() {
@@ -137,15 +157,7 @@ export const SetTracker = () => {
         } else if (trackerCreated) {
             return (displayEndForm());
         } else if (canCreateTracker) {
-            return (
-                <div>
-                    {formSteps()}
-                    {formError.map(({_, message}, key) => {
-                        return(
-                            <div key={key}>{message}</div>
-                        )
-                    })}
-                </div>);
+            return (formSteps())
         } else if (error) {
             return (<div id='set-tracker-error'>{error}</div>);
         } else {
@@ -189,6 +201,18 @@ export const SetTracker = () => {
             </div>);
     }
 
+    function stepProps(stepName) {
+        return {
+            isActive: isStepActive(stepName),
+            nextStep: nextStep,
+            stepStyle: stepStyle(stepName),
+            isVisible: isVisible(stepName),
+            isLoading: loading,
+            buttonLabel: stepSequence.indexOf(stepName) === (stepSequence.length - 1) ? 'Submit' : 'Next',
+            lastStep: stepSequence.indexOf(stepName) === (stepSequence.length - 1)
+        }
+    }
+
     function formSteps() {
         return (
             <div id="form-steps">
@@ -196,40 +220,11 @@ export const SetTracker = () => {
                     <div id="form-progression-bar" style={progressionBarStyle()}></div>
                 </div>
                 <div id="form-steps-container">
-                    {(stepSequence.indexOf('Email') !== -1) &&
-                        <Email
-                            isActive={isStepActive('Email')}
-                            nextStep={nextStep}
-                            stepStyle={stepStyle('Email')}
-                            isVisible={isVisible('Email')}
-                            isLoading={loading}
-                            buttonLabel={stepSequence.indexOf('Email') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
-                        />}
-                    <Location
-                        isActive={isStepActive('Location')}
-                        nextStep={nextStep}
-                        stepStyle={stepStyle('Location')}
-                        isVisible={isVisible('Location')}
-                        isLoading={loading}
-                        buttonLabel={stepSequence.indexOf('Location') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
-                    />
-                    <Dates
-                        isActive={isStepActive('Dates')}
-                        nextStep={nextStep}
-                        stepStyle={stepStyle('Dates')}
-                        isVisible={isVisible('Dates')}
-                        isLoading={loading}
-                        buttonLabel={stepSequence.indexOf('Dates') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
-                    />
-                    <Alert
-                        isActive={isStepActive('Alert')}
-                        nextStep={nextStep}
-                        stepStyle={stepStyle('Alert')}
-                        isVisible={isVisible('Alert')}
-                        isLoading={loading}
-                        buttonLabel={stepSequence.indexOf('Alert') === (stepSequence.length - 1) ? 'Submit' : 'Next'}
-
-                    />
+                    {(stepSequence.indexOf('Email') !== -1) && <Email properties={stepProps('Email')} />}
+                    <Location properties={stepProps('Location')} />
+                    <Dates properties={stepProps('Dates')} />
+                    <Alert properties={stepProps('Alert')} />
+                    {renderSubmitButton()}
                 </div>
             </div>)
     }

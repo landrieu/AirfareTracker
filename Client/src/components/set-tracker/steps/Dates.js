@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DateRangePicker } from '../../misc/DateRangePicker';
 import './Dates.scss';
 
-export const Dates = (props) => {
+export const Dates = ({properties}) => {
     const [startDateDeparture, endDateDeparture] = useSelector(state => state.setTracker.departureDates);
     const [startDateReturn, endDateReturn] = useSelector(state => state.setTracker.returnDates);
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const Dates = (props) => {
 
     function onSubmit() {
         let { valid, errors } = validate();
-        if (valid) return props.nextStep(1);
+        if (valid) return properties.nextStep(1);
 
         errors.forEach(err => setError(err));
     }
@@ -70,8 +70,8 @@ export const Dates = (props) => {
     }
 
     function backStep() {
-        if (!props.isActive) {
-            props.nextStep('Dates');
+        if (!properties.isActive) {
+            properties.nextStep('Dates');
         }
     }
 
@@ -115,8 +115,8 @@ export const Dates = (props) => {
             </div>
 
             <div id="location-button" className="button" onClick={onSubmit}>
-                <button className={`${props.isLoading ? 'loading' : ''}`}>
-                    {props.buttonLabel}
+                <button className={`${properties.isLoading ? 'loading' : ''}`}>
+                    {properties.buttonLabel}
                 </button>
             </div>
         </div>
@@ -137,18 +137,18 @@ export const Dates = (props) => {
     )
 
     function selectDisplay() {
-        return props.isActive ? activeDisplay : unactiveDisplay;
+        return properties.isActive ? activeDisplay : unactiveDisplay;
     }
 
     function setClassNames() {
         let classNames = "step";
-        if (props.isActive) classNames += " active";
-        if (props.isVisible) classNames += " visible";
+        if (properties.isActive) classNames += " active";
+        if (properties.isVisible) classNames += " visible";
         return classNames;
     }
 
     return (
-        <div id="step-dates" className={setClassNames()} style={props.stepStyle} onClick={backStep}>
+        <div id="step-dates" className={setClassNames()} style={properties.stepStyle} onClick={backStep}>
             {selectDisplay()}
         </div>
     )
