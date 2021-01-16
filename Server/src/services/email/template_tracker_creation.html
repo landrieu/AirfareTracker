@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        @font-face {
+            font-family: 'Bellota';
+            src: local('Bellota'), url(./fonts/Bellota/Bellota-Regular.ttf) format('truetype');
+        }
+
+        body {
+            background-color: #fff;
+            margin: 0;
+            font-family: 'Bellota', "nunito", Calibri, Cambria, Arial, Helvetica, sans-serif;
+            color: #4a4a4a;
+            min-height: 380px;
+        }
+
+        #container {
+            min-width: 700px;
+            max-width: 1000px;
+            width: 60%;
+            margin: 10px auto;
+        }
+
+        header {
+            color: white;
+            background-color: #060325;
+            text-align: center;
+            padding: 5px;
+        }
+
+        footer {
+            height: 20px;
+            background-color: #060325;
+            text-align: center;
+            padding: 5px;
+        }
+
+        h3 {
+            margin: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #060325;
+            font-weight: bold;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        ul {
+            margin: 0;
+        }
+
+        .details {
+            text-align: justify;
+            text-justify: inter-word;
+            font-size: 0.9rem;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h3>Airfare Tracker</h3>
+    </header>
+    <div id="container">
+        <div class="center">
+            <h4>
+                You just created a tracker!
+            </h4>
+        </div>
+        <div>
+            Here are the details:
+            <ul>
+                <li>From: {{from}}</li>
+                <li>To: {{to}}</li>
+                <li>Departure dates: {{departureDates}}</li>
+                <li>Return dates: {{returnDates}}</li>
+            </ul>
+        </div>
+        <div>
+            <p>
+                Click on the following link to observe the evolution:
+                <a href="{{trackerLink}}" target="_blank">here</a>
+            </p>
+        </div>
+        <hr />
+        <div class="details">
+            <p>Here is your tracker ID: {{trackerId}}.</p>
+            <p>In case the link doesn't work, you can stil retriving your tracker by entering the tracker ID from the
+                'Find my tracker' page.</p>
+        </div>
+    </div>
+    <footer>
+        <h6></h6>
+    </footer>
+</body>
+
+</html>

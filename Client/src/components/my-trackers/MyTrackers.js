@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataService } from '../../services/dataService/';
 import { SingleTracker } from './SingleTracker/SingleTracker';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateMyTrackers } from '../../redux/MyTrackers/actions';
+import { updateMyTrackers, clearMyTrackers } from '../../redux/MyTrackers/actions';
 
 import { gql } from "@apollo/client";
 
@@ -57,6 +57,7 @@ export const MyTrackers = () => {
 
         return () => {
             mounted = false;
+            dispatch(clearMyTrackers());
         }
     }, []);
 

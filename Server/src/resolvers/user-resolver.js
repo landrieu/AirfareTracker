@@ -8,7 +8,7 @@ import { NB_TRACKERS_PER_USER } from '../services/constants';
 
 import { validateRegister, validateLogin } from '../services/data/user';
 import { AUTH_ERRORS } from '../services/constants/errors';
-import { Email } from '../services/email';
+import { sendRegistrationEmail } from '../services/helpers/notifications';
 
 //import { /*UserInputError, AuthenticationError, */ValidationError } from 'apollo-server';
 
@@ -88,24 +88,14 @@ module.exports = {
             const res = await newUser.save();
             if (res === 0) return;
 
-            //Send email
-            let content = {
-                activationLink: `http://localhost:3000/activation/${res._id}`,
-            };
-            let activationEmail = new Email(email, 'Airfare tracker - Registration', content, 'template_registration');
-            let resEmail = await activationEmail.send();
-            console.log(resEmail);
+            //Send registration email
+            await sendRegistrationEmail(res._id);
 
             //Set userID in the tracker records
             await Tracker.updateMany({ userEmail: email }, { $set: { userId: res._id } });
 
             //const token = GenerateToken(res);
-            return new RegisterSuccess(true, res._doc);
-            /*return {
-                id: res._id,
-                ...res._doc,
-                token
-            };*/
+            return new RegisterSuccess(true, {...res._doc, id: res._id/*, token*/});
         },
         loginUser: async (_, { email, password }) => {
             // validateLogin is a simple func that checks for empty fields

@@ -86,3 +86,10 @@ export class OperationSuccess{
         this.success = true;
     }
 }
+
+export class InputError{
+    constructor(target, message){
+        this.target = target;
+        this.message = message;
+    }
+}

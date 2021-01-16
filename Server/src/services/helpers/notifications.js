@@ -1,0 +1,43 @@
+import { Airport } from '../../database/models/Airport';
+import { Email } from '../../services/email';
+
+import moment from 'moment';
+
+export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
+    return new Promise(async (resolve) => {
+        let fromAirport = await Airport.findOne({ iataCode: tracker.from });
+        let toAirport = await Airport.findOne({ iataCode: tracker.to });
+        let content = {
+            trackerId: sTracker._id,
+            trackerLink: `http://localhost:3000/tracker/${sTracker._id}`,
+            from: fromAirport.city,
+            to: toAirport.city,
+            departureDates: `${moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - ${moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}`,
+            returnDates: `${moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - ${moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}`,
+        };
+        let email = new Email(userEmail, 'Airfare tracker - New tracker', content, 'template_tracker_creation');
+        let resEmail = await email.send();
+        if (resEmail.rejected.length > 0){
+            console.log('Email not sent');
+            resolve(false);
+        } 
+
+        resolve(true);
+    });
+};
+
+export const sendRegistrationEmail = (userId, userEmail) => {
+    return new Promise(async (resolve) => {
+        let content = {
+            activationLink: `http://localhost:3000/activation/${userId}`,
+        };
+        let activationEmail = new Email(userEmail, 'Airfare tracker - Registration', content, 'template_registration');
+        let resEmail = await activationEmail.send();
+        if (resEmail.rejected.length > 0){
+            console.log('Email not sent');
+            resolve(false);
+        } 
+
+        resolve(true);
+    });
+};

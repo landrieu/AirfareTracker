@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { VerifyAuthentication } from '../services/helpers/authentication';
 
 import { ObjectID } from 'mongodb';
@@ -9,9 +10,10 @@ import { User } from '../database/models/User';
 import { OperationResult } from '../classes/RequestOperation';
 import { validateNewTracker } from '../services/form-validation/tracker';
 import { formatNormalTracker, formatFrequentTracker } from '../services/data/tracker';
+import { sendNewTrackerEmail } from '../services/helpers/notifications';
 
 import { airportSearch } from '../services/data/airport';
-import { TrackerCreationSuccess, OperationError, UserInputError, UnexpectedError, Error } from '../classes/RequestOperation';
+import { TrackerCreationSuccess, OperationError, UserInputError, UnexpectedError, Error, InputError } from '../classes/RequestOperation';
 
 module.exports = {
     Query: {
@@ -58,7 +60,6 @@ module.exports = {
          *  - Not logged
          */
         createTracker: async (_, tracker, { auth }) => {
-            console.log(tracker);
             let userId, userEmail;
             try {
                 const user = await VerifyAuthentication(auth);
@@ -73,10 +74,10 @@ module.exports = {
 
             //Format tracker to save in the Database
             tracker = formatNormalTracker(tracker, userId, userEmail);
-            console.log(tracker);
 
             const { errors, valid } = await validateNewTracker(tracker);
-            if (!valid) throw new UserInputError('TRACKER_CREATION_ERROR', { errors });
+            if (!valid) return new UserInputError('TRACKER_CREATION_ERROR', { errors });
+            return new UserInputError('TRACKER_CREATION_ERROR', [new InputError(null, 'Test 1'), new InputError(null, 'Test 2')]);
 
             const newTracker = new Tracker(tracker);
 
@@ -88,7 +89,9 @@ module.exports = {
                     const query = { _id: tracker.userId };
                     await User.findOneAndUpdate(query, { $addToSet: { trackers: sTracker._id } }, { useFindAndModify: false });
                 }*/
-                return new TrackerCreationSuccess({id: sTracker._id, ...sTracker._doc});
+                await sendNewTrackerEmail(sTracker, tracker, userEmail);
+
+                return new TrackerCreationSuccess({ id: sTracker._id, ...sTracker._doc });
             } catch (error) {
                 console.log(error.message);
                 return UnexpectedError('TRACKER_CREATION_ERROR', [new Error('', 'Database error')])

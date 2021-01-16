@@ -25,6 +25,7 @@ export const SetTracker = () => {
     const [stepSequence, setStepSequence] = useState([]);
     const [activeStep, setActiveStep] = useState(-1);
     const [error, setError] = useState('');
+    const [formError, setFormError] = useState([]);
 
     const form = useSelector(state => state.setTracker);
 
@@ -104,8 +105,7 @@ export const SetTracker = () => {
 
         DataService.createTracker(form).then(res => {
             if(res.success) return setTrackerCreated(res.tracker);
-            
-            console.log(res.errors);
+            else setFormError(res.errors);
             //Add new tracker to redux 'myTrackers
         }).catch((e) => {
             //Set the errors
@@ -137,7 +137,15 @@ export const SetTracker = () => {
         } else if (trackerCreated) {
             return (displayEndForm());
         } else if (canCreateTracker) {
-            return (formSteps());
+            return (
+                <div>
+                    {formSteps()}
+                    {formError.map(({_, message}, key) => {
+                        return(
+                            <div key={key}>{message}</div>
+                        )
+                    })}
+                </div>);
         } else if (error) {
             return (<div id='set-tracker-error'>{error}</div>);
         } else {
