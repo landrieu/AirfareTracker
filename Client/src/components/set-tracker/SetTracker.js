@@ -103,11 +103,13 @@ export const SetTracker = () => {
         }, 5000);*/
 
         DataService.createTracker(form).then(res => {
-            setTrackerCreated(res.tracker);
-            console.log(res);
+            if(res.success) return setTrackerCreated(res.tracker);
+            
+            console.log(res.errors);
             //Add new tracker to redux 'myTrackers
         }).catch((e) => {
             //Set the errors
+            console.log(e.message);
         }).finally(() => {
             setLoading(false);
         });
@@ -170,7 +172,7 @@ export const SetTracker = () => {
             <div id="tracker-created">
                 <div id="tracker-created-details">
                     <div><span>Your tracker has been successfully created.</span></div>
-                    <div><span>Here is the id:</span></div>
+                    <div><span>Here is the id: {trackerCreated.id}</span></div>
                     <div><span>You will receive an email containing all the details!</span></div>
                 </div>
                 <div id="tracker-created-button">

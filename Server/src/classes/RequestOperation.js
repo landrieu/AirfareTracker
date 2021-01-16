@@ -20,6 +20,13 @@ export class ValidationError extends Error{
     }
 }
 
+export class UnexpectedError extends Error{
+    constructor(type, errors){
+        super(type, 'Unexpected error');
+        this.errors = errors;
+    }
+}
+
 export class AuthenticationError extends Error{
     constructor(type, errors){
         super(type, 'Authentication error');
@@ -40,6 +47,13 @@ export class RegisterSuccess{
     constructor(success, user){
         this.success = success;
         this.user = user;
+    }
+}
+
+export class TrackerCreationSuccess{
+    constructor(tracker){
+        this.success = true;
+        this.tracker = tracker;
     }
 }
 

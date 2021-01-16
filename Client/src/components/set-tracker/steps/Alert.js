@@ -5,7 +5,7 @@ import { updateForm } from '../../../redux/SetTracker/actions';
 import { useDispatch, useSelector} from 'react-redux';
 
 export const Alert = (props) => {
-    const priceTrigger = useSelector(state => state.setTracker.priceTrigger);
+    const triggerPrice = useSelector(state => state.setTracker.triggerPrice);
     const email = useSelector(state => state.setTracker.email);
     const dispatch = useDispatch();
 
@@ -19,8 +19,8 @@ export const Alert = (props) => {
         }
     }
 
-    function setPriceTrigger(value){
-        dispatch(updateForm({priceTrigger: value}));
+    function setTriggerPrice(value){
+        dispatch(updateForm({triggerPrice: Number(value)}));
     }
 
     const activeDisplay = (
@@ -29,7 +29,7 @@ export const Alert = (props) => {
                 You can set a trigger price. If an airfare is below that price, an email will be sent to {email}.
             </div>
             <div className="inline-fields trigger-price">
-                <input type="number" placeholder="Trigger price (€)" value={priceTrigger || ''} onChange={e => setPriceTrigger(e.currentTarget.value)}></input>
+                <input type="number" placeholder="Trigger price (€)" value={triggerPrice || ''} onChange={e => setTriggerPrice(e.currentTarget.value)}></input>
             </div>
             <div id="alert-button" className="button" onClick={onSubmit}>
                 <button className={`${props.isLoading ? 'loading' : ''}`}>{props.buttonLabel}</button>

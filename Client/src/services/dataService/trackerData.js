@@ -1,10 +1,10 @@
 import gql from 'graphql-tag';
 
 export function TrackerDataService(options) {
-    return {
-        getFrequentTrackers: () => {
-            return options.graphClient.query({
-                query: gql`
+  return {
+    getFrequentTrackers: () => {
+      return options.graphClient.query({
+        query: gql`
               query ($type: String){
                 trackers(type: $type) {
                   id
@@ -20,17 +20,17 @@ export function TrackerDataService(options) {
                 }
               }
               `,
-                variables: {
-                    type: 'F'
-                },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.trackers)
+        variables: {
+          type: 'F'
         },
-        trackerById: (trackerId) => {
-            return options.graphClient.query({
-                query: gql`
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.trackers)
+    },
+    trackerById: (trackerId) => {
+      return options.graphClient.query({
+        query: gql`
             query ($id: String){
               trackers(id: $id) {
                 id
@@ -62,18 +62,18 @@ export function TrackerDataService(options) {
               }
             }
             `,
-                variables: {
-                    id: trackerId
-                },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.trackers[0])
+        variables: {
+          id: trackerId
         },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.trackers[0])
+    },
 
-        getUserTrackers: (userId) => {
-            return options.graphClient.query({
-                query: gql`
+    getUserTrackers: (userId) => {
+      return options.graphClient.query({
+        query: gql`
               query ($userId: String){
                 trackersByUser(userId: $userId) {
                   id
@@ -89,18 +89,18 @@ export function TrackerDataService(options) {
                 }
               }
               `,
-                variables: {
-                    userId
-                },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.trackersByUser)
+        variables: {
+          userId
         },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.trackersByUser)
+    },
 
-        updateTrackerStatus: async (trackerId, newStatus) => {
-            return options.graphClient.mutate({
-                mutation: gql`
+    updateTrackerStatus: async (trackerId, newStatus) => {
+      return options.graphClient.mutate({
+        mutation: gql`
                 mutation($trackerId: String!, $newStatus: Boolean!){
                     updateTrackerStatus(trackerId: $trackerId, newStatus: $newStatus){
                       success
@@ -108,16 +108,16 @@ export function TrackerDataService(options) {
                     }
                 }
                 `,
-                variables: { trackerId, newStatus },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.updateTrackerStatus)
-        },
+        variables: { trackerId, newStatus },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.updateTrackerStatus)
+    },
 
-        updateTrackerAlertStatus: async (trackerId, newStatus) => {
-            return options.graphClient.mutate({
-                mutation: gql`
+    updateTrackerAlertStatus: async (trackerId, newStatus) => {
+      return options.graphClient.mutate({
+        mutation: gql`
                 mutation($trackerId: String!, $newStatus: Boolean!){
                     updateTrackerAlertStatus(trackerId: $trackerId, newStatus: $newStatus){
                       success
@@ -125,16 +125,16 @@ export function TrackerDataService(options) {
                     }
                 }
                 `,
-                variables: { trackerId, newStatus },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.updateTrackerAlertStatus)
-        },
+        variables: { trackerId, newStatus },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.updateTrackerAlertStatus)
+    },
 
-        updateTracker: async (trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice) => {
-            return options.graphClient.mutate({
-                mutation: gql`
+    updateTracker: async (trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice) => {
+      return options.graphClient.mutate({
+        mutation: gql`
                 mutation($trackerId: String!, $trackerStatus: Boolean, $trackerAlertStatus: Boolean, $trackerTriggerPrice: Int){
                     updateTracker(trackerId: $trackerId, trackerStatus: $trackerStatus, trackerAlertStatus: $trackerAlertStatus, trackerTriggerPrice: $trackerTriggerPrice){
                       success
@@ -142,34 +142,47 @@ export function TrackerDataService(options) {
                     }
                 }
                 `,
-                variables: { trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.updateTracker)
-        },
+        variables: { trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.updateTracker)
+    },
 
 
-        createTracker: async (formData) => {
-            return options.graphClient.mutate({
-                mutation: gql`
-          mutation ($userEmail: String, $from: String!, $to: String!, $startDates: [GraphQLDate]!, $endDates: [GraphQLDate]!){
-            createTracker(userEmail: $userEmail, from: $from, to: $to, startDates: $startDates, endDates: $endDates ){
-              id      
+    createTracker: async (formData) => {
+      return options.graphClient.mutate({
+        mutation: gql`
+          mutation ($userEmail: String, $from: String!, $to: String!, $startDates: [GraphQLDate]!, $endDates: [GraphQLDate]!, $triggerPrice: Int){
+            createTracker(userEmail: $userEmail, from: $from, to: $to, startDates: $startDates, endDates: $endDates, triggerPrice: $triggerPrice ){
+              __typename
+                      ... on TrackerCreationSuccess{
+                          success
+                          tracker{
+                              id
+                          }       
+                      }
+                      ... on ErrorResult{
+                          type
+                          message
+                          success
+                          errors{target,message}
+                      }
             }
           }
           `,
-                variables: {
-                    userEmail: formData.email,
-                    from: formData.from.iataCode,
-                    to: formData.to.iataCode,
-                    startDates: formData.departureDates.map(d => new Date(d)),
-                    endDates: formData.returnDates.map(d => new Date(d))
-                },
-                fetchPolicy: 'no-cache'
-            })
-                .then(result => result.data)
-                .then(data => data.createTracker)
-        }
+        variables: {
+          userEmail: formData.email,
+          from: formData.from.iataCode,
+          to: formData.to.iataCode,
+          startDates: formData.departureDates.map(d => new Date(d)),
+          endDates: formData.returnDates.map(d => new Date(d)),
+          triggerPrice: formData.triggerPrice
+        },
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.createTracker)
     }
+  }
 }

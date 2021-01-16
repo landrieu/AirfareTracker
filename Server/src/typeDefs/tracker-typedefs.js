@@ -48,6 +48,13 @@ export const trackerTypeDefs = gql`
         interval: String
     }
 
+    type TrackerCreationSuccess{
+        success: Boolean
+        tracker: Tracker
+    }
+
+    union TrackerCreationResult = TrackerCreationSuccess | ErrorResult
+
     extend type Query {
         trackers(type: String, id: String): [Tracker]
         trackersByUser(userId: String): [Tracker]
@@ -57,7 +64,7 @@ export const trackerTypeDefs = gql`
     }
 
     extend type Mutation {
-        createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate]): Tracker
+        createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate], triggerPrice: Int): TrackerCreationResult
         createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence], sources: [String]): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
         updateTrackerStatus(trackerId: String!, newStatus: Boolean!): OperationResult

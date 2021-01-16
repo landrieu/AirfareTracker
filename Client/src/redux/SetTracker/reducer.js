@@ -32,7 +32,7 @@ const INITIAL_STATE = {
       null,
       null
     ],
-    priceTrigger: null,
+    triggerPrice: null,
     alertEnabled: false
 };
 

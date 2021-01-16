@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Chart from 'chart.js';
 
+import moment from 'moment'
 import './LineChart.scss'
 
 export const LineChart = (props) => {
@@ -37,12 +38,31 @@ export const LineChart = (props) => {
                 },
                 responsive: true,
                 maintainAspectRatio: props.maintainAspectRatio,
+                /*tooltips: {
+                    callbacks: {
+                        title: function (tooltipItem, data) {
+                            console.log(tooltipItem, data);
+                            return moment(tooltipItem[0]['label']).format('DD MM YY')
+                            return data['labels'][tooltipItem[0]['index']];
+                        },
+                        label: function (tooltipItem, data) {
+                            console.log(tooltipItem, data);
+                            return data['datasets'][0]['data'][tooltipItem['index']];
+                        }
+                    },
+                    backgroundColor: '#FFF',
+                    titleFontSize: 16,
+                    titleFontColor: '#0066ff',
+                    bodyFontColor: '#000',
+                    bodyFontSize: 14,
+                    displayColors: false
+                },*/
                 annotation: {
                     annotations: [{
                         type: 'line',
                         mode: 'horizontal',
                         scaleID: 'y-axis-0',
-                        value: 5,
+                        value: 150,
                         borderColor: 'rgb(75, 192, 192)',
                         borderWidth: 4,
                         label: {

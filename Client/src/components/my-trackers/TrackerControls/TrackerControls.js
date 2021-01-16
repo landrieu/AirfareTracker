@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { LABELS } from '../../../services/constants';
 import { DataService } from '../../../services/dataService/';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { updateSingleTracker } from '../../../redux/MyTrackers/actions';
 import { Toggle } from '../../misc/Toggle';
@@ -16,16 +16,29 @@ export const TrackerControls = ({ tracker }) => {
     const [updatingTrackerAlertStatus, setUpdatingTrackerAlertStatus] = useState(false);
     const [updatingTrackerTriggerPrice, setUpdatingTrackerTriggerPrice] = useState(false);
     const [oldTriggerPrice, setOldTrigerPrice] = useState();
-    const [triggerPrice, setTriggerPrice] = useState(tracker.triggerPrice);
 
+    const triggerPrice = useSelector(state => (state.myTrackers.trackers.find(t => t.id === tracker.id).triggerPrice));
     const dispatch = useDispatch();
+
+
+    function setTriggerPrice(triggerPrice){
+        dispatch(updateSingleTracker({ ...tracker, triggerPrice: Number(triggerPrice) }));
+    }
+
+    function setStatus(newStatus){
+        dispatch(updateSingleTracker({ ...tracker, isActive: newStatus }));
+    }
+
+    function setAlertStatus(newStatus){
+        dispatch(updateSingleTracker({ ...tracker, isAlertActive: newStatus }));
+    }
 
     function updateTriggerPrice(triggerPrice) {
         setUpdatingTrackerTriggerPrice(true);
         DataService.updateTracker(tracker.id, null, null, Number(triggerPrice)).then((res) => {
             //Update previous trigger price
-            setOldTrigerPrice(triggerPrice);
-            dispatch(updateSingleTracker({ ...tracker, triggerPrice }));
+            setOldTrigerPrice(Number(triggerPrice));
+            setTriggerPrice(triggerPrice);
 
         }).catch((e) => {
             //Fail, reset trigger price
@@ -39,14 +52,13 @@ export const TrackerControls = ({ tracker }) => {
     function toggleTrackerStatus() {
         let newStatus = !tracker.isActive;
         setUpdatingTrackerStatus(true);
-        dispatch(updateSingleTracker({ ...tracker, isActive: newStatus }));
+        setStatus(newStatus);
 
-        DataService.updateTrackerStatus(tracker.id, newStatus).then((res) => {
+        DataService.updateTracker(tracker.id, newStatus, null, null).then((res) => {
             console.log(res);
         }).catch((e) => {
             console.log(e.message);
-            
-            dispatch(updateSingleTracker({ ...tracker, isActive: !newStatus }));
+            setStatus(!newStatus);
         }).finally(() => {
             setUpdatingTrackerStatus(false);
         });
@@ -59,14 +71,14 @@ export const TrackerControls = ({ tracker }) => {
         setUpdatingTrackerAlertStatus(true);
 
         //Dispatch the change
-        dispatch(updateSingleTracker({ ...tracker, isAlertActive: newStatus }));
+        setAlertStatus(newStatus);
 
         //Update the status
-        DataService.updateTrackerAlertStatus(tracker.id, newStatus).then((res) => {
+        DataService.updateTracker(tracker.id, null, newStatus, null).then((res) => {
             console.log(res);
         }).catch((e) => {
             console.log(e.message);
-            dispatch(updateSingleTracker({ ...tracker, isAlertActive: !newStatus }));
+            setAlertStatus(!newStatus)
         }).finally(() => {
             setUpdatingTrackerAlertStatus(false);
         });
