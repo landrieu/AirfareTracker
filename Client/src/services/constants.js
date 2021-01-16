@@ -38,7 +38,7 @@ export const GRAPH_STATS_AVAILABLE = {
     MAX_PRICES: { name: 'Max prices', field: 'maxPrice' },
     AVERAGE_PRICES: { name: 'Average prices', field: 'averagePrice' },
     MEDIAN_PRICES: { name: 'Median prices', field: 'medianPrice' },
-    CONVERGED: { name: 'Converged' }
+    COMBINED: { name: 'Combined' }
 };
 
 //export const GRAPH_COLORS = ['rgba(154, 62, 235, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', '#4bc0c0', 'rgb(255,205, 86)', '#9496F7'];

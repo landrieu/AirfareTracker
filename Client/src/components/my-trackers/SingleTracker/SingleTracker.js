@@ -13,11 +13,10 @@ import { LDSSpinner } from '../../misc/Loaders';
 import './SingleTracker.scss';
 
 export const SingleTracker = (props) => {
-
     const tracker = useSelector(state => state.myTrackers.trackers.find(t => t.id === props.tracker.id));
     const [isLoaded, setIsLoaded] = useState(false);
     const [noData, setNoData] = useState(true);
-    const [expand, setExpand] = useState(false);
+    const [expand, setExpand] = useState(props.expandInit || false);
 
     const dispatch = useDispatch();
 
@@ -56,7 +55,6 @@ export const SingleTracker = (props) => {
             if (mounted) {
                 setNoData(!tracker.airfares || tracker.airfares.length === 0);
                 //Update single tracker when fetched
-                setIsLoaded(true);
                 let convergedStats = computeMergedStats(tracker.airfares);
                 tracker.additionnalStats = convergedStats;
                 dispatch(updateSingleTracker(tracker));
@@ -64,6 +62,8 @@ export const SingleTracker = (props) => {
         }).catch((e) => {
             console.log(e.message);
             //dispatch(updateSingleTracker({}))
+        }).finally(() => {
+            setIsLoaded(true);
         });
 
         return () => {

@@ -81,7 +81,7 @@ export const TrackerGraph = ({ tracker, index, noData }) => {
                 datasets = formatDataset(airfares);
                 break;
 
-            case GRAPH_STATS_AVAILABLE.CONVERGED.name:
+            case GRAPH_STATS_AVAILABLE.COMBINED.name:
                 datasets = formatDatasetAdditional(tracker.additionnalStats);
                 break;
             default:

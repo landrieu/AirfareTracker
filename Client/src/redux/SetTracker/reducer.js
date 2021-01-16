@@ -61,7 +61,6 @@ const reducer = (state = INITIAL_STATE, action) => {
             for(let k in action){
                if(state[k] !== undefined) updatedForm[k] = action[k]
             }
-            console.log(updatedForm)
             return {...state, ...updatedForm}
 
         case CLEAR_FORM: return INITIAL_STATE;

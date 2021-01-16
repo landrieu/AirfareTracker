@@ -5,6 +5,7 @@ const INITIAL_STATE = {
     trackers: []
 };
 
+//@TODO: mutate cache, and use cache for trackerID search
 const reducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case SAVE:

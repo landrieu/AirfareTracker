@@ -14,6 +14,7 @@ import { Home } from './components/home/Home';
 import { MyTrackers } from './components/my-trackers/MyTrackers';
 import { AccountActivation } from './components/account-activation/AccountActivation';
 import { Footer } from './components/footer/Footer';
+import { FindTracker } from './components/find-tracker/FindTracker';
 
 import { authService } from './services/authService';
 
@@ -98,6 +99,7 @@ export default function App() {
                     </Route>
                     <PrivateRoute exact path="/my-trackers" component={MyTrackers} />
                     <Route path="/activation/:id" component={AccountActivation} />
+                    <Route path={["/find-tracker/:id", "/find-tracker"]} component={FindTracker} />
                     <Route path="/">
                             <Home />
                     </Route>

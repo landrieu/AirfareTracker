@@ -1,0 +1,28 @@
+@import "../../variables.scss";
+
+#find-tracker {
+    width: 100%;
+    min-height: calc(100vh - #{$header-height} - #{$footer-height});
+    color: white;
+    width: 100%;
+    background-color: $primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    #find-tracker-content {
+        margin: auto;
+        width: 60%;
+        min-width: 400px;
+        max-width: 830px;
+
+        #find-tracker-button{
+            margin-top: 20px;
+        }
+
+        #find-tracker-id{
+            width: 400px;
+            margin: auto;
+        }
+    }
+}

@@ -41,6 +41,9 @@ export const Header = (props) => {
                 <li className={`left ${isActiveRoute('set-tracker') ? 'active' :''}`}>
                     <Link to="/set-tracker">Set a tracker</Link>
                 </li>
+                <li className={`left ${isActiveRoute('find-tracker') ? 'active' :''}`}>
+                    <Link to="/find-tracker">Find tracker</Link>
+                </li>
 
                 {isLoggedIn && (
                 <li className={`left ${isActiveRoute('my-trackers') ? 'active' :''}`}>
@@ -57,7 +60,7 @@ export const Header = (props) => {
                     <Link to="/register">Register</Link>
                 </li>)}
                 {isLoggedIn && (
-                <li onClick={onLogoutClick}>
+                <li className='right' onClick={onLogoutClick}>
                     <Link to='/login'>Logout</Link>
                 </li>)}
                 
