@@ -5,6 +5,7 @@ import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
 import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
 import { NB_TRACKERS_PER_USER } from '../services/constants';
+import { canCreateOrActivateTracker } from '../services/data/user';
 
 import { validateRegister, validateLogin } from '../services/data/user';
 import { AUTH_ERRORS } from '../services/constants/errors';
@@ -43,7 +44,15 @@ module.exports = {
             }
         },
         numberTrackersCreatable: async (_, { email }, { auth }) => {
-            let user, userEmail, userId;
+            let createTracker;
+            try {
+                createTracker = canCreateOrActivateTracker(null, auth, email);
+            } catch (error) {
+                return new TrackerCreationCheck(false,false, null, 'Unexpected error');
+            }
+            
+            return createTracker;
+            /*let user, userEmail, userId;
             try {
                 //User logged
                 user = await VerifyAuthentication(auth);
@@ -59,7 +68,7 @@ module.exports = {
             let query = userId ? { $or: [{ userId }, { userEmail }] } : { userEmail };
             let nbTrackersCreated = await Tracker.countDocuments(query);
             let nbTrackersCreatable = (user ? NB_TRACKERS_PER_USER.REGISTERED : NB_TRACKERS_PER_USER.VISITOR) - nbTrackersCreated;
-            return new TrackerCreationCheck(true, nbTrackersCreatable > 0, nbTrackersCreated, null);
+            return new TrackerCreationCheck(true, nbTrackersCreatable > 0, nbTrackersCreated, null);*/
         }
     },
     Mutation: {

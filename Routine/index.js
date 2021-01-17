@@ -179,7 +179,7 @@ const scanAllTrackers = async (trackers) => {
 const checkAlert = (tracker, airfares) => {
 
     if (tracker.type !== TRACKER_TYPES.NORMAL) return;
-    if (!tracker.isAlertActive || tracker.triggerPrice === undefined) return;
+    if (!tracker.isAlertActive || tracker.triggerPrice === undefined || tracker.triggerPrice === 0) return;
 
     let airfaresUnderTrigger = [];
 

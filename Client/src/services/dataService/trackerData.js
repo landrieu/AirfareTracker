@@ -98,7 +98,7 @@ export function TrackerDataService(options) {
         .then(data => data.trackersByUser)
     },
 
-    updateTrackerStatus: async (trackerId, newStatus) => {
+    /*updateTrackerStatus: async (trackerId, newStatus) => {
       return options.graphClient.mutate({
         mutation: gql`
                 mutation($trackerId: String!, $newStatus: Boolean!){
@@ -130,7 +130,7 @@ export function TrackerDataService(options) {
       })
         .then(result => result.data)
         .then(data => data.updateTrackerAlertStatus)
-    },
+    },*/
 
     updateTracker: async (trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice) => {
       return options.graphClient.mutate({
@@ -177,7 +177,7 @@ export function TrackerDataService(options) {
           to: formData.to.iataCode,
           startDates: formData.departureDates.map(d => new Date(d)),
           endDates: formData.returnDates.map(d => new Date(d)),
-          triggerPrice: formData.triggerPrice
+          triggerPrice: typeof formData.triggerPrice == 'number' ? formData.triggerPrice : null
         },
         fetchPolicy: 'no-cache'
       })

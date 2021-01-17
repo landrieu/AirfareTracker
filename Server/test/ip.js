@@ -8,8 +8,8 @@ describe("Retrieve IP info", () => {
     it("Basic", async () => {
         await mongo.connect();
 
-        let trackers = await findClosestTrackers({}, 6)();
-        console.log(trackers);
+        //let trackers = await findClosestTrackers({}, 6)();
+        //console.log(trackers);
         expect(true).to.equal(true);
     });
 

@@ -10,6 +10,7 @@ import { User } from '../database/models/User';
 import { OperationResult } from '../classes/RequestOperation';
 import { validateNewTracker } from '../services/form-validation/tracker';
 import { formatNormalTracker, formatFrequentTracker } from '../services/data/tracker';
+import { canCreateOrActivateTracker } from '../services/data/user';
 import { sendNewTrackerEmail } from '../services/helpers/notifications';
 
 import { airportSearch } from '../services/data/airport';
@@ -136,62 +137,25 @@ module.exports = {
                 return { success: false };
             }
         },
-        updateTrackerStatus: async (_, { trackerId, newStatus }, { auth }) => {
-            //@TODO: Check if the user can enable the tracker, check the limit
-            try {
-                const user = await VerifyAuthentication(auth);
-                const tracker = await Tracker.findOne({ _id: ObjectID(trackerId) });
-                if (!tracker) throw new Error("Could not find the tracker");
-
-                if (tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
-
-                let res = await Tracker.updateOne(
-                    { _id: trackerId },
-                    { $set: { isActive: newStatus } },
-                    { useFindAndModify: false }
-                );
-                if (res.n === 0) throw new Error("No tracker has been updated");
-                return new OperationResult(true, 'UPDATE_TRACKER_STATUS');
-            } catch (error) {
-                //console.log(error.message, error.msg)
-                return new OperationResult(false, 'UPDATE_TRACKER_STATUS', error.message);
-            }
-
-        },
-
-        updateTrackerAlertStatus: async (_, { trackerId, newStatus }, { auth }) => {
-            //@TODO: Check if the user can enable the tracker, check the limit
-            try {
-                const user = await VerifyAuthentication(auth);
-                const tracker = await Tracker.findOne({ _id: ObjectID(trackerId) });
-                if (!tracker) throw new Error("Could not find the tracker");
-
-                if (tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
-
-                let res = await Tracker.updateOne(
-                    { _id: trackerId },
-                    { $set: { isAlertActive: newStatus } },
-                    { useFindAndModify: false }
-                );
-                if (res.n === 0) throw new Error("No tracker has been updated");
-                return new OperationResult(true, 'UPDATE_TRACKER_ALERT_STATUS');
-            } catch (error) {
-                //console.log(error.message, error.msg)
-                return new OperationResult(false, 'UPDATE_TRACKER_ALERT_STATUS', error.message);
-            }
-
-        },
 
         updateTracker: async (_, { trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
                 const tracker = await Tracker.findOne({ _id: ObjectID(trackerId) });
-                if (!tracker) throw new Error("Could not find the tracker");
+                if (!tracker) return new OperationResult(false, 'UPDATE_TRACKER', "Could not find the tracker");
 
                 if (tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
 
                 let query = {};
-                if (typeof trackerStatus === "boolean") query.isActive = trackerStatus;
+                if (typeof trackerStatus === "boolean"){
+                    query.isActive = trackerStatus;
+                    if(trackerStatus){
+                        let {canCreateNewTracker, error} = await canCreateOrActivateTracker(user, auth, null);
+                        if(error) return new OperationResult(false, 'UPDATE_TRACKER', error.message);
+                        if(!canCreateNewTracker) return new OperationResult(false, 'UPDATE_TRACKER', 'The limit has been reached');
+                    } 
+                    //Check if tracker dates are in the future
+                } 
                 if (typeof trackerAlertStatus === "boolean") query.isAlertActive = trackerAlertStatus;
                 if (typeof trackerTriggerPrice === "number") query.triggerPrice = trackerTriggerPrice;
 
@@ -200,7 +164,7 @@ module.exports = {
                     { $set: query },
                     { useFindAndModify: false }
                 );
-                if (res.n === 0) throw new Error("No tracker has been updated");
+                if (res.n === 0) return new OperationResult(false, 'UPDATE_TRACKER', "No tracker has been updated");
                 return new OperationResult(true, 'UPDATE_TRACKER');
             } catch (error) {
                 //console.log(error.message, error.msg)

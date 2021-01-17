@@ -13,7 +13,7 @@ export const MyTrackers = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const dispatch = useDispatch();
-    
+
     useEffect(() => {
         //Fetch user trackers
         let mounted = true;
@@ -25,9 +25,9 @@ export const MyTrackers = () => {
             }
         }).catch((e) => {
             console.log(e.message);
-            if(mounted) setError('Could not fetch your trackers');
+            if (mounted) setError('Could not fetch your trackers');
         }).finally(() => {
-            if(mounted) setIsLoading(false);
+            if (mounted) setIsLoading(false);
         })
 
         return () => {
@@ -46,8 +46,14 @@ export const MyTrackers = () => {
         )
     }
 
-    function displayMyTrackers() {
-        if (error) {
+    function render() {
+        if (isLoading) {
+            return (
+                <div id="my-trackers-loader">
+                    <LDSRing />
+                </div>
+            )
+        } else if (error) {
             return (
                 <div id="my-trackers-error">
                     {error}
@@ -56,18 +62,30 @@ export const MyTrackers = () => {
         } else {
             return (
                 <div id="my-trackers-content">
-                    {myTrackers.map((tracker, index) => {
-                        return <SingleTracker key={index} index={index} tracker={tracker} />
-                    })}
+                    <div id="my-trackers-numbers">
+                        <div>
+                            <span>Trackers number:</span>
+                            <span>{myTrackers.length}</span>
+                        </div>
+                        <div>
+                        <span>Active trackers:</span>
+                        <span>{myTrackers.filter((t) => t.isActive).length}</span>
+                        </div>
+                    </div>
+                    <div>
+                        {myTrackers.map((tracker, index) => {
+                            return <SingleTracker key={index} index={index} tracker={tracker} />
+                        })}
+                    </div>
                 </div>
+
             );
         }
     }
 
     return (
         <div id="my-trackers">
-            {loadingWheel()}
-            {displayMyTrackers()}
+            {render()}
         </div>
     )
 }

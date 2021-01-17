@@ -13,7 +13,7 @@ import { SetTracker } from '../set-tracker/SetTracker';
 
 export const FindTracker = ({ match }) => {
     const dispatch = useDispatch();
-    
+
     const [loading, setLoading] = useState(false);
     const [trackerId, setTrackerId] = useState(match.params.id || '');
     const [trackerError, setTrackerError] = useState('');
@@ -61,11 +61,11 @@ export const FindTracker = ({ match }) => {
 
     function render() {
         if (loading) {
-            <div id="find-tracker-loader">
+            return (<div id="find-tracker-loader">
                 <LDSRing />
-            </div>
+            </div>)
         } else if (tracker) {
-            return <SingleTracker index={0} tracker={tracker} expandInit={true}/>
+            return <SingleTracker index={0} tracker={tracker} expandInit={true} />
         } else {
             return (
                 <form id="find-tracker-form" onSubmit={(e) => onSubmit(e)}>

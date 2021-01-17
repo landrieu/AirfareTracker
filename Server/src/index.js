@@ -70,6 +70,10 @@ const defineRoutes = () => {
     app.listen({ port: 4000 }, () =>
         console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
     )
+
+    app.on('close', () => {
+        mongo.disconnect();
+    });
 }
 //deifne project directory
 global.__basedir = __dirname;

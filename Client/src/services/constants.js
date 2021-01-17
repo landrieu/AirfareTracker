@@ -8,6 +8,7 @@ export const MESSAGES = {
 };
 
 export const LABELS = {
+    TRACKER_ID: 'Tracker ID:',
     DEPARTURE_DATES: 'Departure dates:',
     RETURN_DATES: 'Return dates:',
     STATUS: 'Status:',

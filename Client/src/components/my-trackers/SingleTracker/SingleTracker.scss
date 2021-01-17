@@ -46,7 +46,7 @@
         }
 
         &.expand {
-            height: 500px;
+            height: 520px;
         }
 
         &.expand.no-data {
@@ -59,6 +59,10 @@
             display: flex;
             margin: 5px auto;
             justify-content: flex-start;
+
+            .error-message {
+                min-height: 20px;
+            }
         }
 
         .single-tracker-trigger-price{

@@ -67,8 +67,6 @@ export const trackerTypeDefs = gql`
         createTracker(from: String!, to: String!, userEmail: String, userId: String, startDates: [GraphQLDate], endDates: [GraphQLDate], triggerPrice: Int): TrackerCreationResult
         createFrequentTracker(from: String!, to: String!, occurences: [TripOccurrence], sources: [String]): Tracker
         deleteTracker(trackerId: String!, userId: String): TrackerPayLoad
-        updateTrackerStatus(trackerId: String!, newStatus: Boolean!): OperationResult
-        updateTrackerAlertStatus(trackerId: String!, newStatus: Boolean!): OperationResult
         updateTracker(trackerId: String!, trackerStatus: Boolean, trackerAlertStatus: Boolean, trackerTriggerPrice: Int): OperationResult!
     }
 `;
