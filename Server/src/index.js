@@ -6,17 +6,20 @@ import { mongo } from './database/index';
 import _ from './services/helpers/date';
 
 import { Email } from './services/email';
+import { PORT } from './services/settings';
 
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const router = express.Router();
 const app = express();
+const baseUrl = '/airfares-tracker/api/';
 
 const ips = require('./routes/ips');
 
 //Body parser middleware
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //Give access to the public repository
-app.use(express.static('public'));
+router.use(express.static('public'));
 
 const server = new ApolloServer({
     typeDefs,
@@ -44,7 +47,7 @@ const server = new ApolloServer({
 
 const startServer = async () => {
     
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, path: baseUrl });
 
     //Connection to the database
     try{
@@ -58,7 +61,7 @@ const startServer = async () => {
 } 
 
 const defineRoutes = () => {
-    app.get('/test', (req, res) => {      
+    router.get('/test', (req, res) => {      
         res.json({
             name: 'Bob',
             age: 28
@@ -67,8 +70,10 @@ const defineRoutes = () => {
     
     //app.use('/ips', ips);
 
-    app.listen({ port: 4000 }, () =>
-        console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+    app.use(baseUrl, router);
+
+    app.listen({ port: PORT }, () =>
+        console.log(`🚀 Server ready at http://localhost:${PORT}${baseUrl}${server.graphqlPath}`)
     )
 
     app.on('close', () => {

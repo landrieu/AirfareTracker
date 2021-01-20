@@ -1,5 +1,7 @@
 const express = require('express');
-var bodyParser = require('body-parser')
+const router = express.Router();
+var bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 const port = 8000;
 const database = require('./database');
@@ -9,15 +11,18 @@ const users = require('./routes/users');
 const trackers = require('./routes/trackers');
 const ips = require('./routes/ips');
 
+router.use(cors());
+app.enable('trust proxy');
+
 //Body parser middleware
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //Give access to the public repository
-app.use(express.static('public'));
+router.use(express.static('public'));
 
-app.use('/users', users);
-app.use('/trackers', trackers);
-app.use('/ips', ips);
+router.use('/users', users);
+router.use('/trackers', trackers);
+router.use('/ips', ips);
 
 //Define a middleware
 const h = (req, res, next) => {
@@ -25,11 +30,11 @@ const h = (req, res, next) => {
   next();
 };
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.send('Hello World!')
 });
 
-app.get('/test', [h, (req, res) => {
+router.get('/test', [h, (req, res) => {
   console.log(req.ip);
   const json = {
     name: 'Bob',
@@ -39,6 +44,11 @@ app.get('/test', [h, (req, res) => {
   res.json(json);
 }]);
 
+app.use('/api/', router);
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}!`)
-});
+}); 
+
+
+//app.use('/airfares-tracker/api/', router);

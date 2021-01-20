@@ -1,5 +1,6 @@
 {
   "name": "airfare-tracker",
+  "homepage": "/airfares-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

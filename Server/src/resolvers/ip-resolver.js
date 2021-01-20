@@ -5,7 +5,8 @@ import { randomTrackers } from '../services/data/tracker';
 
 import { IPFinder } from '../classes/IPFinder'; 
 
-const ipModel = require('../database/models/ip');
+
+import {IP} from '../database/models/IP';
 const request = require('request');
 
 const localIPs = ["::ffff:127.0.0.1", "::1"];
@@ -31,7 +32,7 @@ module.exports = {
             console.log(`Check client IP address ${clientIPAddress}`);
 
             //Simulate external IP
-            clientIPAddress = worldIPs.Dallas;
+            //clientIPAddress = worldIPs.Dallas;
     
             //Check if the IP address is local, and fetch IP details
             let ipDetails = await findIPLocation(clientIPAddress);
@@ -45,7 +46,7 @@ module.exports = {
 
             renameObjectKey(ipDetails.data, 'longitude', 'lon');
             renameObjectKey(ipDetails.data, 'latitude', 'lat');
-            let ipRecord = new ipModel(Object.assign({}, ipDetails.data, {address: clientIPAddress}));
+            let ipRecord = new IP(Object.assign({}, ipDetails.data, {address: clientIPAddress}));
 
             console.time("Start scanning");
             let [closestAirport, closestTrackers] = await Promise.all(
@@ -81,7 +82,10 @@ module.exports = {
         findIPTrackers: (_, {},{clientIPAddress}) => {
             return new Promise(resolver => {
                 const findTrackers = async ({success, data}) => {
-                    if(!success) return resolver({success});
+                    if(!success){
+                        //Return random trackers
+                        return resolver({success: true, trackers: (await randomTrackers(6)).map(tracker => ({id: tracker._id, ...tracker}))});
+                    } 
                     
                     let trackers = await findClosestTrackers(data, 6);
                     resolver({success: true, trackers});

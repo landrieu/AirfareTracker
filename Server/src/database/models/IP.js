@@ -18,10 +18,10 @@ const ipSchema = mongoose.Schema({
     timestamps: true
 });
 
-const model = mongoose.model("ips", ipSchema);
+export const IP = mongoose.model("ips", ipSchema);
 
-module.exports = model;
+//module.exports = model;
 
-module.exports.insertIP = function(IP){
+/*module.exports.insertIP = function(IP){
     return IP.save();
-}
+}*/

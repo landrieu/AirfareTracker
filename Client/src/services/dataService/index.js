@@ -9,7 +9,9 @@ import { TrackerDataService } from './trackerData';
 import { IPDataService } from './ipData';
 import { authService } from '../authService';
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+import { API_PATH } from '../settings';
+
+const httpLink = new HttpLink({ uri: `${API_PATH}graphql` });
 
 const authLink = new ApolloLink((operation, forward) => {
   // Retrieve the authorization token from local storage.
@@ -32,7 +34,7 @@ const graphClient = new ApolloClient({
 });
 
 const axiosClient = Axios.create({
-  baseURL: 'http://localhost:4000'
+  baseURL: API_PATH
 });
 
 export const DataService = {

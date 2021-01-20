@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const ipModel = require('../database/models/ip');
+const ipModel = require('../database/models/IP');
 const request = require('request');
 
 import {renameObjectKey} from '../services/helpers/object';

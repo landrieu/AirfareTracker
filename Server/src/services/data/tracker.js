@@ -7,7 +7,9 @@ export const findTrackers = (filter, fields) => {
 
 export const randomTrackers = (nbTrackers = 6) => {
     return Tracker.aggregate([
-        { $sample: { size: nbTrackers }} 
+        { "$match": { "type": 'F' } },
+        { $sample: { size: nbTrackers }},
+        { "$project": { _id: 1, from: 1, to: 1}},
     ]);
 }
 

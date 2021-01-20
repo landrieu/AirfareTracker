@@ -1,6 +1,8 @@
 import { Airport } from '../../database/models/Airport';
 import { Email } from '../../services/email';
 
+import { BASE_URL } from '../../services/settings';
+
 import moment from 'moment';
 
 export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
@@ -9,7 +11,7 @@ export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
         let toAirport = await Airport.findOne({ iataCode: tracker.to });
         let content = {
             trackerId: sTracker._id,
-            trackerLink: `http://localhost:3000/tracker/${sTracker._id}`,
+            trackerLink: `${BASE_URL}/tracker/${sTracker._id}`,
             from: fromAirport.city,
             to: toAirport.city,
             departureDates: `${moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - ${moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}`,
@@ -29,7 +31,7 @@ export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
 export const sendRegistrationEmail = (userId, userEmail) => {
     return new Promise(async (resolve) => {
         let content = {
-            activationLink: `http://localhost:3000/activation/${userId}`,
+            activationLink: `${BASE_URL}/activation/${userId}`,
         };
         let activationEmail = new Email(userEmail, 'Airfare tracker - Registration', content, 'template_registration');
         let resEmail = await activationEmail.send();

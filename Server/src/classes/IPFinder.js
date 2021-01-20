@@ -23,14 +23,14 @@ export class IPFinder{
         this.purgeTime = purgeTime;
 
         //TEST
-        let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
-        this.clientIPAddressTEST = worldIPs[p[Math.floor(Math.random() * p.length)]];
+        //let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
+        //this.clientIPAddressTEST = worldIPs[p[Math.floor(Math.random() * p.length)]];
     }
 
     async search(clientIPAddress, subscriber){
         
         //TEST
-        clientIPAddress = this.clientIPAddressTEST;
+        //clientIPAddress = this.clientIPAddressTEST;
 
         //Purge existing ips
         this.purge();
@@ -89,10 +89,6 @@ export class IPFinder{
         return this.addresses.get(address);
 
         return null;
-    }
-
-    isLocalIP(clientIPAddress){
-        return localIPs.indexOf(clientIPAddress)!== -1;
     }
 
     request(clientIPAddress){

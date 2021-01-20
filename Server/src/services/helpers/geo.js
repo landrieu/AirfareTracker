@@ -49,7 +49,7 @@ export const findClosestTrackersAndSort = async(airports, numberTrackers) =>{
 		let bScore = bScoreFrom + bScoreTo;
 		return aScore - bScore;
 	});
-	
+
 	return cTrackers;
 };
 
