@@ -31,6 +31,7 @@ export class IPFinder{
         
         //TEST
         //clientIPAddress = this.clientIPAddressTEST;
+        console.log('IP address:', clientIPAddress);
 
         //Purge existing ips
         this.purge();

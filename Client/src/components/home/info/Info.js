@@ -23,7 +23,7 @@ export const Info = (props) => {
                 </div>
                 <div className="home-info-card">
                     <div className="top">
-                        <img src='/static/target.svg' alt='Target'></img>
+                        <img src='./images/target.svg' alt='Target'></img>
                     </div>
                     <div className="bottom">
                         Set a tracker among XXX airports select departure, arrival airport and a departure arrival range date

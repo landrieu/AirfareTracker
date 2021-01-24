@@ -7,8 +7,8 @@ import { AUTH_ERRORS } from '../../helpers/errors';
 
 export const Login = () => {
     const history = useHistory();
-    const [email, setEmail] = useState('lio23@hotmail.fr');
-    const [password, setPassword] = useState('toulouse');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const [loading, setLoading] = useState(false);
 

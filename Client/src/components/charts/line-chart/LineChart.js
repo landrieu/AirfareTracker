@@ -14,6 +14,15 @@ export const LineChart = (props) => {
             type: 'line',
             data: { datasets: props.datasets },
             options: {
+                //https://www.chartjs.org/docs/latest/general/performance.html
+                //showLines: false, // disable for all datasets
+                animation: {
+                    duration: 0 // general animation time
+                },
+                hover: {
+                    animationDuration: 0 // duration of animations when hovering an item
+                },
+                responsiveAnimationDuration: 0, // animation duration after a resize
                 scales: {
                     xAxes: [{
                         type: 'time',
@@ -32,10 +41,10 @@ export const LineChart = (props) => {
                     text: 'Minimum price over time',
                     position: 'left'
                 },
-                animation: {
+                /*animation: {
                     duration: 5000,
                     onComplete: () => { }
-                },
+                },*/
                 responsive: true,
                 maintainAspectRatio: props.maintainAspectRatio,
                 /*tooltips: {

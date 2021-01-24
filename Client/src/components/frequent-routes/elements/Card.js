@@ -74,7 +74,7 @@ export const Card = (props) => {
             case TRACKER_STATUS.INIT: return '';
             case TRACKER_STATUS.LOADING: return '' 
             case TRACKER_STATUS.FAIL: return '';
-            case TRACKER_STATUS.COMPLETE: return `${stat ? stat.text : ''} ${stat ? stat.value : ''}%`;        
+            case TRACKER_STATUS.COMPLETE: return `${stat ? stat.text : ''} ${stat ? (stat.value > 0 ? `+${stat.value}` : stat.value) : ''}%`;        
             default: return '';
         }
     }
