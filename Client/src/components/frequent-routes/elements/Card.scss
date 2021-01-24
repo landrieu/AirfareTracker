@@ -2,7 +2,7 @@
 
 
 .card{
-    width: calc(100% / 6);
+    
     display: inline-block;
     
     .card-container{
@@ -52,7 +52,7 @@
             }
         }
 
-        &.inactive , &.loading{
+        &.init, .inactive , &.loading{
             .top div{
                 width: 80%;
                 background-image: linear-gradient(90deg, #303142 0px, rgba(44, 37, 82, 0.8) 40px, #303142 80px);

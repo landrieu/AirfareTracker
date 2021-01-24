@@ -6,14 +6,14 @@ import { useSelector} from 'react-redux';
 
 import './Card.scss';
 
-export const Card = (props) => {
+export const Card = ({style, trackerId, index}) => {
     const [randomWidth] = useState(() => {
         let rand1 = Math.floor(Math.random() * 60) + 40;
         let rand2 = Math.floor(Math.random() * 60) + 40;
         return [rand1, rand2];
     });
 
-    const tracker = useSelector(state => state.homeInfo.nearestTrackers.find(t => t.id === props.trackerId));
+    const tracker = useSelector(state => state.homeInfo.nearestTrackers.find(t => t.id === trackerId));
 
     const [stats, setStats] = useState(() => {
         return new Array(2).fill({text: '', value: ''});
@@ -86,7 +86,7 @@ export const Card = (props) => {
     }
 
     return(
-        <div className="card" key={tracker.id}>
+        <div className="card" key={tracker.id} style={style}>
             <div className={`card-container ${tracker.status.toLowerCase()}`}>
                 <div className="top">
                     <div className="top-container">{displayTop()}</div>
@@ -101,7 +101,7 @@ export const Card = (props) => {
                     ))}
                 </div>
                 <div className="bottom">
-					<LineChart datasets={trackerDatasets} maintainAspectRatio={true} chartID={`frequent-route-${props.index}`}/>
+					<LineChart datasets={trackerDatasets} maintainAspectRatio={true} chartID={`frequent-route-${index}`}/>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, BrowserRouter } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { authService } from '../../services/authService';
 import { DataService } from '../../services/dataService/';
@@ -28,6 +28,15 @@ export const Header = (props) => {
 
     function isActiveRoute(routeName) {
         return location.pathname === `/${routeName}`;
+    }
+
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+          x.className += " responsive";
+        } else {
+          x.className = "topnav";
+        }
     }
 
     return (
@@ -64,6 +73,9 @@ export const Header = (props) => {
                             <Link to='/login'>Logout</Link>
                         </li>)}
 
+                        <li id='header-hamburger'>
+                        <img src={process.env.PUBLIC_URL + "/images/hamburger_icon.png"} alt="Hamburger"></img>
+                        </li>
                 </ul>
         </div>
     )

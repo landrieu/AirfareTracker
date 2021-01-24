@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { HashRouter as Router, BrowserRouter,Switch, Route, Redirect } from "react-router-dom";
 import history from "./helpers/history";
 
 //Polyfill
@@ -83,8 +83,10 @@ export default function App() {
         )} />
     )
 
+    /*basename={'/airfares-tracker'}*/
     return (
-        <Router history={history} basename={'/airfares-tracker'}>
+        
+        <Router history={history} >
             <div>
                 <Header />
 
