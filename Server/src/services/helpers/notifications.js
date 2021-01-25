@@ -5,6 +5,12 @@ import { BASE_URL } from '../../services/settings';
 
 import moment from 'moment';
 
+/**
+ * Send notification for tracker creation
+ * @param {Object} sTracker Tracker created
+ * @param {Object} tracker Tracker info
+ * @param {String} userEmail 
+ */
 export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
     return new Promise(async (resolve) => {
         let fromAirport = await Airport.findOne({ iataCode: tracker.from });
@@ -17,6 +23,7 @@ export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
             departureDates: `${moment(tracker.startDates[0]).format('dddd DD MMMM YYYY')} - ${moment(tracker.startDates[tracker.startDates.length - 1]).format('dddd DD MMMM YYYY')}`,
             returnDates: `${moment(tracker.endDates[0]).format('dddd DD MMMM YYYY')} - ${moment(tracker.endDates[tracker.endDates.length - 1]).format('dddd DD MMMM YYYY')}`,
         };
+
         let email = new Email(userEmail, 'Airfare tracker - New tracker', content, 'template_tracker_creation');
         let resEmail = await email.send();
         if (resEmail.rejected.length > 0){
@@ -28,6 +35,11 @@ export const sendNewTrackerEmail = (sTracker, tracker, userEmail) => {
     });
 };
 
+/**
+ * Send an email after registration
+ * @param {String} userId 
+ * @param {String} userEmail 
+ */
 export const sendRegistrationEmail = (userId, userEmail) => {
     return new Promise(async (resolve) => {
         let content = {

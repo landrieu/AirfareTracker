@@ -4,16 +4,13 @@ import { ObjectID } from 'mongodb';
 import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
 import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
-import { NB_TRACKERS_PER_USER } from '../services/constants';
 import { canCreateOrActivateTracker } from '../services/data/user';
 
 import { validateRegister, validateLogin } from '../services/data/user';
 import { AUTH_ERRORS } from '../services/constants/errors';
 import { sendRegistrationEmail } from '../services/helpers/notifications';
 
-//import { /*UserInputError, AuthenticationError, */ValidationError } from 'apollo-server';
-
-import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, TrackerCreationCheck, OperationError, OperationSuccess, OperationResult } from '../classes/RequestOperation';
+import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, TrackerCreationCheck, OperationResult } from '../classes/RequestOperation';
 
 const roles = {
     admin: "ADMIN",
@@ -22,6 +19,9 @@ const roles = {
 
 module.exports = {
     Query: {
+        /**
+         * Return users info, only for admins
+         */
         users: async (_, { }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
@@ -31,9 +31,19 @@ module.exports = {
                 return error;
             }
         },
+
+        /**
+         * Fetch user by his email
+         * @param {String} email 
+         */
         userByEmail: (_, { email }) => {
             return User.findOne({ email });
         },
+
+        /**
+         * Check the authentication
+         * @param {Object} auth 
+         */
         validAuthentication: async (_, { }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
@@ -43,43 +53,38 @@ module.exports = {
                 return false;
             }
         },
+
+        /**
+         * Check if the user can create a new tracker
+         * @param {String} email User email
+         * @param {Object} auth 
+         */
         numberTrackersCreatable: async (_, { email }, { auth }) => {
-            let createTracker;
             try {
+                let createTracker;
                 createTracker = canCreateOrActivateTracker(null, auth, email);
+                return createTracker;
             } catch (error) {
                 return new TrackerCreationCheck(false,false, null, 'Unexpected error');
             }
-            
-            return createTracker;
-            /*let user, userEmail, userId;
-            try {
-                //User logged
-                user = await VerifyAuthentication(auth);
-                if (user.role === roles.admin) return new TrackerCreationCheck(true, true, null, null);
-                userId = user.id;
-                userEmail = user.email;
-            } catch {
-                //User not logged
-                if (!email) return new TrackerCreationCheck(false, false, null, 'Must be logged');
-                userEmail = email;
-            }
-
-            let query = userId ? { $or: [{ userId }, { userEmail }] } : { userEmail };
-            let nbTrackersCreated = await Tracker.countDocuments(query);
-            let nbTrackersCreatable = (user ? NB_TRACKERS_PER_USER.REGISTERED : NB_TRACKERS_PER_USER.VISITOR) - nbTrackersCreated;
-            return new TrackerCreationCheck(true, nbTrackersCreatable > 0, nbTrackersCreated, null);*/
         }
     },
     Mutation: {
+        /**
+         * Create a user in the database
+         * @param {String} email
+         * @param {String} password 
+         */
         createUser: async (_, { email, password }) => {
             const { errors, valid } = validateRegister(email, password);
             if (!valid) return new UserInputError('REGISTRATION_ERROR', errors);
 
+            //Check if there is a user with the same email address
             const existingUser = await User.findOne({ email });
             if (existingUser) return new ValidationError('REGISTRATION_ERROR', [{ message: AUTH_ERRORS.USER_ALREADY_EXISTS }]);
 
-            password = await bcrypt.hash(password, 10); // hashing the password
+            //Hashing the password
+            password = await bcrypt.hash(password, 10);
 
             //Check if trackers already exist for this user and add them to the user profile
             let userTrackers = await Tracker.find({ userEmail: email }, { _id: 1 }).map((tr) => ObjectID(tr._id));
@@ -106,6 +111,12 @@ module.exports = {
             //const token = GenerateToken(res);
             return new RegisterSuccess(true, {...res._doc, id: res._id/*, token*/});
         },
+
+        /**
+         * Login a user
+         * @param {String} email
+         * @param {String} password 
+         */
         loginUser: async (_, { email, password }) => {
             // validateLogin is a simple func that checks for empty fields
             // and return valid = false if any.
@@ -126,6 +137,10 @@ module.exports = {
             const token = GenerateToken(user);
             return new LoginSuccess(user._id, user._doc, `Bearer ${token}`);
         },
+
+        /**
+         * Update last connection in the database
+         */
         updateLastConnection: async (_, { }, { auth }) => {
             const user = await VerifyAuthentication(auth);
             try {
@@ -139,6 +154,11 @@ module.exports = {
                 return new OperationResult(false, 'User update', 'Could not update user');
             }
         },
+
+        /**
+         * Delete an existing user
+         * @param {String} userId
+         */
         deleteUser: async (_, { userId }) => {
             const user = await VerifyAuthentication(auth);
             //Check if the user is an admin
@@ -156,6 +176,10 @@ module.exports = {
             }
         },
 
+        /**
+         * Activate an account
+         * @param {String} userId 
+         */
         activeAccount: async (_, { userId }) => {
             try {
                 let user = await User.findById(userId);

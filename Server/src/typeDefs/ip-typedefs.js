@@ -18,12 +18,6 @@ export const ipTypeDefs = gql`
         distance: Float
     }  
 
-    type IPDataResult{
-        success: Boolean
-        closestAirport: Airport
-        closestTrackers: [Tracker]
-    }
-
     type IPRes{
         success: Boolean
         data: IP
@@ -40,7 +34,6 @@ export const ipTypeDefs = gql`
     }
 
     extend type Mutation {
-        findIPData: IPDataResult
         findIP: IPRes
         findIPAirport: IPAirportResult
         findIPTrackers: IPTrackersResult

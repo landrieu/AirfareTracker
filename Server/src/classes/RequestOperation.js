@@ -1,3 +1,6 @@
+/**
+ * Objects used to return data from the API
+ */
 export class Error{
     constructor(type, message){
         this.type = type;

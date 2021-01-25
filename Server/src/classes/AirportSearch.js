@@ -14,8 +14,9 @@ export class AirportSearch{
      * 0 - Init
      * 1 - Loading
      * 2 - Complete
-     * @param {*} param0 
+     * @param {Object} param contains the settings used to handle airport data management
      */
+    
     constructor({filter = defaultFilter, updateTimeGap = 24 * 3600, localStorage = {useLocalData: true}} = {}){
         this.airports = [];
         this.airportsMap = new Map();
@@ -50,6 +51,9 @@ export class AirportSearch{
         });
     }
 
+    /**
+     * 
+     */
     async initialize(){
         if(this.useLocalData){
             this.exporter = new Exporter('airports', 'DATA', `/data`, null);
@@ -67,22 +71,18 @@ export class AirportSearch{
         }
     }
 
-    writeAirportsLocalData(){
-        let data = {
-            date: new Date(),
-            airports: this.airports
-        }
-        this.exporter.run({data: JSON.stringify(data)});
-    }
-
     /**
      * Update status and last update date
-     * @param {*} statusLevel 
+     * @param {String} statusLevel 
      */
     updateStatus(statusLevel){
         this.status = statusLevel;
     }
 
+    /**
+     * Export local data
+     * @param {Array} airports 
+     */
     updateLocalData(airports){
         let localData = {
             date: new Date(),
@@ -128,6 +128,9 @@ export class AirportSearch{
         this.purgeResolvers();
     }
 
+    /**
+     * Purge the subscribers
+     */
     purgeResolvers(){
         this.resolvers.clear();
     }
@@ -154,15 +157,25 @@ export class AirportSearch{
         });
     }
 
+    /**
+     * Return a specific airport via the iata code
+     * @param {String} iataCode 
+     */
     getAirport(iataCode){
         return this.airportsMap.get(iataCode);
     }
 
+    /**
+     * Purger all the stored airports
+     */
     purge(){
         this.airports = [];
         this.airportsMap.clear();
     }
 
+    /**
+     * Check if the store is empty
+     */
     dataLoaded(){
         return this.airportsMap.size > 0;
     }

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { VerifyAuthentication } from '../services/helpers/authentication';
 
 import { ObjectID } from 'mongodb';
@@ -14,20 +13,36 @@ import { canCreateOrActivateTracker } from '../services/data/user';
 import { sendNewTrackerEmail } from '../services/helpers/notifications';
 
 import { airportSearch } from '../services/data/airport';
-import { TrackerCreationSuccess, OperationError, UserInputError, UnexpectedError, Error, InputError } from '../classes/RequestOperation';
+import { TrackerCreationSuccess, UserInputError, UnexpectedError, Error } from '../classes/RequestOperation';
 
 module.exports = {
     Query: {
+        /**
+         * Return list of trackers
+         * @param {String} type Tracker type F' or 'N'
+         * @param {String} id Tracker ID 
+         */
         trackers: (_, { type, id }) => {
             let filter = {};
             if (id) filter = { _id: ObjectID(id) };
             if (type) filter = { ...filter, type };
             return Tracker.find(filter);
         },
+
+        /**
+         * Return trackers created by a user
+         * @param {String} userId
+         * @param {Object} auth 
+         */
         trackersByUser: async (_, { userId }, { auth }) => {
             const user = await VerifyAuthentication(auth);
             return Tracker.find({ $or: [{ userId: user ? user.id : userId }, { userEmail: user ? user.email : null }] });
         },
+
+        /**
+         * Return number of trackers created by a user or number of all the trackers created
+         * @param {String} userId
+         */
         trackersNumber: (_, { userId }) => {
             if (userId) {
                 return Tracker.count({ userId }).then(res => ({ n: res }));
@@ -35,6 +50,11 @@ module.exports = {
                 return Tracker.countDocuments().then(res => ({ n: res }));
             }
         },
+
+        /**
+         * Return number of active trackers
+         * @param {String} userId
+         */
         trackersActiveNumber: (_, { userId }) => {
             let query = { isActive: true };
             if (userId) {
@@ -43,15 +63,14 @@ module.exports = {
 
             return Tracker.count(query);
         },
-        trackersRandom: (_, { type }) => {
+
+        /**
+         * Return random trackers
+         */
+        trackersRandom: (_, { }) => {
             return Tracker.aggregate([
                 { $sample: { size: 2 } }
             ]);
-            //for(let i )
-            /*return Tracker.aggregate([
-                { $match: { _id: { $nin: randomDocs.map(doc => doc._id) } } },
-                { $sample: { size: 10 } } 
-            ]);*/
         }
     },
     Mutation: {
@@ -59,6 +78,7 @@ module.exports = {
          * 2 Options:
          *  - Logged
          *  - Not logged
+         * @param {Object} tracker Tracker data
          */
         createTracker: async (_, tracker, { auth }) => {
             let userId, userEmail;
@@ -76,20 +96,16 @@ module.exports = {
             //Format tracker to save in the Database
             tracker = formatNormalTracker(tracker, userId, userEmail);
 
+            //Validate tracker data
             const { errors, valid } = await validateNewTracker(tracker);
             if (!valid) return new UserInputError('TRACKER_CREATION_ERROR', errors );
-            //new UserInputError('TRACKER_CREATION_ERROR', [new InputError(null, 'Test 1'), new InputError(null, 'Test 2')]);
 
             const newTracker = new Tracker(tracker);
 
             try {
                 //Save tracker
                 const sTracker = await newTracker.save();
-                //If a user ID exists add it to the user profile
-                /*if (userId) {
-                    const query = { _id: tracker.userId };
-                    await User.findOneAndUpdate(query, { $addToSet: { trackers: sTracker._id } }, { useFindAndModify: false });
-                }*/
+                //Send notification to the user
                 await sendNewTrackerEmail(sTracker, tracker, userEmail);
 
                 return new TrackerCreationSuccess({ id: sTracker._id, ...sTracker._doc });
@@ -98,6 +114,11 @@ module.exports = {
                 return UnexpectedError('TRACKER_CREATION_ERROR', [new Error('', 'Database error')])
             }
         },
+
+        /**
+         * Create a frequent tracker
+         * @param {Object} tracker Tracker data
+         */
         async createFrequentTracker(_, tracker, { auth }) {
             try {
                 const user = await VerifyAuthentication(auth);
@@ -115,6 +136,11 @@ module.exports = {
                 console.log(error.message);
             }
         },
+
+        /**
+         * Delete a tracker
+         * @param {*} trackerId Tracker id of the tracker to delete
+         */
         deleteTracker: async (_, { trackerId }, { auth }) => {
             //const user = await VerifyAuthentication(auth);
 
@@ -138,12 +164,21 @@ module.exports = {
             }
         },
 
+        /**
+         * Update tracker info: tracker status, tracker alert status and trigger price
+         * @param {String} trackerId
+         * @param {Boolean} trackerStatus Is the tracker active
+         * @param {Boolean} trackerAlertStatus Should send an alert to the tracker's creator
+         * @param {Number} trackerTriggerPrice 
+         */
         updateTracker: async (_, { trackerId, trackerStatus, trackerAlertStatus, trackerTriggerPrice }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
+                //Fetch the tracker
                 const tracker = await Tracker.findOne({ _id: ObjectID(trackerId) });
                 if (!tracker) return new OperationResult(false, 'UPDATE_TRACKER', "Could not find the tracker");
 
+                //Check if the update is made by the creator
                 if (tracker.userId !== user.id && tracker.userEmail !== user.email) throw new Error("This tracker doesn't belong to the user");
 
                 let query = {};
@@ -159,6 +194,7 @@ module.exports = {
                 if (typeof trackerAlertStatus === "boolean") query.isAlertActive = trackerAlertStatus;
                 if (typeof trackerTriggerPrice === "number") query.triggerPrice = trackerTriggerPrice;
 
+                //Update the tracker in the database
                 let res = await Tracker.updateOne(
                     { _id: trackerId },
                     { $set: query },
@@ -173,6 +209,9 @@ module.exports = {
 
         },
     },
+    /**
+     * Return airports short info
+     */
     TrackerShort: {
         from(tracker) {
             if (airportSearch.dataLoaded()) {
@@ -187,6 +226,10 @@ module.exports = {
             return Airport.findOne({ "iataCode": tracker.to });
         }
     },
+
+    /**
+     * Return airports info
+     */
     Tracker: {
         /**
          * Return trackers associated to a user
@@ -198,6 +241,11 @@ module.exports = {
         to(tracker) {
             return Airport.findOne({ "iataCode": tracker.to });
         },
+
+        /**
+         * Return airfares attached to a tracker
+         * @param {Object} tracker 
+         */
         async airfares(tracker) {
             let airfares = await Airfare.find({ "trackerId": tracker._id });
 
@@ -226,30 +274,6 @@ module.exports = {
                 airfaresSorted.push(d);
             }
             return airfaresSorted;
-            //Create a map containing all the occurences
-            /*let occurrencesMap = new Map(airfares.map((airfare) => {
-                return [`${airfare.occurrence.interval}${airfare.occurrence.length}`, airfare.occurrence];
-            }));
-
-            console.log(occurrencesMap)*/
-            //occurrencesMap.
-            /*let map = {};
-            // id, data, position
-            let airfaresPerOccurence = airfares.reduce((acc, cur) => {
-                let id = `${cur.occurrence.interval}${cur.occurrence.length}`;
-                if(map[id] === undefined){
-                    acc.push([cur]);
-                    map[id] = acc.length - 1;
-                }else{
-                    acc[map[id]].push(cur);
-                }
-                return acc;
-            }, []).map(airfares => airfares.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
-
-            
-            console.log(airfaresPerOccurence);
-            console.log(map)*/
-            return airfares;
         }
     },
 

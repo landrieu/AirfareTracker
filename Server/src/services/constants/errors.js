@@ -1,3 +1,7 @@
+/**
+ * Define error codes
+ */
+
 export const validationErrors = {
     
 }

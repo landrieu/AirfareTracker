@@ -1,8 +1,11 @@
 import { IP } from './IP';
 import { renameObjectKey } from '../services/helpers/object';
 
-const request = require('request');
+import request from 'request';
 
+/**
+ * USED FOR TESTING
+ */
 const worldIPs = {
     /*Aalborg, DK*/         Aalborg: '77.68.202.109',
     /*Brescia, IT*/         Brescia: '79.48.159.82',
@@ -16,21 +19,23 @@ const worldIPs = {
     /*Reserved IP*/         Reserved: '250.133.201.118',
 };
 
+/**
+ * Object IP Finder
+ * Used to find IP information
+ */
 export class IPFinder{
     constructor(purgeTime = (1000 * 60 * 60 /*1hr*/)){
         this.addresses = new Map();
         this.localIPs = ["::ffff:127.0.0.1", "::1"];
         this.purgeTime = purgeTime;
-
-        //TEST
-        //let p = ['Brescia', 'Washington', 'Taipei', 'Sydney', 'Dallas'];
-        //this.clientIPAddressTEST = worldIPs[p[Math.floor(Math.random() * p.length)]];
     }
 
+    /**
+     * Fetch IP information
+     * @param {String} clientIPAddress 
+     * @param {Function} subscriber 
+     */
     async search(clientIPAddress, subscriber){
-        
-        //TEST
-        //clientIPAddress = this.clientIPAddressTEST;
         console.log('IP address:', clientIPAddress);
 
         //Purge existing ips
@@ -38,15 +43,16 @@ export class IPFinder{
 
         //Search IP stored locally
         let {cacheIP, pendingIP} = this.checkCache(clientIPAddress, subscriber);
-        //console.log(!!cacheIP);
+        
         //Return the cache IP data
         if(cacheIP) return subscriber({success: cacheIP.success, data: cacheIP.data});
         //Wait for request to be received
         if(pendingIP)  return;
 
-        //Search IP from the API
+        //Store IP object
         this.storePendingIP(clientIPAddress, subscriber);
 
+        //Search IP from the API
         let ipDetails = await this.request(clientIPAddress);
 
         if(!ipDetails.success || !ipDetails.data || ipDetails.data.status === 'fail'){
@@ -57,15 +63,31 @@ export class IPFinder{
         this.updatePendingIP(clientIPAddress, true, ipDetails);
     }
 
+    /**
+     * Update IP details
+     * @param {String} address 
+     * @param {Boolean} success 
+     * @param {Object} ipDetails 
+     */
     updatePendingIP(address, success, ipDetails){
         this.addresses.get(address).updateData(success, ipDetails ? ipDetails.data : null);
     }
 
+    /**
+     * Store IP in the IP set
+     * @param {String} address 
+     * @param {Function} callback 
+     */
     storePendingIP(address, callback){
         let ip = new IP(address, callback);
         this.addresses.set(address, ip);
     }
 
+    /**
+     * Attach a function to an IP, will be called once IP details retrieved
+     * @param {String} address 
+     * @param {Function} subscriber 
+     */
     subscribe(address, subscriber){
         if(this.addresses.has(address)){
             this.addresses.get(address).subscribe(subscriber);
@@ -75,16 +97,27 @@ export class IPFinder{
         return false;
     }
 
+    /**
+     * Check if the IP address has been used recently
+     * @param {String} address 
+     * @param {Function} subscriber 
+     */
     checkCache(address, subscriber){
         let ip = this.fetchIP(address);
+        //IP address not cached
         if(!ip) return {cacheIP: null, pendingIP: false} ;
 
+        //IP cached and details received
         if(ip.status === 'received') return {cacheIP: ip, pendingIP: false};
 
         ip.subscribe(subscriber);
         return {cacheIP: null, pendingIP: true};
     }
 
+    /**
+     * Return IP cached
+     * @param {String} address 
+     */
     fetchIP(address){
         if(this.addresses.has(address)) 
         return this.addresses.get(address);
@@ -92,6 +125,10 @@ export class IPFinder{
         return null;
     }
 
+    /**
+     * Fetch IP details from the API
+     * @param {String} clientIPAddress 
+     */
     request(clientIPAddress){
         return new Promise((resolve) => {
             if(this.isLocalIP(clientIPAddress)){
@@ -111,6 +148,10 @@ export class IPFinder{
         });
     }
 
+    /**
+     * Purge IP details if too old
+     * @param {String} address 
+     */
     purge(address){
         if(address) return this.addresses.delete(address);
         //Purge old stored ips
@@ -121,6 +162,10 @@ export class IPFinder{
         }
     }
 
+    /**
+     * Return if the IP address if a local IP
+     * @param {String} address 
+     */
     isLocalIP(address){
         return this.localIPs.indexOf(address)!== -1;
     }

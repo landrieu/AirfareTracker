@@ -1,6 +1,16 @@
-const fs = require('fs');
+import fs from 'fs';
 
+/**
+ * Export data to a json file
+ */
 export class Exporter{
+    /**
+     * Filename format: <prefix>_<fileName>.json
+     * @param {String} fileName 
+     * @param {String} prefix 
+     * @param {String} path Location of the json file
+     * @param {String} newDataPath If additional data, provide the location
+     */
     constructor(fileName, prefix, path, newDataPath = ''){
         this.inProgress = false;
         this.stack = [];
@@ -12,6 +22,9 @@ export class Exporter{
         this.newDataPath = newDataPath;
     }
 
+    /**
+     * Execute the export that was saved in the stack
+     */
     executeStack(){
         if(this.stack && this.stack.length > 0){
             let expt = this.stack.pop();
@@ -19,13 +32,21 @@ export class Exporter{
         }
     }
 
+    /**
+     * Export in progress, add a params to the stack
+     * @param {Object} params 
+     */
     addStack(params){
         this.stack.push(params);
     }
 
+    /**
+     * Run the exporter script, check if params exists, then write json file
+     * @param {Object} param0 
+     */
     run({fileName = this.fileName, prefix = this.prefix, path = this.path, newDataPath = this.newDataPath, data, emptyFileData = this.emptyFileData}){
         if(this.inProgress){
-            this.addStack(params);
+            this.addStack({fileName, prefix, path, newDataPath, data, emptyFileData});
             return;
         }
 
@@ -38,12 +59,10 @@ export class Exporter{
         this.write({fileName, prefix, path, data, newDataPath, emptyFileData});
     }
 
-    geEmptyFileData(){
-        return {
-            date: new Date()
-        }
-    }
-
+    /**
+     * Write and save json file
+     * @param {Object} param
+     */
     async write({fileName, prefix, path, data, newDataPath, emptyFileData}){        
         let newData;
 
@@ -67,35 +86,69 @@ export class Exporter{
         });
     }
 
+    /**
+     * Create a new file
+     * @param {Function|Object} emptyFileData 
+     */
     createNewFile(emptyFileData){
         return typeof emptyFileData === 'function' ? emptyFileData() : emptyFileData;
     }
 
+    /**
+     * Add additional data to an existing file
+     * @param {Object} newData 
+     * @param {Object} data 
+     * @param {String} newDataPath 
+     */
     addNewData(newData, data, newDataPath){
         data[newDataPath].push(newData);
         return JSON.stringify(data); 
     }
 
+    /**
+     * Save json file
+     * @param {String} prefix 
+     * @param {String} fileName 
+     * @param {String} path 
+     * @param {Object} data 
+     * @param {Function} callback 
+     */
     saveFile(prefix, fileName, path, data, callback){
         let fullPath = this.getFilePath(prefix, fileName, path);
         try {
             fs.writeFile(fullPath, data, 'utf8', callback);
         } catch (error) {
             console.log(error.message);
+            callback(error.message);
         }
-        
     }
     
+    /**
+     * Return file name
+     * @param {String} prefix 
+     * @param {String} fileName 
+     */
     getFullFileName(prefix, fileName){
-        //let d = new Date();
         return `${prefix}_${fileName}.json`; 
     }
 
+    /**
+     * Return the full filename with its path
+     * @param {String} prefix 
+     * @param {String} fileName 
+     * @param {String} path 
+     */
     getFilePath(prefix, fileName, path){
         let fullFileName = this.getFullFileName(prefix, fileName)
         return `${__basedir}/${path}/${fullFileName}`;
     }
 
+    /**
+     * Read a json file
+     * @param {String} prefix 
+     * @param {String} fileName 
+     * @param {String} path 
+     */
     read(prefix = this.prefix, fileName = this.fileName, path = this.path){
         let fullPath = this.getFilePath(prefix, fileName, path);
         return new Promise((resolve) => {

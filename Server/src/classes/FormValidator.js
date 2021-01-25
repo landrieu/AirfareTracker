@@ -43,10 +43,16 @@ export class FormValidator {
         return this.valid();
     }
 
+    /**
+     * Return if the form is valid
+     */
     valid(){
         return { valid: this.errors.length === 0, errors: this.errors };
     }
 
+    /**
+     * Check form required fields
+     */
     checkRequiredFields(){
         for(let field in this.requiredFields){
             let fieldConf = this.requiredFields[field];
@@ -71,6 +77,9 @@ export class FormValidator {
 
     }
 
+    /**
+     * Check the form values
+     */
     checkValueFields(){
         for(let field in this.valueFields){
             let params = this.valueFields[field];

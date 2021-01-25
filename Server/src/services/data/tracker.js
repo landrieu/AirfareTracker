@@ -1,10 +1,19 @@
 import { Tracker } from '../../database/models/Tracker';
 import { FrequentTrackerOccurrences } from '../constants';
 
+/**
+ * Return trackers from the database
+ * @param {Object} filter 
+ * @param {Object} fields 
+ */
 export const findTrackers = (filter, fields) => {
 	return Tracker.find(filter, fields);
 };
 
+/**
+ * Return frequent trackers randomly
+ * @param {Number} nbTrackers Number of trackers to return
+ */
 export const randomTrackers = (nbTrackers = 6) => {
     return Tracker.aggregate([
         { "$match": { "type": 'F' } },
@@ -13,11 +22,17 @@ export const randomTrackers = (nbTrackers = 6) => {
     ]);
 }
 
+/**
+ * Return trackers ID randomly
+ */
 export const randomTrackersIDs = async () => {
     let trackers = await randomTrackers();
     return trackers.map(t => t._id);
 }
 
+/**
+ * List airports from active frequent trackers
+ */
 export const listFrequentTrackersAirports = async() => {
 	let res = await Tracker.aggregate([
 		{ $match: { 	
@@ -41,6 +56,10 @@ export const listFrequentTrackersAirports = async() => {
 	return res.length > 0 ? res[0].iatas : null;
 }
 
+/**
+ * 
+ * @param {Object} filter 
+ */
 export const aggregateTrackerAirport = async (filter) => {
     return Tracker.aggregate([
         { $match : filter},
@@ -62,6 +81,10 @@ export const aggregateTrackerAirport = async (filter) => {
      ]);
 } 
 
+/**
+ * Format a frequent tracker
+ * @param {Object} tr Tracker data
+ */
 export const formatFrequentTracker = (tr) => {
     let tracker = {
         ...tr,
@@ -73,6 +96,12 @@ export const formatFrequentTracker = (tr) => {
     return tracker;
 }
 
+/**
+ * Format a normal tracker
+ * @param {Object} tr Tracker data
+ * @param {String} userId 
+ * @param {String} userEmail 
+ */
 export const formatNormalTracker = (tr, userId, userEmail) => {
     const formatDates = (dateMin, dateMax) => {
         let listDates = [dateMin.clone()];

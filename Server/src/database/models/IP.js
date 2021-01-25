@@ -19,9 +19,3 @@ const ipSchema = mongoose.Schema({
 });
 
 export const IP = mongoose.model("ips", ipSchema);
-
-//module.exports = model;
-
-/*module.exports.insertIP = function(IP){
-    return IP.save();
-}*/

@@ -3,20 +3,22 @@ const config = require('./config');
 
 import { initializeAirportSearch } from '../services/data/airport';
 
-export const mongo = {
-    connect: () => {
-        /*return new Promise((resolve, reject) => {
-            console.log('Connection to the Db');
-            resolve('OK');
-        });*/
+let client;
 
-        return mongoose.connect(config.uri, { 
+export const mongo = {
+    connect: async () => {
+
+        if(client) return client;
+
+        client = await mongoose.connect(config.uri, { 
             useUnifiedTopology: true, 
             useNewUrlParser: true, 
             useCreateIndex: true 
         });
+        return client;
     },
     disconnect: () => {
+        client = null;
         return mongoose.disconnect();
     }
 }

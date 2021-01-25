@@ -1,10 +1,8 @@
-//const FlexSearch = require("@talaikis/flexsearch");
 import FlexSearch from '@talaikis/flexsearch';
 import { Airport } from '../../database/models/Airport';
 import { AirportSearch } from '../../classes/AirportSearch';
 
 import { computeGeoDistance } from '../helpers/geo';
-
 import { AIRPORT_TYPES } from '../constants';
 
 /**
@@ -29,6 +27,12 @@ export const closestAirportsFromDb = async ({longitude, latitude}, numberAirport
 	).limit(numberAirports);
 }
 
+/**
+ * Return closest airport(s) depending on airports from available trackers
+ * @param {Number} Location Longitude and latitude
+ * @param {Number} numberAirports Number of airports to return
+ * @param {Array} airportsTracker 
+ */
 export const closestAirports = async ({longitude, latitude}, numberAirports, airportsTracker) =>{
     //If the aiports have not been loaded yet, check closest airports directly in the database
     if(!airportSearch.dataLoaded()){
@@ -43,19 +47,15 @@ export const closestAirports = async ({longitude, latitude}, numberAirports, air
 }
 
 export function initializeAirportSearch(){
-    /*let filter = {$and: 
-        [
-            {$or: [{type: 'medium_airport'}, {type: 'large_airport'}, {type: 'multi_airport'}]}, 
-            {iataCode:{$ne: ''}}
-        ]
-    };
-    airportSearch = new AirportSearch({filter});*/
     airportSearch.initialize();
 }
 
+/**
+ * Find airports based on the search term
+ * @param {String} searchTerm 
+ * @param {Number} limit Number of results to return
+ */
 export const airportsBySearchTerm = (searchTerm, limit = 6) => {
-    //if(!airportSearch) initializeAirportSearch();
-
     return new Promise(async (resolve) => {
         let index = new FlexSearch({
             doc: {
@@ -68,7 +68,7 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
     
         index.add(airports);
     
-        console.time('Flex search');
+        //console.time('Flex search');
         let res = index.search({
             query: searchTerm,
             limit: 100,
@@ -76,19 +76,25 @@ export const airportsBySearchTerm = (searchTerm, limit = 6) => {
             depth: 3,
             sort: (a, b) => AIRPORT_TYPES.indexOf(b.type) - AIRPORT_TYPES.indexOf(a.type)
         }).map(r => ({...r, id: r._id}));
-        console.timeEnd('Flex search');
+        //console.timeEnd('Flex search');
+
         resolve(res.slice(0, limit));
     });
 };
 
+/**
+ * Find airports in the database
+ * @param {Object} query 
+ * @param {Object} fields 
+ */
 export const airportsWithFilter = (query, fields) =>{
     return Airport.find(query, fields);
 }
 
 /**
  * Deprecated, full match search
- * @param {*} searchTerm 
- * @param {*} limitRes 
+ * @param {String} searchTerm 
+ * @param {Number} limitRes 
  */
 export const airportsBySearchTermMongo = async (searchTerm, limitRes = 6) => {
     console.log(searchTerm)

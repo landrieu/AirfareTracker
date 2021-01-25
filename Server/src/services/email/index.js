@@ -1,11 +1,20 @@
 import fs from 'fs';
 import nodemailer from 'nodemailer';
 import handlebars from 'handlebars';
-import { resolve } from 'path';
 
 const credentialsPath = '/sender.json';
 
+/**
+ * Email object, used to send notification when an account or tracker is created, and for alerts
+ */
 export class Email {
+    /**
+     * Set email params
+     * @param {String} recipient 
+     * @param {String} subject 
+     * @param {Object} content 
+     * @param {String} templateName 
+     */
     constructor(recipient, subject, content, templateName) {
         this.recipient = recipient;
         this.subject = subject;
@@ -16,6 +25,9 @@ export class Email {
         this.setCredentials();
     }
 
+    /**
+     * Set sender creadentials
+     */
     setCredentials() {
         return new Promise((resolve, reject) => {
             fs.readFile(`${__dirname}${credentialsPath}`, (err, data) => {
@@ -31,6 +43,9 @@ export class Email {
         });
     }
 
+    /**
+     * Set up the transporter
+     */
     async setTransporter() {
         return new Promise(async (resolve, reject) => {
             let transport;
@@ -43,6 +58,9 @@ export class Email {
         });
     }
 
+    /**
+     * Set GMail configuration
+     */
     getGmailConfiguration() {
         return {
             service: 'gmail',
@@ -56,6 +74,10 @@ export class Email {
         };
     }
 
+    /**
+     * Set email params
+     * @param {Object} html 
+     */
     setEmailOptionsHTML(html) {
         return {
             from: this.sender.user,
@@ -65,6 +87,10 @@ export class Email {
         };
     };
 
+    /**
+     * Open an HTML file
+     * @param {*} path 
+     */
     readHTMLFile(path) {
         return new Promise(resolve => {
             fs.readFile(path, { encoding: 'utf-8' }, (err, html) => {
@@ -74,6 +100,9 @@ export class Email {
         });
     };
 
+    /**
+     * Send an HTML email
+     */
     send() {
         return new Promise((resolve) => {
             resolve(this.readHTMLFile(__dirname + `/${this.templateName}.html`));
