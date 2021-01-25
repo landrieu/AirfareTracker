@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import { useState } from 'react';
 
 import { authService } from '../authService';
 

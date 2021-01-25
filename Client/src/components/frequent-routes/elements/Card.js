@@ -26,14 +26,17 @@ export const Card = ({style, trackerId, index}) => {
         if(!tracker.airfares) return [];
 
         let airfares = tracker.airfares;   
-        let tempColors = [...GRAPH_COLORS];          
-        let datasets = airfares.map((a) => {
+        //let tempColors = [...GRAPH_COLORS]; 
+        const terms = ['short_term', 'medium_term', 'long_term'];
+        airfares.sort((a, b) => terms.indexOf(a.term) - terms.indexOf(b.term));         
+        let datasets = airfares.map((a, index) => {
             return {
                 label: NICE_NAMES[a.term],
                 data: a.data.map((r) => ({t: r.createdAt, y: r.minPrice})),
                 borderColor: function(){
-                    let random = Math.floor(Math.random() * tempColors.length);
-                    return tempColors.splice(random, 1)[0];
+                    return GRAPH_COLORS[index];
+                    //let random = Math.floor(Math.random() * tempColors.length);
+                    //return tempColors.splice(random, 1)[0];
                 }(),
                 pointRadius: 1,
                 pointHoverRadius: 2,

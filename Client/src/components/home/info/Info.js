@@ -10,7 +10,7 @@ export const Info = (props) => {
                         <img src={process.env.PUBLIC_URL + '/images/bell.svg'} alt='Bell'></img>
                     </div>
                     <div className="bottom">
-                        Visualize the evolution of the airfare along the time, we scan the market 3 times a day to allow you to find the best price.
+                        You can enable an alert to receive an alert by email if the airfare goes under a treshold that you fixed.
                         </div>
                 </div>
                 <div className="home-info-card">
@@ -18,7 +18,7 @@ export const Info = (props) => {
                         <img src={process.env.PUBLIC_URL + '/images/line-graph.svg'} alt='Graph'></img>
                     </div>
                     <div className="bottom">
-                        Set a tracker among XXX airports select departure, arrival airport and a departure arrival range date
+                    Visualize the evolution of the prices along the time. The market is scanned 3 times a day to allow, to find the best price.
                         </div>
                 </div>
                 <div className="home-info-card">
@@ -26,7 +26,7 @@ export const Info = (props) => {
                         <img src={process.env.PUBLIC_URL + '/images/target.svg'} alt='Target'></img>
                     </div>
                     <div className="bottom">
-                        Set a tracker among XXX airports select departure, arrival airport and a departure arrival range date
+                        Set a tracker among XXX airports. Select departure, arrival airports and a departure arrival range dates.
                     </div>
                 </div>
             </div>

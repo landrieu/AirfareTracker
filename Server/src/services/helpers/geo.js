@@ -1,8 +1,15 @@
 import { listFrequentTrackersAirports, findTrackers } from '../data/tracker';
-import { closestAirports, closestAirportsLocal, airportsWithFilter, closestAirportsFromDb } from '../data/airport';
+import { closestAirports, airportsWithFilter, closestAirportsFromDb } from '../data/airport';
 
 import { NB_TRACKERS, EARTH_RADIUS } from '../constants';
 
+/**
+ * Compute the distance in km between two points
+ * @param {Number} lat1 
+ * @param {Number} lon1 
+ * @param {Number} lat2 
+ * @param {Number} lon2 
+ */
 export const computeGeoDistance = (lat1, lon1, lat2, lon2) => {
 	let R = EARTH_RADIUS; 
 	let dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -16,10 +23,19 @@ export const computeGeoDistance = (lat1, lon1, lat2, lon2) => {
 	return d;
 }
 
+/**
+ * Convert degrees to radian
+ * @param {Number} deg 
+ */
 function deg2rad(deg) {
 	return deg * (Math.PI/180)
 }
 
+/**
+ * Find trackers that are the closest from the IP details
+ * @param {Array} airports 
+ * @param {Number} numberTrackers 
+ */
 export const findClosestTrackersAndSort = async(airports, numberTrackers) =>{
 	let cTrackers = [];
 	let query;
@@ -71,6 +87,10 @@ export const findClosestTrackers = async({longitude, latitude, city}, numberTrac
 	})
 };
 
+/**
+ * Find the closest airport based on the IP details
+ * @param {Object} param
+ */
 export const findClosestAirport = ({longitude, latitude}) => {
 	return new Promise(async (resolve) => {
 		let cAirports = await closestAirportsFromDb({longitude, latitude}, 1, {iataCode: {$ne: ''}});

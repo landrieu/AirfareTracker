@@ -4,12 +4,11 @@ import { ObjectID } from 'mongodb';
 import { LDSRing } from '../misc/Loaders';
 import { SingleTracker } from '../my-trackers/SingleTracker/SingleTracker';
 import { DataService } from '../../services/dataService/';
-import { clearMyTrackers, updateSingleTracker, updateMyTrackers } from '../../redux/MyTrackers/actions';
+import { clearMyTrackers, updateMyTrackers } from '../../redux/MyTrackers/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
 
 import './FindTracker.scss';
-import { SetTracker } from '../set-tracker/SetTracker';
 
 export const FindTracker = ({ match }) => {
     const dispatch = useDispatch();

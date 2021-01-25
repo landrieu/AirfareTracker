@@ -132,3 +132,44 @@
         z-index: 1;
     }
 }
+
+@media screen and (max-width: 768px) and (min-width: 480px) {
+    #register {
+        #register-form {
+            width: 340px;
+
+            #register-fields input {
+                height: 32px;
+            }
+
+            #register-fields{
+                width: 240px;
+            }
+        }
+
+        #register-plane{
+            height: 200px;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) and (min-width: 320px) {
+    #register {
+        #register-form {
+            width: 300px;
+
+            #register-fields input {
+                height: 26px;
+            }
+
+            #register-fields{
+                width: 200px;
+            }
+        }
+
+        #register-plane{
+            height: -webkit-fill-available;
+            width: 100%;
+        }
+    }
+}

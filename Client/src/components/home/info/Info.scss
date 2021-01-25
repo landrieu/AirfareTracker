@@ -2,7 +2,7 @@
 
 #home-info{
     padding: 50px 0;
-    height: 330px;
+    min-height: 330px;
     display: flex;
     align-items: center;
 
@@ -17,6 +17,7 @@
             width: 350px;
             height: 200px;
             padding: 10px;
+            margin: 0 8px;
             background-color: white;
             display: flex;
             justify-content: space-evenly;
@@ -31,6 +32,17 @@
                 padding: 10px;
                 text-align: center;
                 font-weight: bold;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) and (min-width: 480px) {
+    #home-info {
+        #home-info-container{ 
+            display: block;
+            .home-info-card{
+                margin: 10px auto;
             }
         }
     }

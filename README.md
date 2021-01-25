@@ -27,7 +27,7 @@ On the dashboard different information are given.
 The _nearest airport_ should be displayed based on the client IP address.  
 Some predefined _trackers_ (6 by default) are also displayed. Once again based on the client IP, the most interesting trackers are retrieved.
 
-For example: If the client is based in Sydney, trackers shown will be the ones that have a departure or return airport the closest to Sydney.  
+For example: If the client is based in Sydney, trackers shown will be the ones that have a departure or return airport close to Sydney.  
 
 ### Set a tracker
 

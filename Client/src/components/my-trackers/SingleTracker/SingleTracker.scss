@@ -50,7 +50,7 @@
         }
 
         &.expand.no-data {
-            height: 290px;
+            height: 315px;
         }
 
         .single-tracker-status,
@@ -101,6 +101,7 @@
                 margin: 10px auto;
 
                 .stat {
+                    text-align: center;
                     padding: 1px 8px;
                     border-radius: 2px;
                     cursor: pointer;

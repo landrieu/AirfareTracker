@@ -16,7 +16,7 @@
     #form {
         width: 60%;
         min-width: 400px;
-        max-width: 830px;
+        max-width: 730px;
         margin: 10px auto 0 auto;
 
         &.loading {
@@ -40,7 +40,7 @@
 
         #form-steps {
             /*min-height: calc(100vh - #{$header-height});*/
-            min-height: 360px;
+            min-height: 500px;
             position: relative;
             background-image: linear-gradient(to top, $primary 0%, #060325e6 40%, transparent 100%);
             /*overflow: hidden;*/

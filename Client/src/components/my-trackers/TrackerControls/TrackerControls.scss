@@ -1,3 +1,7 @@
-.single-tracker-info{
+.single-tracker-info {
     color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 162px);
 }

@@ -74,7 +74,7 @@ export const SingleTracker = (props) => {
 
     function displayExpand() {
         if (!isLoaded) return <span><LDSSpinner width='25px' height='25px' /></span>
-
+        if(props.expandInit) return ('');
         return (
             <span className="sign" onClick={() => setExpand(!expand)}>{expand ? '-' : '+'}</span>
         )

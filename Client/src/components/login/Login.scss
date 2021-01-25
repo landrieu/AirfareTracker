@@ -8,17 +8,18 @@
     min-height: calc(100vh - #{$header-height} - #{$footer-height});
     width: 100%;
     display: flex;
+    align-items: center;
     overflow: hidden;
     position: relative;
 
     #login-form {
+        margin: 20px auto;
         width: 450px;
-        margin: auto;
         z-index: 2;
 
         #login-title {
             border-bottom: 1px solid white;
-            font-size: 19px;
+            font-size: 1.1rem;
             margin-bottom: 20px;
         }
         #login-fields {
@@ -33,7 +34,7 @@
                 font-family: "Bellota";
                 width: 100%;
                 background-color: unset;
-                font-size: 16px;
+                font-size: 1rem;
                 height: 40px;
                 border: 0;
                 border-bottom: 1px solid white;
@@ -106,7 +107,7 @@
     }
 
     #login-plane {
-        background-image: url(../../assets/images/plane_1.svg);
+        background-image: url(../../assets/images/airport-tower.svg);
         background-size: cover;
         /* min-height: 500px; */
         height: 300px;
@@ -118,5 +119,46 @@
         position: absolute;
         bottom: 0;
         z-index: 1;
+    }
+}
+
+@media screen and (max-width: 768px) and (min-width: 480px) {
+    #login {
+        #login-form {
+            width: 340px;
+
+            #login-fields input {
+                height: 32px;
+            }
+
+            #login-fields{
+                width: 240px;
+            }
+        }
+
+        #login-plane{
+            height: 200px;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) and (min-width: 320px) {
+    #login {
+        #login-form {
+            width: 300px;
+
+            #login-fields input {
+                height: 26px;
+            }
+
+            #login-fields{
+                width: 200px;
+            }
+        }
+
+        #login-plane{
+            height: -webkit-fill-available;
+            width: 100%;
+        }
     }
 }

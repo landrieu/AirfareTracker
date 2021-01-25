@@ -1,20 +1,20 @@
-@import '../../variables.scss';
+@import "../../variables.scss";
 
-#my-trackers{
+#my-trackers {
     min-height: calc(100vh - #{$header-height} - #{$footer-height} - 20px);
     background-color: $primary;
     color: white;
     padding: 10px 0 50px 0;
 
-    #my-trackers-error{
-        min-height: calc(100vh - #{$header-height} - #{$footer-height}  - 20px);
+    #my-trackers-error {
+        min-height: calc(100vh - #{$header-height} - #{$footer-height} - 20px);
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
-    #my-trackers-loader{
+    #my-trackers-loader {
         width: 100%;
         text-align: center;
         display: flex;
@@ -23,13 +23,13 @@
         height: calc(100vh - #{$header-height} - #{$footer-height} - 20px);
     }
 
-    #my-trackers-content{
+    #my-trackers-content {
         width: 60%;
-        min-width: 600px;
+        /*min-width: 600px;*/
         margin-left: auto;
         margin-right: auto;
 
-        #my-trackers-numbers{
+        #my-trackers-numbers {
             display: flex;
             align-items: center;
             height: 45px;
@@ -38,3 +38,13 @@
         }
     }
 }
+
+@media screen and (max-width: 768px) and (min-width: 480px) {
+    #my-trackers {
+        #my-trackers-content {
+            width: calc(100% - 50px);
+            font-size: 0.9rem;
+        }
+    }
+}
+

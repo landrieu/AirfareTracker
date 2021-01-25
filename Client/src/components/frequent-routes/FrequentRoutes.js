@@ -9,22 +9,24 @@ export const FrequentRoutes = (props) => {
     const [sliderXPosition, setSliderXPosition] = useState(0);
     const trackers = useSelector(state => state.homeInfo.nearestTrackers);
     const [nbCardToDisplay, setNbCardToDisplay] = useState(2);
+    const [displayedCard, setDisplayedCard] = useState(0);
     //let sliderStyle = {transform: `translateX(${sliderXPosition}%)`}
 
     function clickArrow(e, direction) {
         e.preventDefault();
-
-        console.log(direction, sliderXPosition);
+        let stepSize = (100 / 6) * nbCardToDisplay;
+        console.log(direction, sliderXPosition, Math.abs(sliderXPosition) + stepSize, stepSize);
         if (direction === 'left' && sliderXPosition >= 0) {
             return;
         }
 
-        if (direction === 'right' && sliderXPosition < -66) {
+        if (direction === 'right' && Math.abs(sliderXPosition) + stepSize >= 100) {
             return;
         }
 
-        let stepSize = (100 / 6) * nbCardToDisplay;
+        
         stepSize = direction === 'right' ? -stepSize : stepSize;
+        setDisplayedCard(displayedCard  + (direction === 'right' ? nbCardToDisplay: -nbCardToDisplay));
 
         setSliderXPosition(sliderXPosition + stepSize);
     }
@@ -39,12 +41,18 @@ export const FrequentRoutes = (props) => {
             setNbCardToDisplay(1);
         } else {
             setNbCardToDisplay(2);
+            if(displayedCard % 2 !== 0){
+                setDisplayedCard(displayedCard - 1);
+                let stepSize = (100 / 6);
+                setSliderXPosition(sliderXPosition - stepSize);
+            }
         }
     }
 
 
 
     useEffect(() => {
+        changeCardSize();
         window.addEventListener('resize', changeCardSize.bind(this));
 
         return () => {
