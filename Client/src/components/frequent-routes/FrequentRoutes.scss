@@ -8,6 +8,7 @@
     #left-arrow-container{
         left: 0;
         width: 6%;
+        min-width: 42px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -19,6 +20,7 @@
     #right-arrow-container{
         right: 0;
         width: 6%;
+        min-width: 42px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -33,6 +35,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        transition: opacity 0.5s;
 
         &:hover{
             opacity: 0.8;
@@ -64,9 +67,10 @@
         position: relative;
         
         width: 88%;
+        max-width: calc(100% - 84px);
         margin: auto;
         height: 380px;
-        /*background-color: red;*/
+        /*background-color: red;*/ 
         overflow: hidden;
         display: flex;
         align-items: center;
@@ -79,3 +83,8 @@
     }
 }
 
+@media screen and (max-width: 920px) {
+    #section-1-left-gradient, #section-1-right-gradient{
+        display: none;
+    }
+}

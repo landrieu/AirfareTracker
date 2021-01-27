@@ -5,6 +5,8 @@ import { typeDefs } from './typeDefs';
 import { mongo } from './database/index';
 import _ from './services/helpers/date';
 
+import './services/helpers/prototypes';
+
 import { Email } from './services/email';
 import { PORT } from './services/settings';
 
@@ -39,6 +41,8 @@ const server = new ApolloServer({
         req.connection.remoteAddress || 
         req.socket.remoteAddress ||
         (req.connection.socket ? req.connection.socket.remoteAddress : null);
+
+        console.log('IP address:', clientIPAddress);
         // Get the user token from the headers.
         const auth = req.headers.authorization || '';
         return { auth, clientIPAddress };

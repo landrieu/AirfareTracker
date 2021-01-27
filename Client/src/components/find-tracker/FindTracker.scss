@@ -14,7 +14,6 @@
     #find-tracker-content {
         margin: auto;
         width: 60%;
-        min-width: 400px;
         max-width: 830px;
 
         #find-tracker-loader{
@@ -26,8 +25,41 @@
         }
 
         #find-tracker-id{
-            width: 400px;
+            width: 100%;
+            max-width: 400px;
             margin: auto;
         }
+    }
+}
+
+
+@media screen and (max-width: 768px) and (min-width: 480px) {
+    #find-tracker {
+        #find-tracker-content {
+            width: calc(100% - 20px);
+            margin: auto;
+            
+            #find-tracker-id{
+                max-width: 340px;
+            }
+        }
+
+        
+    }
+}
+
+@media screen and (max-width: 480px) and (min-width: 320px) {
+    #find-tracker {
+        #find-tracker-content {
+            width: calc(100% - 10px);
+            margin: auto;
+
+            #find-tracker-id{
+                max-width: 300px;
+            }
+            
+        }
+
+        
     }
 }

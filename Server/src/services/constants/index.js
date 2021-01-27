@@ -16,6 +16,13 @@ export const NB_TRACKERS_PER_USER = {
     REGISTERED: 6,
     VISITOR: 3
 };
+
+export const DEFAULT_TRACKER_SOURCES = ["5dc39bba581d45d4af0f7f5fc46701d2"];
+export const TRACKER_TYPES = {
+    NORMAL: 'N',
+    FREQUENT: 'F'
+}
+
 export const EARTH_RADIUS = 6371; // Radius of the earth in km
 export const AIRPORT_TYPES = ['medium_airport', 'large_airport', 'multi_airport'];
 

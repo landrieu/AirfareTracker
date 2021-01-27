@@ -21,9 +21,14 @@ module.exports = {
          * @param {Boolean} computeStats Compute basic stats 
          */
         airfaresByTrackerId: async (_, {trackerId, computeStats = true}) => {
-            const query = {trackerId};
+            const query = {
+                trackerId,
+                //"createdAt" : { $gte : new Date("2021", "00", "01") }
+            };
+
+            
             //Fetch airfares
-            let airfares = await Airfare.find(query);
+            let airfares = await Airfare.find(query);//.sort({"createdAt": -1}).limit(100);
 
             //Group and merge airfares
             let grouppedMergedAirfares = groupAndMergedAirfares(airfares);

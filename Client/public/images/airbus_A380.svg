@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg1910"
+   inkscape:version="0.44"
+   width="200"
+   height="130"
+   version="1.0"
+   sodipodi:version="0.32"
+   sodipodi:docname="A380 silhouette.svg">
+  <metadata
+     id="metadata1915">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs1913">
+    <linearGradient
+       id="linearGradient5463">
+      <stop
+         style="stop-color:white;stop-opacity:1;"
+         offset="0"
+         id="stop5465" />
+      <stop
+         style="stop-color:white;stop-opacity:0;"
+         offset="1"
+         id="stop5467" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="574"
+     inkscape:window-width="799"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="1.4651163"
+     inkscape:cx="119.27553"
+     inkscape:cy="48.411302"
+     inkscape:window-x="78"
+     inkscape:window-y="77"
+     inkscape:current-layer="svg1910"
+     width="200px"
+     height="130px" />
+  <path
+     style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+     d="M 10.803529,52.414196 L 22.200379,47.378075 L 29.662796,46.516812 L 36.198593,46.025019 L 45.618936,47.545373 L 62.241213,50.584519 L 66.12811,50.478409 L 75.762902,51.921616 L 78.171782,51.221172 L 83.488696,49.490556 L 81.317753,48.351553 L 81.512501,41.224015 L 82.718009,39.932298 L 91.692718,40.122316 L 98.418102,40.93978 L 121.70733,30.28809 L 130.01644,27.81517 L 135.85442,28.671663 L 117.51099,44.518878 L 118.25659,45.655835 L 108.44407,59.369148 L 140.39013,65.441249 L 143.34271,64.404445 L 173.97732,43.280399 L 177.84528,41.966974 L 187.31279,43.968198 L 175.555,60.187179 L 174.83119,61.129779 L 183.96043,62.179309 L 171.62737,74.945109 L 176.50738,76.106131 L 175.05805,80.342757 L 170.2537,80.735228 L 177.82682,90.035772 L 168.34758,88.039016 L 156.85511,81.947813 L 124.99977,82.662404 L 119.62307,82.41052 L 98.302399,82.342318 L 100.71692,84.805957 L 105.97459,88.51895 L 109.46328,90.722958 L 107.74147,91.930771 L 112.59379,95.429208 L 123.00465,101.36061 L 124.09666,102.59472 L 122.64432,102.79507 L 113.76915,101.53696 L 100.60686,94.657656 L 94.940484,94.591857 L 96.312329,96.274866 L 91.987302,97.058987 L 89.41819,98.202755 L 82.396757,98.065851 L 77.838042,96.508765 L 78.742627,87.916379 L 85.879313,87.529665 L 82.088977,84.66414 L 77.259951,84.370807 L 79.743435,86.515631 L 76.771739,86.974381 L 73.940071,88.567918 L 71.631517,89.156383 L 62.985343,87.994801 L 60.110934,86.443193 L 61.022237,78.313082 L 70.215425,77.942814 L 48.021951,68.663196 L 17.560327,63.120713 L 10.809582,58.771602 L 9.1835093,56.17376 L 10.803529,52.414196 z "
+     id="rect2791"
+     sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
+</svg>

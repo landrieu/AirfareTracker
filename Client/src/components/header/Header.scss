@@ -1,6 +1,7 @@
 @import "../../variables.scss";
 
 #header {
+    position: relative;
     height: 70px;
     background-color: $primary;
     width: 100%;
@@ -69,12 +70,12 @@
             border-bottom: 1px solid white;
             z-index: 3;
             height: 0;
-           /* overflow: hidden;*/
+            overflow: hidden;
             transition: height 0.5s;
 
             &.active{
-                height: calc(100vh - #{$header-height});
-                min-height: 300px;
+                /*height: calc(100vh - #{$header-height});*/
+                min-height: 240px;
             }
 
             .left,

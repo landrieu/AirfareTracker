@@ -1,5 +1,5 @@
 import { Tracker } from '../../database/models/Tracker';
-import { FrequentTrackerOccurrences } from '../constants';
+import { FrequentTrackerOccurrences, DEFAULT_TRACKER_SOURCES } from '../constants';
 
 /**
  * Return trackers from the database
@@ -124,7 +124,7 @@ export const formatNormalTracker = (tr, userId, userEmail) => {
         type: 'N', 
         userId, 
         userEmail, 
-        sources: ["5dc39bba581d45d4af0f7f5fc46701d2"], 
+        sources: DEFAULT_TRACKER_SOURCES, 
     };
 
     return tracker;

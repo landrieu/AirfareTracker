@@ -13,6 +13,7 @@ export function AirfareDataService(options) {
                     data{
                       minPrice
                       maxPrice
+                      averagePrice
                       nbResults
                       nbAirfares
                       createdAt

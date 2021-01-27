@@ -48,3 +48,20 @@
     }
 }
 
+@media screen and (max-width: 480px) and (min-width: 320px) {
+    #my-trackers {
+        #my-trackers-content {
+            width: calc(100% - 20px);
+            font-size: 0.9rem;
+
+            .stats-available{
+                flex-direction: column;
+
+                span{
+                    margin: 2px auto;
+                }
+            }
+        }
+    }
+}
+

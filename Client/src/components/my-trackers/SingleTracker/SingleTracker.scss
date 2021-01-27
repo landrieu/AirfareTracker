@@ -121,3 +121,10 @@
         }
     }
 }
+
+
+@media screen and (max-width: 480px) and (min-width: 320px) {
+    .single-tracker .single-tracker-body.expand {
+        height: 575px;
+    }
+}

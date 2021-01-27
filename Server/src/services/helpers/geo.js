@@ -1,5 +1,6 @@
 import { listFrequentTrackersAirports, findTrackers } from '../data/tracker';
 import { closestAirports, airportsWithFilter, closestAirportsFromDb } from '../data/airport';
+import { isNullOrUndefined } from './misc';
 
 import { NB_TRACKERS, EARTH_RADIUS } from '../constants';
 
@@ -11,6 +12,8 @@ import { NB_TRACKERS, EARTH_RADIUS } from '../constants';
  * @param {Number} lon2 
  */
 export const computeGeoDistance = (lat1, lon1, lat2, lon2) => {
+	if(isNullOrUndefined(lat1, lon1, lat2, lon2)) return null;
+
 	let R = EARTH_RADIUS; 
 	let dLat = deg2rad(lat2-lat1);  // deg2rad below
 	let dLon = deg2rad(lon2-lon1); 

@@ -24,9 +24,9 @@ export const FrequentRoutes = (props) => {
             return;
         }
 
-        
+
         stepSize = direction === 'right' ? -stepSize : stepSize;
-        setDisplayedCard(displayedCard  + (direction === 'right' ? nbCardToDisplay: -nbCardToDisplay));
+        setDisplayedCard(displayedCard + (direction === 'right' ? nbCardToDisplay : -nbCardToDisplay));
 
         setSliderXPosition(sliderXPosition + stepSize);
     }
@@ -41,7 +41,7 @@ export const FrequentRoutes = (props) => {
             setNbCardToDisplay(1);
         } else {
             setNbCardToDisplay(2);
-            if(displayedCard % 2 !== 0){
+            if (displayedCard % 2 !== 0) {
                 setDisplayedCard(displayedCard - 1);
                 let stepSize = (100 / 6);
                 setSliderXPosition(sliderXPosition - stepSize);
@@ -70,10 +70,21 @@ export const FrequentRoutes = (props) => {
         width: `calc(100% * ${6 / nbCardToDisplay})`
     }
 
+    const leftArrowStyle = {
+        opacity: sliderXPosition >= 0 ? '0' : '1'
+    };
+
+    const rightArrowStyle = {
+        opacity: (() => {
+            let stepSize = (100 / 6) * nbCardToDisplay;
+            return Math.abs(sliderXPosition) + stepSize >= 100 ? '0' : '1'
+        })()
+    };
+
     return (
         <div id="home-frequent">
             <div id="left-arrow-container">
-                <div id="left-arrow" onClick={(e) => clickArrow(e, 'left')}>
+                <div id="left-arrow" onClick={(e) => clickArrow(e, 'left')} style={leftArrowStyle}>
                     <img src={process.env.PUBLIC_URL + "/icons/arrow_left.svg"} alt="Right arrow"></img>
                 </div>
             </div>
@@ -89,7 +100,7 @@ export const FrequentRoutes = (props) => {
                 </div>
             </div>
             <div id="right-arrow-container">
-                <div id="right-arrow" onClick={(e) => clickArrow(e, 'right')}>
+                <div id="right-arrow" onClick={(e) => clickArrow(e, 'right')} style={rightArrowStyle}>
                     <img src={process.env.PUBLIC_URL + "/icons/arrow_left.svg"} alt="Left arrow"></img>
                 </div>
             </div>

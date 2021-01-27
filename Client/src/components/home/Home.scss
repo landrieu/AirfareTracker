@@ -4,6 +4,7 @@
 #home{
     color: white;
     background-color: $primary;
+    overflow: hidden;
 
     #home-frequent-routes{
         background-image: url(../../assets/images/world.svg);

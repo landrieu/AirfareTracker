@@ -6,7 +6,11 @@ Responsive breakpoints: 480px, 768px, 1024px, and 1280px
   font-family: 'Bellota';
   src: local('Bellota'), url(./assets/fonts/Bellota/Bellota-Regular.ttf) format('truetype');
 }
-
+html, body { 
+  height:100%; 
+  width:100%; 
+  overflow:auto;
+}
 body {
   margin: 0;
   font-family: 'Bellota', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

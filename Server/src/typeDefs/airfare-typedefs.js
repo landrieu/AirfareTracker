@@ -40,7 +40,7 @@ export const airfareTypeDefs = gql`
 
     type AirfareStat{
         text: String
-        value: Float
+        value: String
     }
 
     type AirfaresPerTerm{
