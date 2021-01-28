@@ -73,6 +73,15 @@ export const findClosestTrackersAndSort = async(airports, numberTrackers) =>{
 };
 
 //Get the most interesting trackers (closest airports from the user)
+/**
+ * Find the most interesting tracker for the user, based on is location
+ * 1 - List all the airports from the frequent trackers
+ * 2 - Sort the airports by distance with the user
+ * 3 - Fetch the trackers associated to those close airports
+ *  
+ * @param {*} param0 
+ * @param {*} numberTrackers 
+ */
 export const findClosestTrackers = async({longitude, latitude, city}, numberTrackers = NB_TRACKERS) => {
 	return new Promise(async (resolve) => {
 		//List all airports used for trackers
