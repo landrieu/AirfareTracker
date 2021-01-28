@@ -7,4 +7,5 @@ Other/
 Routine/sources/
 Server/src/data/
 Server/coverage/
+Server/.nyc_output/
 build/
