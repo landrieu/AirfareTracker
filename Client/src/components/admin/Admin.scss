@@ -1,0 +1,18 @@
+#admin {
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #060325;
+    color: white;
+
+    table {
+        margin: 10px auto;
+        border: 1px solid white;
+        tr:nth-child(odd) {
+            background-color: #201d3a;
+        }
+        th{
+            font-weight: inherit;
+        }
+    }
+}

@@ -1,15 +1,10 @@
 import { Tracker } from '../../database/models/Tracker';
 import { VerifyAuthentication } from '../helpers/authentication';
-import { NB_TRACKERS_PER_USER } from '../constants';
+import { NB_TRACKERS_PER_USER, ROLES } from '../constants';
 
 import { TrackerCreationCheck } from '../../classes/RequestOperation';
 
 import { AUTH_ERRORS } from '../constants/errors';
-
-const roles = {
-    admin: "ADMIN",
-    user: "USER"
-};
 
 /**
  * Validate user registration
@@ -59,13 +54,13 @@ export const canCreateOrActivateTracker = async (user, auth, email) => {
 
     if (user) {
         //Admin can create trackers in any case
-        if (user.role === roles.admin) return new TrackerCreationCheck(true, true, null, null);
+        if (user.role === ROLES.ADMIN) return new TrackerCreationCheck(true, true, null, null);
         userId = user.id;
         userEmail = user.email;
     } else if (!user && auth) {
         try {
             user = await VerifyAuthentication(auth);
-            if (user.role === roles.admin) return new TrackerCreationCheck(true, true, null, null);
+            if (user.role === ROLES.ADMIN) return new TrackerCreationCheck(true, true, null, null);
             userId = user.id;
             userEmail = user.email;
 

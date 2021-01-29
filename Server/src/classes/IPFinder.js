@@ -1,4 +1,5 @@
 import { IP } from './IP';
+import { IP as IPdB } from '../database/models/IP';
 import { renameObjectKey } from '../services/helpers/object';
 
 import request from 'request';
@@ -24,10 +25,11 @@ const worldIPs = {
  * Used to find IP information
  */
 export class IPFinder{
-    constructor(purgeTime = (1000 * 60 * 60 /*1hr*/)){
+    constructor(purgeTime = (1000 * 60 * 60 /*1hr*/), saveIP = true){
         this.addresses = new Map();
         this.localIPs = ["::ffff:127.0.0.1", "::1"];
         this.purgeTime = purgeTime;
+        this.saveIP = saveIP;
     }
 
     /**
@@ -36,6 +38,7 @@ export class IPFinder{
      * @param {Function} subscriber 
      */
     async search(clientIPAddress, subscriber){
+        clientIPAddress = worldIPs.Torino;
         console.log('IP address:', clientIPAddress);
 
         //Purge existing ips
@@ -61,6 +64,8 @@ export class IPFinder{
 
         //Store IP info
         this.updatePendingIP(clientIPAddress, true, ipDetails);
+
+        if(this.saveIP) this.saveCompletedIP(clientIPAddress);
     }
 
     /**
@@ -71,6 +76,10 @@ export class IPFinder{
      */
     updatePendingIP(address, success, ipDetails){
         this.addresses.get(address).updateData(success, ipDetails ? ipDetails.data : null);
+    }
+
+    saveCompletedIP(address){
+        this.addresses.get(address).save(IPdB);
     }
 
     /**

@@ -14,6 +14,7 @@ import { sendNewTrackerEmail } from '../services/helpers/notifications';
 
 import { airportSearch } from '../services/data/airport';
 import { TrackerCreationSuccess, UserInputError, UnexpectedError, Error } from '../classes/RequestOperation';
+import { ROLES } from '../services/constants/index';
 
 module.exports = {
     Query: {
@@ -122,7 +123,7 @@ module.exports = {
         async createFrequentTracker(_, tracker, { auth }) {
             try {
                 const user = await VerifyAuthentication(auth);
-                if (user.role === roles.admin) return new Error();
+                if (user.role !== ROLES.ADMIN) return new Error();
 
                 //Check if the user is an admin
                 tracker = formatFrequentTracker(tracker);

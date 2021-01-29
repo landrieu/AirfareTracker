@@ -42,7 +42,7 @@ const server = new ApolloServer({
         req.socket.remoteAddress ||
         (req.connection.socket ? req.connection.socket.remoteAddress : null);
 
-        console.log('IP address:', clientIPAddress);
+        //console.log('IP address:', clientIPAddress);
         // Get the user token from the headers.
         const auth = req.headers.authorization || '';
         return { auth, clientIPAddress };

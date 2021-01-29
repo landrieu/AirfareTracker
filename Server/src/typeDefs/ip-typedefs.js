@@ -12,6 +12,7 @@ export const ipTypeDefs = gql`
         latitude: String
         longitude: String
         as: String
+        createdAt: GraphQLDate!
     }
 
     extend type Airport {
@@ -31,6 +32,16 @@ export const ipTypeDefs = gql`
     type IPTrackersResult{
         success: Boolean
         trackers: [TrackerShort]
+    }
+
+    type FindIPs{
+        success: Boolean
+        data: [IP]
+        message: String
+    }
+
+    extend type Query {
+        getLastIPs: FindIPs
     }
 
     extend type Mutation {

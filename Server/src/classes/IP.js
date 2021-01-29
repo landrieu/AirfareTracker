@@ -32,6 +32,11 @@ export class IP{
         this.purge();
     }
 
+    save(IPModel){
+        let newIP = new IPModel(this.data);
+        return newIP.save();
+    }
+
     /**
      * Call the subscribers
      */

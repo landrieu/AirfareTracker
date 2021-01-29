@@ -7,7 +7,9 @@
     "test": "mocha --timeout 20000 --require @babel/register",
     "test-coverage": "nyc --reporter=html mocha --timeout 20000  --require @babel/register",
     "test-jest": "jest --coverage",
-    "start": "nodemon --exec babel-node src/index.js"
+    "dev": "nodemon --exec babel-node src/index.js",
+    "__start_win__": "SET NODE_ENV=production & babel-node src/index.js",
+    "start": "NODE_ENV=production & babel-node src/index.js"
   },
   "author": "Lio",
   "license": "ISC",

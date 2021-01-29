@@ -12,10 +12,7 @@ import { sendRegistrationEmail } from '../services/helpers/notifications';
 
 import { UserInputError, ValidationError, AuthenticationError, LoginSuccess, RegisterSuccess, TrackerCreationCheck, OperationResult } from '../classes/RequestOperation';
 
-const roles = {
-    admin: "ADMIN",
-    user: "USER"
-};
+import { ROLES } from '../services/constants/index';
 
 module.exports = {
     Query: {
@@ -25,7 +22,7 @@ module.exports = {
         users: async (_, { }, { auth }) => {
             try {
                 const user = await VerifyAuthentication(auth);
-                if (user.role === roles.admin) return User.find();
+                if (user.role === ROLES.ADMIN) return User.find();
             } catch (error) {
                 //console.log(error);
                 return error;
@@ -92,7 +89,7 @@ module.exports = {
             const newUser = new User({
                 email,
                 password,
-                role: roles.user,
+                role: ROLES.USER,
                 isActive: false,
                 trackers: userTrackers || [],
                 registrationDate: new Date().toISOString(),

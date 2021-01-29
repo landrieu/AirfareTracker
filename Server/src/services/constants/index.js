@@ -23,6 +23,11 @@ export const TRACKER_TYPES = {
     FREQUENT: 'F'
 }
 
+export const ROLES = {
+    ADMIN: "ADMIN",
+    USER: "USER"
+};
+
 export const EARTH_RADIUS = 6371; // Radius of the earth in km
 export const AIRPORT_TYPES = ['medium_airport', 'large_airport', 'multi_airport'];
 
