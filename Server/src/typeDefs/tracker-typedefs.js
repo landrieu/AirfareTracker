@@ -55,12 +55,20 @@ export const trackerTypeDefs = gql`
 
     union TrackerCreationResult = TrackerCreationSuccess | ErrorResult
 
+    type FindTrackers{
+        success: Boolean
+        data: [Tracker]
+        message: String
+    }
+
+   
     extend type Query {
         trackers(type: String, id: String): [Tracker]
         trackersByUser(userId: String): [Tracker]
         trackersNumber(userId: String): Number
         trackersActiveNumber(userId: String): Number
         trackersRandom: [Tracker]
+        getLastTrackers: FindTrackers
     }
 
     extend type Mutation {

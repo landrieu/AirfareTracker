@@ -84,9 +84,6 @@ export const Card = ({ style, trackerId, index }) => {
     }, [tracker]);
 
     useEffect(() => {
-        if (tracker.status === TRACKER_STATUS.COMPLETE) {
-            console.log('HERE')
-        }
         if (tracker.status === TRACKER_STATUS.COMPLETE && trackerDatasets.length === 0) {
             setDatasets();
         }

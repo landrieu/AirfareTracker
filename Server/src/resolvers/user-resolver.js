@@ -3,6 +3,7 @@ import { ObjectID } from 'mongodb';
 
 import { User } from '../database/models/User';
 import { Tracker } from '../database/models/Tracker';
+import { IP } from '../database/models/IP';
 import { GenerateToken, VerifyAuthentication } from '../services/helpers/authentication';
 import { canCreateOrActivateTracker } from '../services/data/user';
 
@@ -63,6 +64,36 @@ module.exports = {
                 return createTracker;
             } catch (error) {
                 return new TrackerCreationCheck(false,false, null, 'Unexpected error');
+            }
+        },
+
+        getGlobalStats: async (_, {}, { auth }) => {
+            try {
+                const user = await VerifyAuthentication(auth);
+                if (user.role !== ROLES.ADMIN) throw new Error('You must be an admin to access this resource!');
+                
+                let pNbVisitors = IP.count();
+                let pNbUsers = User.count();
+                let pNbTrackers = Tracker.count();
+                let pNbTrackersN = Tracker.count({type: 'N'});
+                let pNbTrackersF = Tracker.count({type: 'F'});
+
+                return Promise.all([pNbVisitors, pNbUsers, pNbTrackers, pNbTrackersN, pNbTrackersF]).then((res) => {
+                    return {
+                        success: true,
+                        data: {
+                            nbVisitors: res[0],
+                            nbUsers: res[1],
+                            nbTrackers: res[2],
+                            nbTrackersN: res[3],
+                            nbTrackersF: res[4],
+                        }
+                    }
+                }).catch((e) => {
+                    return {success: false, data: null, message: e.message};
+                });
+            } catch (e) {
+                return {success: false, data: null, message: e.message};
             }
         }
     },

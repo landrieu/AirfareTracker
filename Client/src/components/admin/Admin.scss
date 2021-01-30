@@ -1,3 +1,5 @@
+@import "../../variables.scss";
+
 #admin {
     height: 100%;
     min-height: 100vh;
@@ -5,14 +7,77 @@
     background-color: #060325;
     color: white;
 
-    table {
-        margin: 10px auto;
-        border: 1px solid white;
-        tr:nth-child(odd) {
-            background-color: #201d3a;
+    #admin-container {
+        padding: 10px 0;
+        max-width: 1000px;
+        margin: auto;
+        
+
+        #admin-dashboard {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 80px;
+            grid-gap: 10px;
+            color: white;
+
+            .admin-stat:nth-child(-1n + 3) {
+                grid-column: span 4;
+            }
+            .admin-stat:nth-last-child(2) {
+                grid-row-start: 2;
+                grid-column: 1 / span 6;
+            }
+            .admin-stat:nth-last-child(1) {
+                grid-row-start: 2;
+                grid-column: 7 / span 6;
+            }
+
+            .admin-stat {
+                background-color: $base-dark-blue;
+                color: #fff;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                .stat-name{
+                    font-size: 1.2rem;
+                }
+
+                .stat-value{
+                    font-size: 2rem;
+                }
+            }
         }
-        th{
-            font-weight: inherit;
+
+        #admin-tables {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+
+            table {
+                width: 48%;
+                max-width: 500px;
+                border-collapse: collapse;
+                border: 1px solid white;
+                border-spacing: 50px 0;
+                tbody tr:nth-child(odd) {
+                    background-color: $base-dark-blue;
+                }
+                th {
+                    font-weight: inherit;
+                }
+
+                td {
+                    padding: 10px 5px;
+                    max-width: 100px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
         }
     }
 }

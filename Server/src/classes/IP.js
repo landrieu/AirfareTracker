@@ -30,6 +30,12 @@ export class IP{
         this.dispatch();
 
         this.purge();
+
+        this.display();
+    }
+
+    display(){
+        console.log(`IP address: ${this.address}  ${this.data ? `${this.data.city} - ${this.data.country}` : ''}`);
     }
 
     save(IPModel){

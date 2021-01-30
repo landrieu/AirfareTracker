@@ -14,10 +14,9 @@ module.exports = {
         getLastIPs: async (_, { } , {auth}) => {
             try {
                 const user = await VerifyAuthentication(auth);
-                console.log(user);
                 if (user.role !== ROLES.ADMIN) throw new Error('You must be an admin to access this resource!');
                 
-                let lastIPs = IP.find().sort({_id:-1}).limit(50);
+                let lastIPs = IP.find().sort({_id:-1}).limit(20);
 
                 return {success: true, data: lastIPs};
             } catch (error) {

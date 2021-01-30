@@ -72,6 +72,19 @@ module.exports = {
             return Tracker.aggregate([
                 { $sample: { size: 2 } }
             ]);
+        },
+
+        getLastTrackers: async (_, { } , {auth}) => {
+            try {
+                const user = await VerifyAuthentication(auth);
+                if (user.role !== ROLES.ADMIN) throw new Error('You must be an admin to access this resource!');
+                
+                let lastTrackers = Tracker.find().sort({_id:-1}).limit(20);
+
+                return {success: true, data: lastTrackers};
+            } catch (error) {
+                return {success: false, data: [], message: error.message};
+            }
         }
     },
     Mutation: {

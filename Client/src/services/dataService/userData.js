@@ -151,7 +151,26 @@ export function UserDataService(options) {
             })
                 .then(result => result.data)
                 .then(data => data ? data.numberTrackersCreatable : null)
-        }
+        },
+
+        getGlobalStats: () => {
+            return options.graphClient.query({
+              query: gql`
+                        query{
+                            getGlobalStats{
+                            success
+                            data {
+                                nbVisitors, nbUsers, nbTrackers, nbTrackersN, nbTrackersF
+                            }
+                            message
+                          }
+                        }
+                        `,
+              fetchPolicy: 'no-cache'
+            })
+              .then(result => result.data)
+              .then(data => data.getGlobalStats)
+          }
     }
 }
 

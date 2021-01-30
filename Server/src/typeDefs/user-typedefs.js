@@ -27,12 +27,27 @@ export const userTypeDefs = gql`
         canCreateNewTracker: Boolean
         nbTrackersCreated: Int
     }
+
+    type GlobalStats{
+        nbVisitors: Int
+        nbUsers: Int
+        nbTrackers: Int
+        nbTrackersN: Int
+        nbTrackersF: Int
+    }
+
+    type FindGlobalStats{
+        success: Boolean
+        data: GlobalStats
+        message: String
+    }
     
     extend type Query {
         users: [User!]!
         userByEmail(email: String): User
         validAuthentication: Boolean
         numberTrackersCreatable(email: String): TrackerCreationCheckResult
+        getGlobalStats: FindGlobalStats
     }
 
 

@@ -183,6 +183,30 @@ export function TrackerDataService(options) {
       })
         .then(result => result.data)
         .then(data => data.createTracker)
+    },
+
+    getLastTrackers: () => {
+      return options.graphClient.query({
+        query: gql`
+                  query{
+                    getLastTrackers{
+                      success
+                      data {
+                        from{city, country}
+                        to{city, country}
+                        type
+                        userEmail
+                        triggerPrice
+                        createdAt
+                      }
+                      message
+                    }
+                  }
+                  `,
+        fetchPolicy: 'no-cache'
+      })
+        .then(result => result.data)
+        .then(data => data.getLastTrackers)
     }
   }
 }

@@ -38,9 +38,9 @@ export class IPFinder{
      * @param {Function} subscriber 
      */
     async search(clientIPAddress, subscriber){
-        clientIPAddress = worldIPs.Torino;
-        console.log('IP address:', clientIPAddress);
 
+        if(this.isLocalIP(clientIPAddress)) return subscriber({success: false, data: null});
+        
         //Purge existing ips
         this.purge();
 
