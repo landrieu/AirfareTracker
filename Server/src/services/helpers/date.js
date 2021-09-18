@@ -89,6 +89,21 @@ export const convertArrayToObject = (arr, keyProperty = "id") => {
     return obj
 }
 
+export const addRemoveNewDate = (d, n, u) => {
+    let date = new Date(d);
+    if(u === 'y'){
+        return date.addYears(n);
+    }else if (u === 'm'){
+        return date.addMonths(n);
+    }else if (u === 'w'){
+        return date.addWeeks(n);
+    }else if(u === 'd'){
+        return date.addDays(n);
+    }else console.log(`Unit not recognized: ${u}`);
+
+    return null;
+};
+
 Date.prototype.timestamp = function(){
     return Math.floor(new Date(this).getTime() / 1000);
 }

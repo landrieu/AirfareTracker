@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /**
  * IP Object
  */
@@ -35,6 +37,7 @@ export class IP{
     }
 
     display(){
+        console.log(`Date: ${moment().format('DD/MM/YYYY HH:mm:ss')}`);
         console.log(`IP address: ${this.address}  ${this.data ? `${this.data.city} - ${this.data.country}` : ''}`);
     }
 

@@ -123,7 +123,7 @@ export const Card = ({ style, trackerId, index }) => {
                     <div className="top-container">{displayTop()}</div>
                 </div>
                 <div className="middle">
-                    {stats.map((stat, idx) => (
+                    {stats.slice(0,2).map((stat, idx) => (
                         <div className="info" key={idx}>
                             <div className="container" style={{ width: defineWidthLoading(0) }}>
                                 {displayStat(stat)}

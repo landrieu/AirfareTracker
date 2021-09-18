@@ -72,11 +72,11 @@ module.exports = {
                 const user = await VerifyAuthentication(auth);
                 if (user.role !== ROLES.ADMIN) throw new Error('You must be an admin to access this resource!');
                 
-                let pNbVisitors = IP.count();
-                let pNbUsers = User.count();
-                let pNbTrackers = Tracker.count();
-                let pNbTrackersN = Tracker.count({type: 'N'});
-                let pNbTrackersF = Tracker.count({type: 'F'});
+                let pNbVisitors = IP.countDocuments();
+                let pNbUsers = User.countDocuments();
+                let pNbTrackers = Tracker.countDocuments();
+                let pNbTrackersN = Tracker.countDocuments({type: 'N'});
+                let pNbTrackersF = Tracker.countDocuments({type: 'F'});
 
                 return Promise.all([pNbVisitors, pNbUsers, pNbTrackers, pNbTrackersN, pNbTrackersF]).then((res) => {
                     return {

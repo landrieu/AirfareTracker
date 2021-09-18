@@ -5,7 +5,7 @@ import { Tracker } from './database/models/Tracker';
 import { Airfare } from './database/models/Airfare';
 import { User } from './database/models/User';
 import { Airport } from './database/models/Airport';
-import { formatDate, listPossibleDates, defineDatesFrequentTracker, areDatesInFuture } from './helpers/date';
+import { formatDate, listPossibleDates, defineDatesFrequentTracker, areDatesInFuture, addRemoveNewDate } from './helpers/date';
 
 import { Email } from './helpers/email';
 import sourcesAvailable from './sources';
@@ -220,7 +220,7 @@ const sendAlert = ({ id, from, to, userId, userEmail, triggerPrice }, airfares) 
         return email.send();
     }).then(() => {
         //Disable the alert
-        return Tracker.updateOne({_id: ObjectID(id)}, {isActive: false});
+        return Tracker.updateOne({ _id: ObjectID(id) }, { isActive: false });
     })
 };
 
@@ -247,9 +247,19 @@ const startRoutine = async (dbFilter) => {
     let saveResults = await saveAirfares(scanResults);
     console.log(`Number of airfares saved ${saveResults.length}.`);
 
+    // Remove old records
+    await flushOldAirfares();
+
     await disconnectDb();
     console.timeEnd('Routine execution');
 };
+
+async function flushOldAirfares() {
+    const hundredDaysPastDate = addRemoveNewDate(new Date(), -100, 'd');
+
+    const {deletedCount} = await Airfare.deleteMany({ createdAt: { "$lt": hundredDaysPastDate } });
+    console.log(`Flush result -> Deleted count: ${deletedCount}`);
+}
 
 function eFlags(args) {
     let flags = {};
